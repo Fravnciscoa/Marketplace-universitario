@@ -1,0 +1,7 @@
+{
+  "name": "MarketplaceApp",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
