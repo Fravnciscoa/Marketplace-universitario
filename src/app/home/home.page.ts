@@ -1,117 +1,87 @@
 import { Component } from '@angular/core';
-import {
-  IonHeader,
-  IonToolbar,
-  IonTitle,
-  IonContent,
-  IonButton,
-  IonCard,
-  IonCardHeader,
-  IonCardTitle,
-  IonCardSubtitle,
-  IonCardContent,
-  IonSearchbar,
-  IonGrid,
-  IonRow,
-  IonCol,
-  IonSegment,
-  IonSegmentButton,
-  IonLabel,
-  IonInput,
-} from '@ionic/angular/standalone';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { DecimalPipe, TitleCasePipe, NgFor, NgIf } from '@angular/common';
-import { ProductosService } from 'src/app/services/productos.service';
-import { Producto } from 'src/app/models/producto.model';
+
+// Ionic standalone imports según tu template:
+import {
+  IonHeader, IonToolbar, IonTitle, IonContent,
+  IonSearchbar, IonButton, IonSegment, IonSegmentButton, IonLabel,
+  IonInput, IonGrid, IonRow, IonCol,
+  IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent
+} from '@ionic/angular/standalone';
 
 type Estado = 'todos' | 'venta' | 'intercambio' | 'prestamo';
 
+interface Producto {
+  id: number;
+  titulo: string;
+  precio: number; // CLP
+  estado: Exclude<Estado, 'todos'>;
+  categoria: 'Libros' | 'Electrónica' | 'Deportes' | 'Otros';
+  campus: 'Isabel Brown Caces' | 'Casa Central' | 'Curauma';
+  img?: string;
+}
+
 @Component({
   selector: 'app-home',
-  templateUrl: 'home.page.html',
-  styleUrls: ['home.page.scss'],
   standalone: true,
+  templateUrl: './home.page.html',
+  styleUrls: ['./home.page.scss'],
   imports: [
-    // Angular
-    FormsModule,
-    DecimalPipe,
-    TitleCasePipe,
-    NgFor,
-    NgIf,
-    // Ionic (standalone)
-    IonHeader,
-    IonToolbar,
-    IonTitle,
-    IonContent,
-    IonButton,
-    IonCard,
-    IonCardHeader,
-    IonCardTitle,
-    IonCardSubtitle,
-    IonCardContent,
-    IonSearchbar,
-    IonGrid,
-    IonRow,
-    IonCol,
-    IonSegment,
-    IonSegmentButton,
-    IonLabel,
-    IonInput,
+    CommonModule, FormsModule,
+    IonHeader, IonToolbar, IonTitle, IonContent,
+    IonSearchbar, IonButton, IonSegment, IonSegmentButton, IonLabel,
+    IonInput, IonGrid, IonRow, IonCol,
+    IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent
   ],
 })
 export class HomePage {
-  productos: Producto[] = [];
-  visibles: Producto[] = [];
-
+  // ------- Estado UI -------
   estadoSel: Estado = 'todos';
-  minPrecio: number | null = null;
-  maxPrecio: number | null = null;
+  searchTerm = '';
+  minPrecio = 0;
+  maxPrecio = 500_000;
 
-  constructor(private productosSvc: ProductosService) {
-    this.productos = this.productosSvc.list();
-    this.visibles = this.productos;
-  }
+  // ------- Datos demo (reemplaza por tu servicio/API) -------
+  private productos: Producto[] = [
+    { id: 1, titulo: 'Calculadora', precio: 10_000, estado: 'venta', categoria: 'Electrónica', campus: 'Casa Central', img: 'src\assets\demo\calculadora.jpegs/img/demo/calculadora.jpg' },
+    { id: 2, titulo: 'Lógica de programación', precio: 5_000, estado: 'venta', categoria: 'Libros', campus: 'Curauma', img: 'assets/img/demo/libro-logica.jpg' },
+    { id: 3, titulo: 'Bicicleta usada', precio: 100_000, estado: 'venta', categoria: 'Deportes', campus: 'Isabel Brown Caces', img: 'assets/img/demo/bici.jpg' },
+    { id: 4, titulo: 'Mochila', precio: 20_000, estado: 'venta', categoria: 'Otros', campus: 'Casa Central', img: 'assets/img/demo/mochila.jpg' },
+    { id: 5, titulo: 'Kit Carpintería', precio: 8_000, estado: 'intercambio', categoria: 'Otros', campus: 'Curauma', img: 'assets/img/demo/kit.jpg' },
+    { id: 6, titulo: 'Póster Cohete', precio: 7_000, estado: 'venta', categoria: 'Otros', campus: 'Casa Central', img: 'assets/img/demo/cohete.jpg' },
+    { id: 7, titulo: 'Kayak', precio: 120_000, estado: 'prestamo', categoria: 'Deportes', campus: 'Isabel Brown Caces', img: 'assets/img/demo/kayak.jpg' },
+  ];
 
-  onSearch(ev: Event) {
-    const q =
-      (ev as CustomEvent).detail?.value?.toString().trim().toLowerCase() ?? '';
-    this.aplicarFiltros(q);
-  }
+  // ------- Derivado (se recalcula al leer) -------
+  get visibles(): Producto[] {
+    const term = this.searchTerm.trim().toLowerCase();
+    const est = this.estadoSel;
+    const min = Number.isFinite(this.minPrecio) ? this.minPrecio : 0;
+    const max = Number.isFinite(this.maxPrecio) && this.maxPrecio > 0 ? this.maxPrecio : Number.MAX_SAFE_INTEGER;
 
-  onEstadoChange(ev: Event) {
-    const raw = (
-      ev as CustomEvent<{ value: string | number | null | undefined }>
-    ).detail?.value;
-    const asString = raw == null ? 'todos' : String(raw);
-    const opciones = ['todos', 'venta', 'intercambio', 'prestamo'] as const;
-    const safe: Estado = (opciones as readonly string[]).includes(asString)
-      ? (asString as Estado)
-      : 'todos';
-    this.estadoSel = safe;
-    this.aplicarFiltros('');
-  }
-
-  onPrecioChange() {
-    const toNum = (v: any) =>
-      v === null || v === undefined || v === '' ? null : Number(v);
-    this.minPrecio = toNum(this.minPrecio);
-    this.maxPrecio = toNum(this.maxPrecio);
-    this.aplicarFiltros('');
-  }
-
-  private aplicarFiltros(q: string) {
-    const query = q?.toLowerCase() ?? '';
-    this.visibles = this.productos.filter((p) => {
-      const okQuery = !query || p.titulo.toLowerCase().includes(query);
-      const okEstado =
-        this.estadoSel === 'todos'
-          ? true
-          : p.estado.toLowerCase() === this.estadoSel;
-      const okMin = this.minPrecio == null ? true : p.precio >= this.minPrecio;
-      const okMax = this.maxPrecio == null ? true : p.precio <= this.maxPrecio;
-      return okQuery && okEstado && okMin && okMax;
+    return this.productos.filter(p => {
+      const okTerm = !term || p.titulo.toLowerCase().includes(term);
+      const okEstado = est === 'todos' || p.estado === est;
+      const okPrecio = p.precio >= min && p.precio <= max;
+      return okTerm && okEstado && okPrecio;
     });
   }
 
-  trackById = (_: number, p: Producto) => (p as any).id ?? p.titulo;
+  // ------- Handlers -------
+  onSearch(ev: any) {
+    this.searchTerm = ev?.detail?.value ?? '';
+  }
+
+  onEstadoChange(ev: any) {
+    const val = (ev?.detail?.value ?? 'todos') as string;
+    const allowed: Estado[] = ['todos', 'venta', 'intercambio', 'prestamo'];
+    this.estadoSel = (allowed as string[]).includes(val) ? (val as Estado) : 'todos';
+  }
+
+  onPrecioChange() {
+    // No hace nada más: el getter `visibles` ya usa min/max y se re-renderiza.
+  }
+
+  trackById = (_: number, p: Producto) => p.id;
 }
