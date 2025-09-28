@@ -3,4 +3,5 @@ export interface Producto {
   titulo: string;
   precio: number;
   estado: 'venta' | 'intercambio' | 'prestamo';
+  categoria?: 'Tecnología' | 'Libros' | 'Accesorios';
 }
