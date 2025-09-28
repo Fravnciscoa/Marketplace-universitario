@@ -18,14 +18,24 @@
   </section>
 
   <!-- Contenedor de cards (placeholder) -->
-  <section class="home-grid">
-    <ion-card>
-      <ion-card-header>
-        <ion-card-title>Producto demo</ion-card-title>
-        <ion-card-subtitle>$00.000</ion-card-subtitle>
-      </ion-card-header>
-      <ion-card-content>Descripción breve…</ion-card-content>
-    </ion-card>
-  </section>
-</ion-content>
-
+    <section class="home-grid">
+    <ion-grid>
+      <ion-row>
+        <ion-col size="12" size-md="6" size-lg="4" size-xl="3" *ngFor="let p of visibles">
+          <ion-card>
+            <div class="thumb"></div>
+            <ion-card-header>
+              <ion-card-title>{{ p.titulo }}</ion-card-title>
+              <ion-card-subtitle>
+                {{ p.estado | titlecase }} ·
+                {{ p.precio > 0 ? ('$' + (p.precio | number:'1.0-0')) : 'Gratis' }}
+              </ion-card-subtitle>
+            </ion-card-header>
+            <ion-card-content>
+              <ion-button size="small" fill="solid">Ver detalle</ion-button>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+    </section>
