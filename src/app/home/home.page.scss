@@ -1,11 +1,17 @@
 // Reset suave para esta página
-:host, ion-content { --padding-start: 0; --padding-end: 0; }
+:host,
+ion-content {
+  --padding-start: 0;
+  --padding-end: 0;
+}
 
 ion-header {
   --background: #0e2b57; // azul institucional del mock
   color: #fff;
 
-  ion-title { font-weight: 700; }
+  ion-title {
+    font-weight: 700;
+  }
 }
 
 ion-content {
@@ -48,7 +54,9 @@ ion-content {
 .home-grid {
   padding: 8px 10px 24px;
 
-  ion-grid { --ion-grid-padding: 0; }
+  ion-grid {
+    --ion-grid-padding: 0;
+  }
 
   ion-col {
     padding: 8px;
@@ -57,15 +65,15 @@ ion-content {
   ion-card {
     border-radius: 14px;
     overflow: hidden;
-    box-shadow: 0 1px 2px rgba(0,0,0,.06);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
     background: #fff;
   }
 
   .thumb {
     height: 210px;
     background:
-      linear-gradient(180deg, rgba(0,0,0,.03), rgba(0,0,0,.08)),
-      url('/assets/img/demo/placeholder.jpg');
+      linear-gradient(180deg, rgba(0, 0, 0, 0.03), rgba(0, 0, 0, 0.08)),
+      url("/assets/img/demo/placeholder.jpg");
     background-size: cover;
     background-position: center;
   }
