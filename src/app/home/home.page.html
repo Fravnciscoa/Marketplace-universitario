@@ -18,7 +18,7 @@
     <!-- Estado -->
     <ion-segment
       [value]="estadoSel"
-      (ionChange)="onEstadoChange($event)">
+      (ionChange)="onEstadoChange($event)" (ngModelChange)="onEstadoChange($event)"> 
       <ion-segment-button value="todos"><ion-label>Todos</ion-label></ion-segment-button>
       <ion-segment-button value="venta"><ion-label>Venta</ion-label></ion-segment-button>
       <ion-segment-button value="intercambio"><ion-label>Intercambio</ion-label></ion-segment-button>
