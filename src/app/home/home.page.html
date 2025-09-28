@@ -5,5 +5,27 @@
 </ion-header>
 
 <ion-content>
-  <div class="p-16">Home MVP (placeholder)</div>
+  <ion-searchbar
+    placeholder="Buscar productos, categorías…"
+    (ionInput)="onSearch($event)"
+  ></ion-searchbar>
+
+  <!-- Contenedor de filtros (placeholder) -->
+  <section class="home-filters">
+    <ion-button fill="outline" size="small">Categoría</ion-button>
+    <ion-button fill="outline" size="small">Estado</ion-button>
+    <ion-button fill="outline" size="small">Precio</ion-button>
+  </section>
+
+  <!-- Contenedor de cards (placeholder) -->
+  <section class="home-grid">
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Producto demo</ion-card-title>
+        <ion-card-subtitle>$00.000</ion-card-subtitle>
+      </ion-card-header>
+      <ion-card-content>Descripción breve…</ion-card-content>
+    </ion-card>
+  </section>
 </ion-content>
+
