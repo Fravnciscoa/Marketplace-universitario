@@ -7,21 +7,48 @@
 <ion-content>
   <ion-searchbar
     placeholder="Buscar productos, categorías…"
-    (ionInput)="onSearch($event)"
-  ></ion-searchbar>
+    (ionInput)="onSearch($event)">
+  </ion-searchbar>
 
-  <!-- Contenedor de filtros (placeholder) -->
   <section class="home-filters">
     <ion-button fill="outline" size="small">Categoría</ion-button>
     <ion-button fill="outline" size="small">Estado</ion-button>
     <ion-button fill="outline" size="small">Precio</ion-button>
+
+    <!-- Estado -->
+    <ion-segment
+      [value]="estadoSel"
+      (ionChange)="onEstadoChange($event)">
+      <ion-segment-button value="todos"><ion-label>Todos</ion-label></ion-segment-button>
+      <ion-segment-button value="venta"><ion-label>Venta</ion-label></ion-segment-button>
+      <ion-segment-button value="intercambio"><ion-label>Intercambio</ion-label></ion-segment-button>
+      <ion-segment-button value="prestamo"><ion-label>Préstamo</ion-label></ion-segment-button>
+    </ion-segment>
+
+    <!-- Precio -->
+    <div class="precio-range">
+      <ion-input
+        type="number"
+        placeholder="Min $"
+        [(ngModel)]="minPrecio"
+        (ionInput)="onPrecioChange()">
+      </ion-input>
+
+      <ion-input
+        type="number"
+        placeholder="Max $"
+        [(ngModel)]="maxPrecio"
+        (ionInput)="onPrecioChange()">
+      </ion-input>
+    </div>
   </section>
 
-  <!-- Contenedor de cards (placeholder) -->
-    <section class="home-grid">
+  <section class="home-grid" *ngIf="visibles?.length; else vacio">
     <ion-grid>
       <ion-row>
-        <ion-col size="12" size-md="6" size-lg="4" size-xl="3" *ngFor="let p of visibles">
+        <ion-col
+          size="12" size-md="6" size-lg="4" size-xl="3"
+          *ngFor="let p of visibles; trackBy: trackById">
           <ion-card>
             <div class="thumb"></div>
             <ion-card-header>
@@ -38,4 +65,9 @@
         </ion-col>
       </ion-row>
     </ion-grid>
-    </section>
+  </section>
+
+  <ng-template #vacio>
+    <div class="empty">No encontramos resultados para tu búsqueda 🤷‍♂️</div>
+  </ng-template>
+</ion-content>

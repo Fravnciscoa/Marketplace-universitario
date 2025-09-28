@@ -26,7 +26,7 @@
   text-decoration: none;
 }
 .home-filters {
-  display: flex;
+  display: grid;
   gap: 8px;
   padding: 8px 12px;
 }
@@ -43,4 +43,9 @@
   height: 140px;
   background: #e9ecef;
   border-radius: 8px 8px 0 0;
+}
+.precio-range {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
 }
