@@ -18,7 +18,7 @@
     <!-- Estado -->
     <ion-segment
       [value]="estadoSel"
-      (ionChange)="onEstadoChange($event)" (ngModelChange)="onEstadoChange($event)"> 
+      (ionChange)="onEstadoChange($event)">
       <ion-segment-button value="todos"><ion-label>Todos</ion-label></ion-segment-button>
       <ion-segment-button value="venta"><ion-label>Venta</ion-label></ion-segment-button>
       <ion-segment-button value="intercambio"><ion-label>Intercambio</ion-label></ion-segment-button>
@@ -31,14 +31,14 @@
         type="number"
         placeholder="Min $"
         [(ngModel)]="minPrecio"
-        (ionInput)="onPrecioChange()">
+        (ngModelChange)="onPrecioChange()">
       </ion-input>
 
       <ion-input
         type="number"
         placeholder="Max $"
         [(ngModel)]="maxPrecio"
-        (ionInput)="onPrecioChange()">
+        (ngModelChange)="onPrecioChange()">
       </ion-input>
     </div>
   </section>

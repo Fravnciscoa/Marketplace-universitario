@@ -3,12 +3,12 @@ import {
   IonHeader, IonToolbar, IonTitle, IonContent, IonButton,
   IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent,
   IonSearchbar, IonGrid, IonRow, IonCol,
-  IonSegment, IonSegmentButton, IonLabel, IonInput  // ⟵ agrega IonSegment e IonInput acá
+  IonSegment, IonSegmentButton, IonLabel, IonInput
 } from '@ionic/angular/standalone';
+import { FormsModule } from '@angular/forms';
+import { DecimalPipe, TitleCasePipe, NgFor, NgIf } from '@angular/common';
 import { ProductosService } from 'src/app/services/productos.service';
 import { Producto } from 'src/app/models/producto.model';
-import { TitleCasePipe, DecimalPipe, NgFor, NgIf } from '@angular/common'; // ⟵ NgIf opcional
-import { FormsModule } from '@angular/forms';
 
 type Estado = 'todos' | 'venta' | 'intercambio' | 'prestamo';
 
@@ -18,11 +18,13 @@ type Estado = 'todos' | 'venta' | 'intercambio' | 'prestamo';
   styleUrls: ['home.page.scss'],
   standalone: true,
   imports: [
+    // Angular
     FormsModule, DecimalPipe, TitleCasePipe, NgFor, NgIf,
-    IonHeader, IonToolbar, IonTitle, IonContent, IonSearchbar, IonButton,
+    // Ionic (standalone)
+    IonHeader, IonToolbar, IonTitle, IonContent, IonButton,
     IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent,
-    IonGrid, IonRow, IonCol,
-    IonSegment, IonSegmentButton, IonLabel, IonInput // ⟵ aquí también
+    IonSearchbar, IonGrid, IonRow, IonCol,
+    IonSegment, IonSegmentButton, IonLabel, IonInput
   ],
 })
 export class HomePage {
@@ -43,27 +45,14 @@ export class HomePage {
     this.aplicarFiltros(q);
   }
 
-  private aplicarFiltros(q: string) {
-    const query = q?.toLowerCase() ?? '';
-    this.visibles = this.productos.filter(p => {
-      const okQuery = !query || p.titulo.toLowerCase().includes(query);
-      const okEstado = this.estadoSel === 'todos' ? true : p.estado === this.estadoSel;
-      const okMin = this.minPrecio == null ? true : p.precio >= this.minPrecio;
-      const okMax = this.maxPrecio == null ? true : p.precio <= this.maxPrecio;
-      return okQuery && okEstado && okMin && okMax;
-    });
-  }
-
   onEstadoChange(ev: Event) {
-  const value = (ev as CustomEvent).detail?.value; // SegmentValue | undefined
-  // Normaliza a string y valida contra tu unión:
-  const raw = value == null ? 'todos' : String(value);
-  const opciones = ['todos', 'venta', 'intercambio', 'prestamo'] as const;
-  const safe = opciones.includes(raw as any) ? (raw as typeof opciones[number]) : 'todos';
-  this.estadoSel = safe;
-  this.aplicarFiltros('');
-}
-
+    const raw = (ev as CustomEvent<{ value: string | number | null | undefined }>).detail?.value;
+    const asString = raw == null ? 'todos' : String(raw);
+    const opciones = ['todos', 'venta', 'intercambio', 'prestamo'] as const;
+    const safe: Estado = (opciones as readonly string[]).includes(asString) ? (asString as Estado) : 'todos';
+    this.estadoSel = safe;
+    this.aplicarFiltros('');
+  }
 
   onPrecioChange() {
     const toNum = (v: any) => (v === null || v === undefined || v === '' ? null : Number(v));
@@ -72,6 +61,16 @@ export class HomePage {
     this.aplicarFiltros('');
   }
 
-  // (opcional) mejor perf en *ngFor
+  private aplicarFiltros(q: string) {
+    const query = q?.toLowerCase() ?? '';
+    this.visibles = this.productos.filter(p => {
+      const okQuery = !query || p.titulo.toLowerCase().includes(query);
+      const okEstado = this.estadoSel === 'todos' ? true : p.estado.toLowerCase() === this.estadoSel;
+      const okMin = this.minPrecio == null ? true : p.precio >= this.minPrecio;
+      const okMax = this.maxPrecio == null ? true : p.precio <= this.maxPrecio;
+      return okQuery && okEstado && okMin && okMax;
+    });
+  }
+
   trackById = (_: number, p: Producto) => (p as any).id ?? p.titulo;
 }
