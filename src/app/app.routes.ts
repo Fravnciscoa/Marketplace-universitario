@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { DetalleProductoPage } from './pages/detalle-producto/detalle-producto.page';
 
 export const routes: Routes = [
   {
