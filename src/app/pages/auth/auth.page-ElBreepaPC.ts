@@ -16,7 +16,11 @@ import { ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
 
     <ion-content class="ion-padding">
       <!-- Conmutador Login / Registro -->
-      <ion-segment [value]="mode()" (ionChange)="onModeChange($event)">
+      <ion-segment
+        [(ngModel)]="mode()"
+        (ionChange)="onModeChange($event)"
+        value="login"
+      >
         <ion-segment-button value="login">
           <ion-label>Iniciar sesión</ion-label>
         </ion-segment-button>
