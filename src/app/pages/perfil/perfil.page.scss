@@ -1,0 +1,1046 @@
+// Variables
+$default-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+  Ubuntu, "Helvetica Neue", Helvetica, Arial, "PingFang SC",
+  "Hiragino Sans GB", "Microsoft Yahei UI", "Microsoft Yahei",
+  "Source Han Sans CN", sans-serif;
+
+// Resets básicos (opcionales; si prefieres scoping, muévelos dentro de .main-container)
+input,
+select,
+textarea,
+button {
+  outline: 0;
+}
+
+.main-container {
+  overflow: hidden;
+  position: relative;
+  width: 1440px;
+  height: 1024px;
+  margin: 0 auto;
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+
+  * {
+    box-sizing: border-box;
+  }
+
+  .section {
+    position: absolute;
+    width: 332px;
+    height: 1024px;
+    background: #003366;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+  }
+
+  .frame {
+    position: relative;
+    width: 320.64px;
+    height: 61.79px;
+    margin: 214px 0 0 6px;
+    background: rgba(0, 30, 60, 0.43);
+    border: 1.67px solid rgba(0, 51, 102, 0);
+    z-index: 5;
+    box-shadow: 0 6.68px 6.68px 0 rgba(0, 0, 0, 0.25);
+
+    .group {
+      position: absolute;
+      width: 26.72px;
+      height: 30.06px;
+      top: 14.195px;
+      left: 71.29px;
+      background: url(https://codia-f2c.s3.us-west-1.amazonaws.com/image/2025-09-29/wmoWyp3Vn0.png)
+        no-repeat center / 100% 100%;
+      z-index: 7;
+    }
+
+    .dashboard {
+      display: flex;
+      align-items: flex-start;
+      justify-content: flex-start;
+      position: absolute;
+      height: 29px;
+      top: 14.725px;
+      left: 126.69px;
+      color: #ffffff;
+      font-family: Inter, $default-font-family;
+      font-size: 24px;
+      font-weight: 500;
+      line-height: 29px;
+      text-align: left;
+      white-space: nowrap;
+      z-index: 8;
+    }
+  }
+
+  .frame-1,
+  .frame-2,
+  .frame-3,
+  .frame-12,
+  .frame-14,
+  .frame-1c {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: nowrap;
+    width: 320.64px;
+    height: 61.79px;
+    padding: 20px 16px;
+    background: rgba(0, 51, 102, 0);
+    border: 1.67px solid rgba(0, 62, 125, 0);
+    box-shadow: 0 6.68px 6.68px 0 rgba(0, 0, 0, 0.25);
+  }
+
+  .frame-1 {
+    gap: 22px;
+    margin: 1.21px 0 0 4px;
+
+    .product-icon {
+      flex-shrink: 0;
+      position: relative;
+      width: 40.08px;
+      height: 40.08px;
+      background: url(https://codia-f2c.s3.us-west-1.amazonaws.com/image/2025-09-29/Gb74dxUFPP.png)
+        no-repeat center / cover;
+      z-index: 3;
+    }
+
+    .productos {
+      flex-shrink: 0;
+      flex-basis: auto;
+      position: relative;
+      height: 29px;
+      color: #ffffff;
+      font-family: Inter, $default-font-family;
+      font-size: 24px;
+      font-weight: 400;
+      line-height: 29px;
+      text-align: left;
+      white-space: nowrap;
+      z-index: 4;
+    }
+  }
+
+  .frame-2 {
+    gap: 22px;
+    margin: 68.21px 0 0 0;
+
+    .message-icon {
+      flex-shrink: 0;
+      position: relative;
+      width: 40.08px;
+      height: 40.08px;
+      background: url(https://codia-f2c.s3.us-west-1.amazonaws.com/image/2025-09-29/SbxgUA4zLV.png)
+        no-repeat center / cover;
+      z-index: 14;
+      overflow: hidden;
+    }
+
+    .mensajes {
+      flex-shrink: 0;
+      flex-basis: auto;
+      position: relative;
+      height: 29px;
+      color: #ffffff;
+      font-family: Inter, $default-font-family;
+      font-size: 24px;
+      font-weight: 400;
+      line-height: 29px;
+      text-align: left;
+      white-space: nowrap;
+      z-index: 15;
+    }
+  }
+
+  .frame-3 {
+    gap: 12px;
+    margin: 59.21px 0 0 0;
+
+    .setting-icon {
+      flex-shrink: 0;
+      position: relative;
+      width: 24px;
+      height: 24px;
+      background: url(https://codia-f2c.s3.us-west-1.amazonaws.com/image/2025-09-29/rA8hWc6OUd.png)
+        no-repeat center / cover;
+      z-index: 20;
+    }
+
+    .frame-4 {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      flex-wrap: nowrap;
+      flex-shrink: 0;
+      gap: 10px;
+      position: relative;
+      width: 117px;
+      z-index: 21;
+
+      .frame-5 {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        align-self: stretch;
+        flex-wrap: nowrap;
+        flex-shrink: 0;
+        gap: 10px;
+        position: relative;
+        min-width: 0;
+        z-index: 22;
+
+        .ajustes {
+          flex-shrink: 0;
+          flex-basis: auto;
+          position: relative;
+          height: 29px;
+          color: #ffffff;
+          font-family: Inter, $default-font-family;
+          font-size: 24px;
+          font-weight: 400;
+          line-height: 29px;
+          text-align: left;
+          white-space: nowrap;
+          z-index: 23;
+        }
+      }
+    }
+  }
+
+  .image {
+    position: relative;
+    width: 149px;
+    height: 223px;
+    margin: 121.21px 0 0 100px;
+    background: url(https://codia-f2c.s3.us-west-1.amazonaws.com/image/2025-09-29/kV4zHPsq5i.png)
+      no-repeat center / cover;
+    z-index: 30;
+  }
+
+  .user-profile {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    position: absolute;
+    height: 69px;
+    top: 46px;
+    left: 388px;
+    color: #003366;
+    font-family: Inter, $default-font-family;
+    font-size: 57.02400207519531px;
+    font-weight: 800;
+    line-height: 69px;
+    text-align: left;
+    white-space: nowrap;
+    z-index: 47;
+  }
+
+  .frame-6 {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    flex-wrap: nowrap;
+    gap: 10px;
+    position: absolute;
+    width: 235.44px;
+    height: 79.32px;
+    top: 46px;
+    left: 1127px;
+    z-index: 34;
+
+    .frame-7 {
+      align-self: stretch;
+      flex-shrink: 0;
+      position: relative;
+      min-width: 0;
+      height: 79.32px;
+      z-index: 35;
+
+      .image-8 {
+        position: absolute;
+        width: 91.2px;
+        height: 79.32px;
+        top: 0;
+        left: 0;
+        background: url(https://codia-f2c.s3.us-west-1.amazonaws.com/image/2025-09-29/fRqXESu1XP.png)
+          no-repeat center / cover;
+        z-index: 36;
+        border-radius: 291.84px;
+      }
+
+      .span-francisco {
+        display: flex;
+        align-items: flex-start;
+        justify-content: flex-start;
+        position: absolute;
+        height: 33px;
+        top: 23.16px;
+        left: 109.44px;
+        color: #000000;
+        font-family: Inter, $default-font-family;
+        font-size: 27.360000610351562px;
+        font-weight: 400;
+        line-height: 33px;
+        text-align: left;
+        white-space: nowrap;
+        z-index: 37;
+      }
+    }
+  }
+
+  .frame-9 {
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: 10px;
+    position: absolute;
+    width: 44px;
+    height: 44px;
+    top: 64px;
+    left: 1364px;
+    padding: 10px;
+    z-index: 31;
+
+    .fe-arrow-down {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      flex-wrap: nowrap;
+      flex-grow: 1;
+      flex-shrink: 0;
+      flex-basis: 0;
+      gap: 10px;
+      position: relative;
+      min-width: 0;
+      padding: 7px 4px;
+      z-index: 32;
+
+      .vector {
+        flex-shrink: 0;
+        position: relative;
+        width: 16px;
+        height: 10px;
+        background: url(https://codia-f2c.s3.us-west-1.amazonaws.com/image/2025-09-29/9igctAkuKN.png)
+          no-repeat center / cover;
+        z-index: 33;
+      }
+    }
+  }
+
+  .span-marketplace-pucv {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    position: absolute;
+    height: 30px;
+    top: 72px;
+    left: 39px;
+    color: #ffffff;
+    font-family: Inter, $default-font-family;
+    font-size: 40px;
+    font-weight: 700;
+    line-height: 30px;
+    text-align: left;
+    white-space: nowrap;
+    z-index: 1;
+  }
+
+  .frame-a {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    flex-wrap: nowrap;
+    position: absolute;
+    width: 1386px;
+    height: 58px;
+    top: 150px;
+    left: 388px;
+    z-index: 48;
+
+    .fe-arrow-down-b {
+      flex-shrink: 0;
+      position: relative;
+      width: 24px;
+      height: 24px;
+      z-index: 49;
+      overflow: hidden;
+    }
+
+    .frame-c {
+      display: flex;
+      align-items: center;
+      flex-wrap: nowrap;
+      flex-shrink: 0;
+      gap: 41px;
+      position: relative;
+      width: 380px;
+      z-index: 50;
+
+      .span-perfil,
+      .span-cuenta,
+      .span-seguridad {
+        flex-shrink: 0;
+        flex-basis: auto;
+        position: relative;
+        height: 34px;
+        color: #003366;
+        font-family: Inter, $default-font-family;
+        font-size: 28.05580711364746px;
+        line-height: 33.954px;
+        text-align: left;
+        white-space: nowrap;
+      }
+
+      .span-perfil { font-weight: 400; z-index: 51; }
+      .span-cuenta { font-weight: 300; z-index: 52; }
+      .span-seguridad { font-weight: 300; z-index: 53; }
+    }
+
+    .line {
+      flex-shrink: 0;
+      position: relative;
+      width: 997px;
+      height: 1px;
+      background: url(https://codia-f2c.s3.us-west-1.amazonaws.com/image/2025-09-29/hxi6oRGWGy.png)
+        no-repeat center / cover;
+      z-index: 54;
+    }
+
+    .line-d {
+      flex-shrink: 0;
+      position: absolute;
+      width: 71px;
+      height: 3px;
+      top: 57.5px;
+      left: -1.5px;
+      background: url(https://codia-f2c.s3.us-west-1.amazonaws.com/image/2025-09-29/7UY0xjGTf2.png)
+        no-repeat center / cover;
+      z-index: 55;
+    }
+  }
+
+  .frame-e {
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: 34.927px;
+    position: absolute;
+    width: 946.915px;
+    height: 230.644px;
+    top: 242px;
+    left: 388px;
+    z-index: 39;
+
+    .image-f {
+      flex-shrink: 0;
+      position: relative;
+      width: 265.188px;
+      height: 230.644px;
+      background: url(https://codia-f2c.s3.us-west-1.amazonaws.com/image/2025-09-29/t6P2cfcUJn.png)
+        no-repeat center / cover;
+      z-index: 40;
+      border-radius: 806.511px;
+    }
+
+    .frame-10 {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      flex-wrap: nowrap;
+      flex-shrink: 0;
+      position: relative;
+      width: 646.8px;
+      z-index: 41;
+
+      .span-francisco-castro {
+        align-self: stretch;
+        flex-shrink: 0;
+        flex-basis: auto;
+        position: relative;
+        min-width: 0;
+        height: 91.846px;
+        color: #003366;
+        font-family: Inter, $default-font-family;
+        font-size: 51.74400329589844px;
+        font-weight: 400;
+        line-height: 62.622px;
+        text-align: left;
+        white-space: nowrap;
+        z-index: 42;
+      }
+
+      .frame-11 {
+        display: flex;
+        align-items: center;
+        align-self: stretch;
+        flex-wrap: nowrap;
+        flex-shrink: 0;
+        gap: 31.046px;
+        position: relative;
+        min-width: 0;
+        z-index: 43;
+
+        .span-estudiante,
+        .span-activo,
+        .span-ingenieria-informatica {
+          flex-shrink: 0;
+          flex-basis: auto;
+          position: relative;
+          height: 38px;
+          color: #003366;
+          font-family: Inter, $default-font-family;
+          font-size: 31.046398162841797px;
+          font-weight: 400;
+          line-height: 37.573px;
+          text-align: left;
+          white-space: nowrap;
+        }
+
+        .span-estudiante { z-index: 44; }
+        .span-activo { z-index: 45; }
+        .span-ingenieria-informatica { z-index: 46; }
+      }
+    }
+  }
+
+  .frame-12 {
+    gap: 22px;
+    position: absolute;
+    top: 342px;
+    left: -10px;
+
+    .lets-icons-order {
+      flex-shrink: 0;
+      position: relative;
+      width: 40.08px;
+      height: 40.08px;
+      background: rgba(255, 255, 255, 0);
+      z-index: 10;
+
+      .group-13 {
+        position: relative;
+        width: 23.38px;
+        height: 28.39px;
+        margin: 6.145px 0 0 7.72px;
+        background: url(https://codia-f2c.s3.us-west-1.amazonaws.com/image/2025-09-29/tQt7CQz424.png)
+          no-repeat center / 100% 100%;
+        z-index: 11;
+      }
+    }
+
+    .span-pedidos {
+      flex-shrink: 0;
+      flex-basis: auto;
+      position: relative;
+      height: 29px;
+      color: #ffffff;
+      font-family: Inter, $default-font-family;
+      font-size: 24px;
+      font-weight: 400;
+      line-height: 29px;
+      text-align: left;
+      white-space: nowrap;
+      z-index: 12;
+    }
+  }
+
+  .frame-14 {
+    gap: 22px;
+    position: absolute;
+    top: 462px;
+    left: -4px;
+
+    .material-symbols-favorite-outline {
+      flex-shrink: 0;
+      position: relative;
+      width: 40.08px;
+      height: 40.08px;
+      background: url(https://codia-f2c.s3.us-west-1.amazonaws.com/image/2025-09-29/WrLh5kCTBQ.png)
+        no-repeat center / cover;
+      z-index: 17;
+    }
+
+    .span-favoritos {
+      flex-shrink: 0;
+      flex-basis: auto;
+      position: relative;
+      height: 29px;
+      color: #ffffff;
+      font-family: Inter, $default-font-family;
+      font-size: 24px;
+      font-weight: 400;
+      line-height: 29px;
+      text-align: left;
+      white-space: nowrap;
+      z-index: 18;
+    }
+  }
+
+  .section-15,
+  .section-1a,
+  .section-21,
+  .section-24 {
+    position: absolute;
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+  }
+
+  .section-15 {
+    width: 476px;
+    height: 225px;
+    z-index: 56;
+
+    .flex-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+      width: 423px;
+      height: 33px;
+      margin: 32px 0 0 35px;
+      z-index: 71;
+
+      .span-informacion-personal {
+        flex-shrink: 0;
+        position: relative;
+        height: 33px;
+        color: #777777;
+        font-family: Inter, $default-font-family;
+        font-size: 27.360000610351562px;
+        font-weight: 600;
+        line-height: 33px;
+        text-align: left;
+        white-space: nowrap;
+        z-index: 57;
+      }
+
+      .ic-baseline-edit {
+        flex-shrink: 0;
+        position: relative;
+        width: 24px;
+        height: 24px;
+        background: url(https://codia-f2c.s3.us-west-1.amazonaws.com/image/2025-09-29/g8GxopPKsp.png)
+          no-repeat center / cover;
+        z-index: 71;
+      }
+    }
+
+    .flex-row-cb {
+      position: relative;
+      width: 440px;
+      height: 45px;
+      margin: 27px 0 0 35px;
+      z-index: 63;
+
+      .genero {
+        display: flex;
+        align-items: flex-start;
+        justify-content: flex-start;
+        position: absolute;
+        height: 24px;
+        top: 0;
+        left: 0;
+        color: #777777;
+        font-family: Inter, $default-font-family;
+        font-size: 20px;
+        font-weight: 400;
+        line-height: 24px;
+        text-align: left;
+        white-space: nowrap;
+        z-index: 61;
+      }
+
+      .frame-16 {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: nowrap;
+        gap: 10px;
+        position: absolute;
+        width: 137px;
+        height: 36px;
+        top: 9px;
+        left: 303px;
+        padding: 10px;
+        z-index: 63;
+
+        .noviembre {
+          flex-shrink: 0;
+          flex-basis: auto;
+          position: relative;
+          height: 16px;
+          color: #000000;
+          font-family: Inter, $default-font-family;
+          font-size: 13px;
+          font-weight: 500;
+          line-height: 15.733px;
+          text-align: left;
+          white-space: nowrap;
+          z-index: 64;
+        }
+      }
+
+      .masculino {
+        display: flex;
+        align-items: flex-start;
+        justify-content: flex-start;
+        position: absolute;
+        height: 16px;
+        top: 22px;
+        left: 2px;
+        color: #212121;
+        font-family: Inter, $default-font-family;
+        font-size: 13px;
+        font-weight: 500;
+        line-height: 15.733px;
+        text-align: left;
+        white-space: nowrap;
+        z-index: 62;
+      }
+    }
+
+    .flex-row-df {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+      width: 433px;
+      height: 48px;
+      margin: 21px 0 0 35px;
+      z-index: 68;
+
+      .frame-17,
+      .frame-18 {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        flex-wrap: nowrap;
+        flex-shrink: 0;
+        gap: 8px;
+        position: relative;
+        width: 209px;
+
+        .numero-de-telefono,
+        .numero-de-telefono-19 {
+          align-self: stretch;
+          flex-shrink: 0;
+          flex-basis: auto;
+          position: relative;
+          min-width: 0;
+          height: 24px;
+          color: #777777;
+          font-family: Inter, $default-font-family;
+          font-size: 20px;
+          font-weight: 400;
+          line-height: 24px;
+          text-align: left;
+          white-space: nowrap;
+        }
+
+        .telefono-1,
+        .telefono-2 {
+          align-self: stretch;
+          flex-shrink: 0;
+          flex-basis: auto;
+          position: relative;
+          min-width: 0;
+          height: 16px;
+          color: #000000;
+          font-family: Inter, $default-font-family;
+          font-size: 13px;
+          font-weight: 500;
+          line-height: 15.733px;
+          text-align: left;
+          white-space: nowrap;
+        }
+      }
+    }
+  }
+
+  .section-1a {
+    width: 459px;
+    height: 225px;
+    z-index: 72;
+
+    .flex-column-dd {
+      position: absolute;
+      width: 224px;
+      height: 85px;
+      top: 30px;
+      left: 9px;
+      font-size: 0;
+      z-index: 75;
+
+      .direccion {
+        display: block;
+        position: relative;
+        height: 33px;
+        color: #777777;
+        font-family: Inter, $default-font-family;
+        font-size: 27.360000610351562px;
+        font-weight: 600;
+        line-height: 33px;
+        text-align: left;
+        white-space: nowrap;
+        z-index: 73;
+        margin: 0;
+      }
+
+      .limache,
+      .limache-1b {
+        display: block;
+        position: relative;
+        height: 16px;
+        color: #000000;
+        font-family: Inter, $default-font-family;
+        font-size: 13px;
+        font-weight: 500;
+        line-height: 15.733px;
+        text-align: left;
+        white-space: nowrap;
+        z-index: 74;
+
+        &:first-of-type { margin: 14px 0 0 0; }
+        &:last-of-type { margin: 6px 0 0 0; }
+      }
+    }
+
+    .baseline-edit {
+      position: absolute;
+      width: 24px;
+      height: 24px;
+      top: 35px;
+      left: 411px;
+      background: url(https://codia-f2c.s3.us-west-1.amazonaws.com/image/2025-09-29/s85SepcxLP.png)
+        no-repeat center / cover;
+      z-index: 76;
+    }
+  }
+
+  .frame-1c {
+    gap: -11px;
+    position: absolute;
+    top: 591px;
+    left: -19px;
+
+    .vector-1d {
+      flex-shrink: 0;
+      position: relative;
+      width: 40.08px;
+      height: 40.08px;
+      background: url(https://codia-f2c.s3.us-west-1.amazonaws.com/image/2025-09-29/OuCuRpVmHf.png)
+        no-repeat center / cover;
+      z-index: 25;
+    }
+
+    .frame-1e {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      flex-wrap: nowrap;
+      flex-shrink: 0;
+      gap: 10px;
+      position: relative;
+      width: 117px;
+      z-index: 26;
+
+      .frame-1f {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        align-self: stretch;
+        flex-wrap: nowrap;
+        flex-shrink: 0;
+        gap: 10px;
+        position: relative;
+        min-width: 0;
+        z-index: 27;
+
+        .material-symbols-help-outline {
+          flex-shrink: 0;
+          position: relative;
+          width: 24px;
+          height: 24px;
+          z-index: 28;
+        }
+
+        .ayuda {
+          flex-shrink: 0;
+          flex-basis: auto;
+          position: relative;
+          height: 29px;
+          color: #ffffff;
+          font-family: Inter, $default-font-family;
+          font-size: 24px;
+          font-weight: 400;
+          line-height: 29px;
+          text-align: left;
+          white-space: nowrap;
+          z-index: 29;
+        }
+      }
+    }
+  }
+
+  .frame-20 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: nowrap;
+    gap: 10px;
+    position: absolute;
+    width: 216px;
+    height: 44px;
+    top: 636px;
+    left: 651px;
+    padding: 10px;
+    z-index: 59;
+
+    .fecha-de-nacimiento {
+      flex-shrink: 0;
+      flex-basis: auto;
+      position: relative;
+      height: 24px;
+      color: #777777;
+      font-family: Inter, $default-font-family;
+      font-size: 20px;
+      font-weight: 400;
+      line-height: 24px;
+      text-align: left;
+      white-space: nowrap;
+      z-index: 60;
+    }
+  }
+
+  .section-21 {
+    width: 476px;
+    height: 118px;
+    z-index: 83;
+
+    .flex-row-aff {
+      position: relative;
+      width: 420px;
+      height: 33px;
+      margin: 19px 0 0 32px;
+      z-index: 86;
+
+      .direccion-22 {
+        display: flex;
+        align-items: flex-start;
+        justify-content: flex-start;
+        position: absolute;
+        height: 33px;
+        top: 0;
+        left: 0;
+        color: #777777;
+        font-family: Inter, $default-font-family;
+        font-size: 27.360000610351562px;
+        font-weight: 600;
+        line-height: 33px;
+        text-align: left;
+        white-space: nowrap;
+        z-index: 84;
+      }
+
+      .ic-baseline-edit-23 {
+        position: absolute;
+        width: 24px;
+        height: 24px;
+        top: 0;
+        left: 396px;
+        background: url(https://codia-f2c.s3.us-west-1.amazonaws.com/image/2025-09-29/eMDjrDWRbq.png)
+          no-repeat center / cover;
+        z-index: 86;
+      }
+    }
+
+    .limache-v-region {
+      display: block;
+      position: relative;
+      height: 16px;
+      margin: 8px 0 0 32px;
+      color: #000000;
+      font-family: Inter, $default-font-family;
+      font-size: 13px;
+      font-weight: 500;
+      line-height: 15.733px;
+      text-align: left;
+      white-space: nowrap;
+      z-index: 85;
+    }
+  }
+
+  .section-24 {
+    width: 459px;
+    height: 118px;
+    z-index: 77;
+
+    .ic-baseline-edit-25 {
+      position: absolute;
+      width: 24px;
+      height: 24px;
+      top: 10px;
+      left: 413px;
+      background: url(https://codia-f2c.s3.us-west-1.amazonaws.com/image/2025-09-29/ywArO69WvG.png)
+        no-repeat center / cover;
+      z-index: 82;
+    }
+
+    .informacion-de-la-cuenta {
+      display: flex;
+      align-items: flex-start;
+      justify-content: flex-start;
+      position: absolute;
+      height: 33px;
+      top: 15px;
+      left: 6px;
+      color: #777777;
+      font-family: Inter, $default-font-family;
+      font-size: 27.360000610351562px;
+      font-weight: 600;
+      line-height: 33px;
+      text-align: left;
+      white-space: nowrap;
+      z-index: 78;
+    }
+
+    .frame-26 {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: nowrap;
+      gap: 10px;
+      position: absolute;
+      width: 557px;
+      height: 120px;
+      top: 872px;
+      left: 902px;
+      padding: 10px;
+      z-index: 79;
+
+      .frame-27 {
+        flex-shrink: 0;
+        position: relative;
+        width: 100px;
+        height: 100px;
+        z-index: 80;
+        overflow: hidden;
+      }
+
+      .correo-electronico-watyusei-gmail-com {
+        flex-shrink: 0;
+        flex-basis: auto;
+        position: relative;
+        height: 24px;
+        color: #000000;
+        font-family: Inter, $default-font-family;
+        font-size: 20px;
+        font-weight: 500;
+        line-height: 24px;
+        text-align: left;
+        white-space: nowrap;
+        z-index: 81;
+      }
+    }
+  }
+}
