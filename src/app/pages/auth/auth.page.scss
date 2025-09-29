@@ -1,0 +1,53 @@
+:host {
+  --auth-bg-size: 30%; // ajusta a 25% o 35% según lo chico que quieras el logo
+}
+
+ion-content {
+  --background:
+    linear-gradient(180deg, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.25)),
+    url("/assets/auth-bg.png") center center / var(--auth-bg-size) no-repeat
+      fixed,
+    #f0f0f0;
+  --ion-background-color: transparent;
+  position: relative;
+}
+
+/* Tarjeta semi-transparente, efecto glass */
+ion-card {
+  max-width: 520px;
+  margin: 16px auto;
+  background: rgba(255, 255, 255, 0.85);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+}
+
+ion-card-title {
+  font-weight: 700;
+}
+
+.actions {
+  margin-top: 12px;
+}
+
+ion-segment {
+  margin-bottom: 8px;
+  background: rgba(255, 255, 255, 0.75);
+  border-radius: 12px;
+  padding: 4px;
+}
+
+/* Responsive: cambia tamaño del logo y layout */
+@media (min-width: 768px) {
+  :host {
+    --auth-bg-size: 35%;
+  }
+  ion-card {
+    margin: 24px auto;
+  }
+  ion-segment {
+    max-width: 520px;
+    margin: 16px auto 8px;
+  }
+}

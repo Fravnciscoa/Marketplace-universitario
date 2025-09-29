@@ -15,13 +15,8 @@ import { Router } from '@angular/router';
   selector: 'app-auth',
   standalone: true,
   imports: [IonicModule, CommonModule, ReactiveFormsModule],
+  // mantenemos template inline para cambios atómicos
   template: `
-    <ion-header>
-      <ion-toolbar color="primary">
-        <ion-title>Auth</ion-title>
-      </ion-toolbar>
-    </ion-header>
-
     <ion-content class="ion-padding">
       <!-- Conmutador Login / Registro -->
       <ion-segment [value]="mode()" (ionChange)="onModeChange($event)">
@@ -222,20 +217,8 @@ import { Router } from '@angular/router';
       </ng-container>
     </ion-content>
   `,
-  styles: [
-    `
-      .actions {
-        margin-top: 12px;
-      }
-      ion-card {
-        max-width: 520px;
-        margin: 16px auto;
-      }
-      ion-note {
-        margin-left: 16px;
-      }
-    `,
-  ],
+  // 👉 estilos ahora en archivo SCSS separado
+  styleUrls: ['./auth.page.scss'],
 })
 export class AuthPage {
   mode = signal<'login' | 'register'>('login');
