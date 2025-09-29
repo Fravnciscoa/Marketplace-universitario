@@ -1,19 +1,15 @@
-import { Component } from '@angular/core';
+import { Component, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-
-// Ionic standalone imports según tu template:
 import {
+  IonContent,
   IonHeader,
   IonToolbar,
   IonTitle,
-  IonContent,
-  IonSearchbar,
+  IonButtons,
   IonButton,
-  IonSegment,
-  IonSegmentButton,
-  IonLabel,
-  IonInput,
+  IonIcon,
+  IonSearchbar,
   IonGrid,
   IonRow,
   IonCol,
@@ -22,38 +18,59 @@ import {
   IonCardTitle,
   IonCardSubtitle,
   IonCardContent,
+  IonLabel,
+  IonSegment,
+  IonSegmentButton,
+  IonInput,
+  IonItem,
+  IonList,
+  IonCheckbox,
+  IonRange,
 } from '@ionic/angular/standalone';
+import { addIcons } from 'ionicons';
+import {
+  searchOutline,
+  funnelOutline,
+  pricetagOutline,
+  logInOutline,
+  personAddOutline,
+} from 'ionicons/icons';
 
 type Estado = 'todos' | 'venta' | 'intercambio' | 'prestamo';
+type Categoria = 'Libros' | 'Electrónica' | 'Deportes';
 
 interface Producto {
   id: number;
   titulo: string;
-  precio: number; // CLP
+  precio: number; // 0 = Gratis
   estado: Exclude<Estado, 'todos'>;
-  categoria: 'Libros' | 'Electrónica' | 'Deportes' | 'Otros';
-  campus: 'Isabel Brown Caces' | 'Casa Central' | 'Curauma';
-  img?: string;
+  categoria: Categoria;
+  campus: 'Isabel Brown Cases' | 'Casa Central' | 'Curauma';
+  img: string; // ruta en /assets
 }
+
+addIcons({
+  searchOutline,
+  funnelOutline,
+  pricetagOutline,
+  logInOutline,
+  personAddOutline,
+});
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  templateUrl: './home.page.html',
-  styleUrls: ['./home.page.scss'],
   imports: [
     CommonModule,
     FormsModule,
+    IonContent,
     IonHeader,
     IonToolbar,
     IonTitle,
-    IonContent,
-    IonSearchbar,
+    IonButtons,
     IonButton,
-    IonSegment,
-    IonSegmentButton,
-    IonLabel,
-    IonInput,
+    IonIcon,
+    IonSearchbar,
     IonGrid,
     IonRow,
     IonCol,
@@ -62,116 +79,112 @@ interface Producto {
     IonCardTitle,
     IonCardSubtitle,
     IonCardContent,
+    IonLabel,
+    IonSegment,
+    IonSegmentButton,
+    IonInput,
+    IonItem,
+    IonList,
+    IonCheckbox,
+    IonRange,
   ],
+  templateUrl: './home.page.html',
+  styleUrls: ['./home.page.scss'],
 })
 export class HomePage {
-  // ------- Estado UI -------
-  estadoSel: Estado = 'todos';
-  searchTerm = '';
-  minPrecio = 0;
-  maxPrecio = 500_000;
+  // --- Estado UI ---
+  q = signal<string>('');
+  estadoSel = signal<Estado>('todos');
+  minPrecio = signal<number>(0);
+  maxPrecio = signal<number>(500000);
 
-  // ------- Datos demo (reemplaza por tu servicio/API) -------
-  private productos: Producto[] = [
+  cats = signal<Record<Categoria, boolean>>({
+    Libros: true,
+    Electrónica: true,
+    Deportes: true,
+  });
+
+  campus = signal<Record<string, boolean>>({
+    'Isabel Brown Cases': true,
+    'Casa Central': true,
+    Curauma: true,
+  });
+
+  // --- Datos demo (reemplaza por tu fetch) ---
+  productos = signal<Producto[]>([
     {
       id: 1,
       titulo: 'Calculadora',
-      precio: 10_000,
+      precio: 10000,
       estado: 'venta',
       categoria: 'Electrónica',
       campus: 'Casa Central',
-      img: 'src\assets\demo\calculadora.jpegs/img/demo/calculadora.jpg',
+      img: 'assets/demo/calculadora.jpg',
     },
     {
       id: 2,
       titulo: 'Lógica de programación',
-      precio: 5_000,
+      precio: 5000,
       estado: 'venta',
       categoria: 'Libros',
       campus: 'Curauma',
-      img: 'assets/img/demo/libro-logica.jpg',
+      img: 'assets/demo/libro.jpg',
     },
     {
       id: 3,
       titulo: 'Bicicleta usada',
-      precio: 100_000,
+      precio: 100000,
       estado: 'venta',
       categoria: 'Deportes',
-      campus: 'Isabel Brown Caces',
-      img: 'assets/img/demo/bici.jpg',
+      campus: 'Isabel Brown Cases',
+      img: 'assets/demo/bici.jpg',
     },
     {
       id: 4,
       titulo: 'Mochila',
-      precio: 20_000,
+      precio: 20000,
       estado: 'venta',
-      categoria: 'Otros',
-      campus: 'Casa Central',
-      img: 'assets/img/demo/mochila.jpg',
-    },
-    {
-      id: 5,
-      titulo: 'Kit Carpintería',
-      precio: 8_000,
-      estado: 'intercambio',
-      categoria: 'Otros',
-      campus: 'Curauma',
-      img: 'assets/img/demo/kit.jpg',
-    },
-    {
-      id: 6,
-      titulo: 'Póster Cohete',
-      precio: 7_000,
-      estado: 'venta',
-      categoria: 'Otros',
-      campus: 'Casa Central',
-      img: 'assets/img/demo/cohete.jpg',
-    },
-    {
-      id: 7,
-      titulo: 'Kayak',
-      precio: 120_000,
-      estado: 'prestamo',
       categoria: 'Deportes',
-      campus: 'Isabel Brown Caces',
-      img: 'assets/img/demo/kayak.jpg',
+      campus: 'Casa Central',
+      img: 'assets/demo/mochila.jpg',
     },
-  ];
+  ]);
 
-  // ------- Derivado (se recalcula al leer) -------
-  get visibles(): Producto[] {
-    const term = this.searchTerm.trim().toLowerCase();
-    const est = this.estadoSel;
-    const min = Number.isFinite(this.minPrecio) ? this.minPrecio : 0;
-    const max =
-      Number.isFinite(this.maxPrecio) && this.maxPrecio > 0
-        ? this.maxPrecio
-        : Number.MAX_SAFE_INTEGER;
-
-    return this.productos.filter((p) => {
-      const okTerm = !term || p.titulo.toLowerCase().includes(term);
-      const okEstado = est === 'todos' || p.estado === est;
-      const okPrecio = p.precio >= min && p.precio <= max;
-      return okTerm && okEstado && okPrecio;
+  // --- Filtro computado ---
+  visibles = computed(() => {
+    const q = this.q().trim().toLowerCase();
+    const est = this.estadoSel();
+    const min = this.minPrecio();
+    const max = this.maxPrecio();
+    const okCat = this.cats();
+    const okCampus = this.campus();
+    return this.productos().filter((p) => {
+      const byQ = !q || p.titulo.toLowerCase().includes(q);
+      const byE = est === 'todos' ? true : p.estado === est;
+      const byP = p.precio >= min && p.precio <= max;
+      const byC = okCat[p.categoria];
+      const byCampus = okCampus[p.campus];
+      return byQ && byE && byP && byC && byCampus;
     });
-  }
+  });
 
-  // ------- Handlers -------
-  onSearch(ev: any) {
-    this.searchTerm = ev?.detail?.value ?? '';
+  // --- Handlers ---
+  onSearch(ev: CustomEvent) {
+    this.q.set((ev.detail as any).value || '');
   }
-
-  onEstadoChange(ev: any) {
-    const val = (ev?.detail?.value ?? 'todos') as string;
-    const allowed: Estado[] = ['todos', 'venta', 'intercambio', 'prestamo'];
-    this.estadoSel = (allowed as string[]).includes(val)
-      ? (val as Estado)
-      : 'todos';
+  onEstadoChange(ev: CustomEvent) {
+    this.estadoSel.set((ev.detail as any).value as Estado);
   }
-
-  onPrecioChange() {
-    // No hace nada más: el getter `visibles` ya usa min/max y se re-renderiza.
+  onPrecioRange(ev: CustomEvent) {
+    const { lower, upper } = (ev.detail as any).value ?? {};
+    if (typeof lower === 'number') this.minPrecio.set(lower);
+    if (typeof upper === 'number') this.maxPrecio.set(upper);
   }
-
+  toggleCat(k: Categoria, checked: boolean) {
+    this.cats.set({ ...this.cats(), [k]: checked });
+  }
+  toggleCampus(k: keyof HomePage['campus']['prototype'], checked: boolean) {
+    this.campus.set({ ...this.campus(), [k]: checked });
+  }
   trackById = (_: number, p: Producto) => p.id;
 }
