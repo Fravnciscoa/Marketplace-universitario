@@ -15,209 +15,225 @@ import { Router } from '@angular/router';
   selector: 'app-auth',
   standalone: true,
   imports: [IonicModule, CommonModule, ReactiveFormsModule],
-  // mantenemos template inline para cambios atómicos
   template: `
     <ion-content class="ion-padding">
-      <!-- Conmutador Login / Registro -->
-      <ion-segment [value]="mode()" (ionChange)="onModeChange($event)">
-        <ion-segment-button value="login">
-          <ion-label>Iniciar sesión</ion-label>
-        </ion-segment-button>
-        <ion-segment-button value="register">
-          <ion-label>Registrarme</ion-label>
-        </ion-segment-button>
-      </ion-segment>
+      <div class="auth-wrap">
+        <!-- Tabs arriba (no centradas verticalmente) -->
+        <ion-segment [value]="mode()" (ionChange)="onModeChange($event)">
+          <ion-segment-button value="login">
+            <ion-label>Iniciar sesión</ion-label>
+          </ion-segment-button>
+          <ion-segment-button value="register">
+            <ion-label>Registrarme</ion-label>
+          </ion-segment-button>
+        </ion-segment>
 
-      <!-- LOGIN -->
-      <ng-container *ngIf="mode() === 'login'">
-        <ion-card>
-          <ion-card-header>
-            <ion-card-title>Acceso</ion-card-title>
-          </ion-card-header>
-          <ion-card-content>
-            <form [formGroup]="loginForm" (ngSubmit)="submitLogin()">
-              <ion-list>
-                <ion-item>
-                  <ion-label position="stacked"
-                    >Usuario / RUT / Correo</ion-label
-                  >
-                  <ion-input
-                    formControlName="identifier"
-                    placeholder="tucorreo@dominio.cl"
-                  ></ion-input>
-                </ion-item>
-                <ion-note
-                  color="danger"
-                  *ngIf="invalid(loginForm, 'identifier')"
-                >
-                  Campo requerido (mín. 3 caracteres).
-                </ion-note>
+        <!-- SOLO el formulario centrado -->
+        <div class="form-wrap">
+          <!-- LOGIN -->
+          <ng-container *ngIf="mode() === 'login'">
+            <ion-card>
+              <ion-card-header>
+                <ion-card-title>Acceso</ion-card-title>
+              </ion-card-header>
+              <ion-card-content>
+                <form [formGroup]="loginForm" (ngSubmit)="submitLogin()">
+                  <ion-list>
+                    <ion-item>
+                      <ion-label position="stacked"
+                        >Usuario / RUT / Correo</ion-label
+                      >
+                      <ion-input
+                        formControlName="identifier"
+                        placeholder="tucorreo@dominio.cl"
+                      ></ion-input>
+                    </ion-item>
+                    <ion-note
+                      color="danger"
+                      *ngIf="invalid(loginForm, 'identifier')"
+                    >
+                      Campo requerido (mín. 3 caracteres).
+                    </ion-note>
 
-                <ion-item>
-                  <ion-label position="stacked">Contraseña</ion-label>
-                  <ion-input
-                    type="password"
-                    formControlName="password"
-                    placeholder="********"
-                  ></ion-input>
-                </ion-item>
-                <ion-note color="danger" *ngIf="invalid(loginForm, 'password')">
-                  Requerida (mín. 6 caracteres).
-                </ion-note>
-              </ion-list>
+                    <ion-item>
+                      <ion-label position="stacked">Contraseña</ion-label>
+                      <ion-input
+                        type="password"
+                        formControlName="password"
+                        placeholder="********"
+                      ></ion-input>
+                    </ion-item>
+                    <ion-note
+                      color="danger"
+                      *ngIf="invalid(loginForm, 'password')"
+                    >
+                      Requerida (mín. 6 caracteres).
+                    </ion-note>
+                  </ion-list>
 
-              <div class="actions">
-                <ion-button
-                  type="submit"
-                  expand="block"
-                  [disabled]="loginForm.invalid"
-                >
-                  Iniciar sesión
-                </ion-button>
-              </div>
-            </form>
-          </ion-card-content>
-        </ion-card>
-      </ng-container>
+                  <div class="actions">
+                    <ion-button
+                      type="submit"
+                      expand="block"
+                      [disabled]="loginForm.invalid"
+                    >
+                      Iniciar sesión
+                    </ion-button>
+                  </div>
+                </form>
+              </ion-card-content>
+            </ion-card>
+          </ng-container>
 
-      <!-- REGISTRO -->
-      <ng-container *ngIf="mode() === 'register'">
-        <ion-card>
-          <ion-card-header>
-            <ion-card-title>Crear cuenta</ion-card-title>
-          </ion-card-header>
-          <ion-card-content>
-            <form [formGroup]="registerForm" (ngSubmit)="submitRegister()">
-              <ion-list>
-                <ion-item>
-                  <ion-label position="stacked">Usuario</ion-label>
-                  <ion-input
-                    formControlName="username"
-                    placeholder="Ej: sebastian"
-                  ></ion-input>
-                </ion-item>
-                <ion-note
-                  color="danger"
-                  *ngIf="invalid(registerForm, 'username')"
-                >
-                  Requerido (mín. 3 caracteres).
-                </ion-note>
+          <!-- REGISTRO -->
+          <ng-container *ngIf="mode() === 'register'">
+            <ion-card>
+              <ion-card-header>
+                <ion-card-title>Crear cuenta</ion-card-title>
+              </ion-card-header>
+              <ion-card-content>
+                <form [formGroup]="registerForm" (ngSubmit)="submitRegister()">
+                  <ion-list>
+                    <ion-item>
+                      <ion-label position="stacked">Usuario</ion-label>
+                      <ion-input
+                        formControlName="username"
+                        placeholder="Ej: sebastian"
+                      ></ion-input>
+                    </ion-item>
+                    <ion-note
+                      color="danger"
+                      *ngIf="invalid(registerForm, 'username')"
+                    >
+                      Requerido (mín. 3 caracteres).
+                    </ion-note>
 
-                <ion-item>
-                  <ion-label position="stacked">RUT</ion-label>
-                  <ion-input
-                    formControlName="rut"
-                    placeholder="12.345.678-5"
-                  ></ion-input>
-                </ion-item>
-                <ion-note color="danger" *ngIf="invalid(registerForm, 'rut')">
-                  Formato RUT plausible: 12.345.678-5 o 12345678-5.
-                </ion-note>
+                    <ion-item>
+                      <ion-label position="stacked">RUT</ion-label>
+                      <ion-input
+                        formControlName="rut"
+                        placeholder="12.345.678-5"
+                      ></ion-input>
+                    </ion-item>
+                    <ion-note
+                      color="danger"
+                      *ngIf="invalid(registerForm, 'rut')"
+                    >
+                      Formato RUT plausible: 12.345.678-5 o 12345678-5.
+                    </ion-note>
 
-                <ion-item>
-                  <ion-label position="stacked">Correo</ion-label>
-                  <ion-input
-                    formControlName="email"
-                    type="email"
-                    placeholder="correo@dominio.cl"
-                  ></ion-input>
-                </ion-item>
-                <ion-note color="danger" *ngIf="invalid(registerForm, 'email')">
-                  Correo inválido.
-                </ion-note>
+                    <ion-item>
+                      <ion-label position="stacked">Correo</ion-label>
+                      <ion-input
+                        formControlName="email"
+                        type="email"
+                        placeholder="correo@dominio.cl"
+                      ></ion-input>
+                    </ion-item>
+                    <ion-note
+                      color="danger"
+                      *ngIf="invalid(registerForm, 'email')"
+                    >
+                      Correo inválido.
+                    </ion-note>
 
-                <ion-item>
-                  <ion-label position="stacked">Región</ion-label>
-                  <ion-input
-                    formControlName="region"
-                    placeholder="Valparaíso"
-                  ></ion-input>
-                </ion-item>
-                <ion-note
-                  color="danger"
-                  *ngIf="invalid(registerForm, 'region')"
-                >
-                  Requerida.
-                </ion-note>
+                    <ion-item>
+                      <ion-label position="stacked">Región</ion-label>
+                      <ion-input
+                        formControlName="region"
+                        placeholder="Valparaíso"
+                      ></ion-input>
+                    </ion-item>
+                    <ion-note
+                      color="danger"
+                      *ngIf="invalid(registerForm, 'region')"
+                    >
+                      Requerida.
+                    </ion-note>
 
-                <ion-item>
-                  <ion-label position="stacked">Comuna</ion-label>
-                  <ion-input
-                    formControlName="comuna"
-                    placeholder="Limache"
-                  ></ion-input>
-                </ion-item>
-                <ion-note
-                  color="danger"
-                  *ngIf="invalid(registerForm, 'comuna')"
-                >
-                  Requerida.
-                </ion-note>
+                    <ion-item>
+                      <ion-label position="stacked">Comuna</ion-label>
+                      <ion-input
+                        formControlName="comuna"
+                        placeholder="Limache"
+                      ></ion-input>
+                    </ion-item>
+                    <ion-note
+                      color="danger"
+                      *ngIf="invalid(registerForm, 'comuna')"
+                    >
+                      Requerida.
+                    </ion-note>
 
-                <ion-item>
-                  <ion-label position="stacked">Contraseña</ion-label>
-                  <ion-input
-                    type="password"
-                    formControlName="password"
-                    placeholder="********"
-                  ></ion-input>
-                </ion-item>
-                <ion-note
-                  color="danger"
-                  *ngIf="invalid(registerForm, 'password')"
-                >
-                  Requerida (mín. 6 caracteres).
-                </ion-note>
+                    <ion-item>
+                      <ion-label position="stacked">Contraseña</ion-label>
+                      <ion-input
+                        type="password"
+                        formControlName="password"
+                        placeholder="********"
+                      ></ion-input>
+                    </ion-item>
+                    <ion-note
+                      color="danger"
+                      *ngIf="invalid(registerForm, 'password')"
+                    >
+                      Requerida (mín. 6 caracteres).
+                    </ion-note>
 
-                <ion-item>
-                  <ion-label position="stacked">Confirmar contraseña</ion-label>
-                  <ion-input
-                    type="password"
-                    formControlName="confirm"
-                    placeholder="********"
-                  ></ion-input>
-                </ion-item>
-                <ion-note
-                  color="danger"
-                  *ngIf="
-                    registerForm.hasError('passwordMismatch') &&
-                    (registerForm.touched || registerForm.dirty)
-                  "
-                >
-                  Las contraseñas no coinciden.
-                </ion-note>
+                    <ion-item>
+                      <ion-label position="stacked"
+                        >Confirmar contraseña</ion-label
+                      >
+                      <ion-input
+                        type="password"
+                        formControlName="confirm"
+                        placeholder="********"
+                      ></ion-input>
+                    </ion-item>
+                    <ion-note
+                      color="danger"
+                      *ngIf="
+                        registerForm.hasError('passwordMismatch') &&
+                        (registerForm.touched || registerForm.dirty)
+                      "
+                    >
+                      Las contraseñas no coinciden.
+                    </ion-note>
 
-                <ion-item lines="none">
-                  <ion-checkbox
-                    formControlName="acceptTerms"
-                    slot="start"
-                  ></ion-checkbox>
-                  <ion-label>Acepto los términos y condiciones</ion-label>
-                </ion-item>
-                <ion-note
-                  color="danger"
-                  *ngIf="invalid(registerForm, 'acceptTerms')"
-                >
-                  Debes aceptar los T&C.
-                </ion-note>
-              </ion-list>
+                    <ion-item lines="none">
+                      <ion-checkbox
+                        formControlName="acceptTerms"
+                        slot="start"
+                      ></ion-checkbox>
+                      <ion-label>Acepto los términos y condiciones</ion-label>
+                    </ion-item>
+                    <ion-note
+                      color="danger"
+                      *ngIf="invalid(registerForm, 'acceptTerms')"
+                    >
+                      Debes aceptar los T&C.
+                    </ion-note>
+                  </ion-list>
 
-              <div class="actions">
-                <ion-button
-                  type="submit"
-                  expand="block"
-                  [disabled]="registerForm.invalid"
-                >
-                  Registrarme
-                </ion-button>
-              </div>
-            </form>
-          </ion-card-content>
-        </ion-card>
-      </ng-container>
+                  <div class="actions">
+                    <ion-button
+                      type="submit"
+                      expand="block"
+                      [disabled]="registerForm.invalid"
+                    >
+                      Registrarme
+                    </ion-button>
+                  </div>
+                </form>
+              </ion-card-content>
+            </ion-card>
+          </ng-container>
+        </div>
+        <!-- /form-wrap -->
+      </div>
+      <!-- /auth-wrap -->
     </ion-content>
   `,
-  // 👉 estilos ahora en archivo SCSS separado
   styleUrls: ['./auth.page.scss'],
 })
 export class AuthPage {
@@ -259,8 +275,7 @@ export class AuthPage {
   // ---- VALIDADORES ----
   rutValidator(control: AbstractControl): ValidationErrors | null {
     const v = (control.value || '').toString().trim();
-    // Formato plausible (no valida dígito verificador a fondo)
-    const re = /^(\d{1,2}\.?\d{3}\.?\d{3})-([\dkK])$/;
+    const re = /^(\d{1,2}\.?\d{3}\.?\d{3})-([\dkK])$/; // plausible
     return v === '' || re.test(v) ? null : { rutFormat: true };
   }
 

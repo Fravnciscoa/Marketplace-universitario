@@ -1,53 +1,135 @@
 :host {
-  --auth-bg-size: 30%; // ajusta a 25% o 35% según lo chico que quieras el logo
+  --auth-bg-size: 30%; /* tamaño del logo de fondo */
+  --brand-color: #003366; /* color principal */
+  --brand-contrast: #ffffff;
 }
 
+/* Fondo con esquinas + degradado + logo + respaldo */
 ion-content {
+  --corner-size: 120px; /* tamaño de las “alas” de esquina */
+
   --background:
-    linear-gradient(180deg, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.25)),
-    url("/assets/auth-bg.png") center center / var(--auth-bg-size) no-repeat
-      fixed,
-    #f0f0f0;
+    /* 4 esquinas (alas), usando color de marca */
+    radial-gradient(
+      var(--corner-size) var(--corner-size) at 0 0,
+      var(--brand-color) 0 74%,
+      transparent 75%
+    ),
+    radial-gradient(
+      var(--corner-size) var(--corner-size) at 100% 0,
+      var(--brand-color) 0 74%,
+      transparent 75%
+    ),
+    radial-gradient(
+      var(--corner-size) var(--corner-size) at 0 100%,
+      var(--brand-color) 0 74%,
+      transparent 75%
+    ),
+    radial-gradient(
+      var(--corner-size) var(--corner-size) at 100% 100%,
+      var(--brand-color) 0 74%,
+      transparent 75%
+    ),
+    /* capa de oscurecimiento suave para legibilidad */
+      linear-gradient(180deg, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.25)),
+    /* logo centrado */ url("/assets/auth-bg.png") center center /
+      var(--auth-bg-size) no-repeat fixed,
+    /* color de respaldo */ #f0f0f0;
+
   --ion-background-color: transparent;
-  position: relative;
 }
 
-/* Tarjeta semi-transparente, efecto glass */
-ion-card {
-  max-width: 520px;
-  margin: 16px auto;
-  background: rgba(255, 255, 255, 0.85);
+/* Menos padding vertical del ion-content */
+ion-content.ion-padding {
+  --padding-top: 8px;
+  --padding-bottom: 8px;
+}
+
+/* ===== Layout: tabs arriba, formulario centrado ===== */
+.auth-wrap {
+  min-height: 100dvh;
+  display: grid;
+  grid-template-rows: auto 1fr; /* fila 1: segment, fila 2: form */
+  gap: 12px;
+}
+
+ion-segment {
+  width: 100%;
+  max-width: 720px; /* alinear visualmente con el card */
+  margin-inline: auto;
+  margin-top: 8px;
+  background: rgba(255, 255, 255, 0.4);
+  border-radius: 12px;
+  padding: 4px;
+}
+
+/* SOLO el formulario centrado */
+.form-wrap {
+  width: 100%;
+  min-height: 0;
+  display: flex;
+  justify-content: center; /* centra horizontal */
+  align-items: center; /* centra vertical */
+  padding: 8px 12px;
+}
+
+/* ===== Panel del formulario ===== */
+.form-wrap > ion-card {
+  width: 100%;
+  max-width: 720px; /* << más ancho (“gordo”) */
+  margin-inline: auto;
+  background: rgba(255, 255, 255, 0.4);
   -webkit-backdrop-filter: blur(4px);
   backdrop-filter: blur(4px);
   border-radius: 16px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+  border: 2px solid var(--brand-color);
 }
 
 ion-card-title {
   font-weight: 700;
 }
 
+/* Inputs / focus */
+ion-item {
+  --highlight-color-focused: var(--brand-color);
+}
+
+/* Checkbox T&C */
+ion-checkbox {
+  --checkbox-background-checked: var(--brand-color);
+  --checkbox-border-color-checked: var(--brand-color);
+}
+
+/* Botones de enviar */
+ion-button[type="submit"] {
+  --background: var(--brand-color);
+  --background-hover: var(--brand-color);
+  --background-activated: var(--brand-color);
+  --background-focused: var(--brand-color);
+  --color: var(--brand-contrast);
+}
+ion-button[type="submit"][disabled] {
+  opacity: 0.55;
+}
+
+/* Segment activo con color de marca */
+ion-segment-button {
+  --indicator-color: var(--brand-color);
+  --color-checked: var(--brand-color);
+}
+
+/* Espaciado acciones */
 .actions {
   margin-top: 12px;
 }
 
-ion-segment {
-  margin-bottom: 8px;
-  background: rgba(255, 255, 255, 0.75);
-  border-radius: 12px;
-  padding: 4px;
-}
-
-/* Responsive: cambia tamaño del logo y layout */
+/* ===== Responsive ===== */
 @media (min-width: 768px) {
   :host {
     --auth-bg-size: 35%;
   }
-  ion-card {
-    margin: 24px auto;
-  }
-  ion-segment {
-    max-width: 520px;
-    margin: 16px auto 8px;
-  }
+  ion-content {
+    --corner-size: 160px;
+  } /* esquinas un poco más grandes en desktop */
 }
