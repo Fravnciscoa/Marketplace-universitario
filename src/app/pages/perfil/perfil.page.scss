@@ -578,6 +578,111 @@ button {
   }
 }
 
+// Modal de Compartir
+.share-modal {
+  text-align: center;
+  padding: map-get($spacing, lg);
+
+  &__icon {
+    margin-bottom: map-get($spacing, lg);
+    
+    svg {
+      display: block;
+      margin: 0 auto;
+    }
+  }
+
+  &__title {
+    font-size: map-get($font-sizes, xxl);
+    font-weight: 700;
+    margin: 0 0 map-get($spacing, md);
+    color: map-get($colors, text);
+  }
+
+  &__description {
+    color: map-get($colors, text-muted);
+    margin-bottom: map-get($spacing, xl);
+    font-size: map-get($font-sizes, base);
+  }
+
+  &__link-container {
+    margin-bottom: map-get($spacing, xl);
+  }
+
+  &__link-item {
+    background: map-get($colors, secondary);
+    border-radius: 8px;
+    margin-bottom: map-get($spacing, md);
+    --padding-start: 16px;
+    --padding-end: 16px;
+  }
+
+  &__link {
+    font-size: map-get($font-sizes, sm);
+    color: map-get($colors, text);
+    font-family: monospace;
+    word-break: break-all;
+  }
+
+  &__footer {
+    margin-top: map-get($spacing, xl);
+    padding-top: map-get($spacing, lg);
+    border-top: 1px solid map-get($colors, border);
+
+    p {
+      color: map-get($colors, text-muted);
+      font-size: map-get($font-sizes, sm);
+      margin-bottom: map-get($spacing, md);
+    }
+  }
+
+  &__social {
+    display: flex;
+    justify-content: center;
+    gap: map-get($spacing, md);
+  }
+}
+
+.social-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: none;
+  @include flex-center;
+  @include transition();
+  cursor: pointer;
+
+  &--whatsapp {
+    background: #25D366;
+    color: white;
+
+    &:hover {
+      background: darken(#25D366, 10%);
+      transform: translateY(-2px);
+    }
+  }
+
+  &--facebook {
+    background: #1877F2;
+    color: white;
+
+    &:hover {
+      background: darken(#1877F2, 10%);
+      transform: translateY(-2px);
+    }
+  }
+
+  &--twitter {
+    background: #1DA1F2;
+    color: white;
+
+    &:hover {
+      background: darken(#1DA1F2, 10%);
+      transform: translateY(-2px);
+    }
+  }
+}
+
 // ============================================
 // Utilidades
 // ============================================
