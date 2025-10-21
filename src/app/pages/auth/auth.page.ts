@@ -1,24 +1,29 @@
-import { Component } from '@angular/core';
-import { IonicModule } from '@ionic/angular';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import {
+  IonContent,
+  IonHeader,
+  IonTitle,
+  IonToolbar,
+} from '@ionic/angular/standalone';
 
 @Component({
   selector: 'app-auth',
+  templateUrl: './auth.page.html',
+  styleUrls: ['./auth.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule],
-  template: `
-    <ion-header>
-      <ion-toolbar color="primary">
-        <ion-title>Auth</ion-title>
-      </ion-toolbar>
-    </ion-header>
-
-    <ion-content class="ion-padding">
-      <p>Auth page shell ✅</p>
-      <ion-button routerLink="/" fill="outline" size="small"
-        >Ir a Home</ion-button
-      >
-    </ion-content>
-  `,
+  imports: [
+    IonContent,
+    IonHeader,
+    IonTitle,
+    IonToolbar,
+    CommonModule,
+    FormsModule,
+  ],
 })
-export class AuthPage {}
+export class AuthPage implements OnInit {
+  constructor() {}
+
+  ngOnInit() {}
+}
