@@ -1,7 +1,0 @@
-{
-  "name": "marketplace-universitario",
-  "integrations": {
-    "capacitor": {}
-  },
-  "type": "angular-standalone"
-}

@@ -46,14 +46,9 @@ interface Producto {
     FormsModule,
     IonHeader,
     IonToolbar,
-    IonTitle,
     IonContent,
     IonSearchbar,
     IonButton,
-    IonSegment,
-    IonSegmentButton,
-    IonLabel,
-    IonInput,
     IonGrid,
     IonRow,
     IonCol,
@@ -61,8 +56,8 @@ interface Producto {
     IonCardHeader,
     IonCardTitle,
     IonCardSubtitle,
-    IonCardContent,
-  ],
+    IonCardContent
+],
 })
 export class HomePage {
   // ------- Estado UI -------
