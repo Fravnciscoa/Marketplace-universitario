@@ -1,0 +1,716 @@
+// ============================================
+// Variables Globales
+// ============================================
+
+// Tipografía
+$font-stack: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+  Ubuntu, "Helvetica Neue", Helvetica, Arial, sans-serif;
+
+// Paleta de colores
+$colors: (
+  primary: #003366,
+  primary-light: #0066cc,
+  primary-dark: #001a33,
+  secondary: #f0f4f8,
+  text: #ffffff,
+  text-dark: #000000,
+  text-muted: #555555,
+  bg: #f5f5f5,
+  card: #ffffff,
+  border: #e0e0e0,
+  success: #28a745,
+  warning: #ffc107,
+  danger: #dc3545,
+  badge-active: #28a745,
+);
+
+// Espaciados
+$spacing: (
+  xs: 4px,
+  sm: 8px,
+  md: 16px,
+  lg: 24px,
+  xl: 32px,
+  xxl: 40px,
+);
+
+// Tamaños de fuente
+$font-sizes: (
+  xs: 12px,
+  sm: 14px,
+  base: 16px,
+  lg: 18px,
+  xl: 20px,
+  xxl: 24px,
+  xxxl: 28px,
+);
+
+// Breakpoints
+$breakpoints: (
+  mobile: 576px,
+  tablet: 768px,
+  desktop: 992px,
+  wide: 1200px,
+);
+
+// ============================================
+// Mixins
+// ============================================
+
+@mixin mobile {
+  @media (max-width: map-get($breakpoints, mobile)) {
+    @content;
+  }
+}
+
+@mixin tablet {
+  @media (max-width: map-get($breakpoints, tablet)) {
+    @content;
+  }
+}
+
+@mixin desktop {
+  @media (min-width: map-get($breakpoints, desktop)) {
+    @content;
+  }
+}
+
+@mixin flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@mixin card-shadow {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+@mixin transition($property: all) {
+  transition: $property 0.2s ease;
+}
+
+// ============================================
+// Estilos Base
+// ============================================
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: $font-stack;
+  background: map-get($colors, bg);
+  color: map-get($colors, text-dark);
+  font-size: map-get($font-sizes, base);
+  line-height: 1.6;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  outline: none;
+}
+
+// ============================================
+// Contenedor Principal
+// ============================================
+
+.main-container {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+
+  @include tablet {
+    flex-direction: column;
+  }
+}
+
+// ============================================
+// Sidebar (Barra Lateral)
+// ============================================
+
+.sidebar {
+  width: 260px;
+  background: map-get($colors, primary);
+  color: map-get($colors, text);
+  display: flex;
+  flex-direction: column;
+  padding: map-get($spacing, lg);
+  overflow-y: auto;
+
+  @include tablet {
+    width: 100%;
+    max-height: 80px;
+    padding: map-get($spacing, md);
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  // Logo
+  &__logo {
+    margin-bottom: map-get($spacing, xxl);
+
+    @include tablet {
+      margin-bottom: 0;
+    }
+
+    h1 {
+      font-size: map-get($font-sizes, xl);
+      font-weight: 700;
+      margin: 0;
+      letter-spacing: -0.5px;
+
+      @include tablet {
+        font-size: map-get($font-sizes, lg);
+      }
+    }
+  }
+
+  // Menú de navegación
+  &__menu {
+    display: flex;
+    flex-direction: column;
+    gap: map-get($spacing, sm);
+    flex: 1;
+
+    @include tablet {
+      flex-direction: row;
+      overflow-x: auto;
+      gap: map-get($spacing, md);
+    }
+  }
+
+  // Footer con logo PUCV
+  &__footer {
+    margin-top: auto;
+    padding-top: map-get($spacing, lg);
+    text-align: center;
+
+    @include tablet {
+      display: none;
+    }
+  }
+
+  &__footer-logo {
+    width: 120px;
+    height: auto;
+    opacity: 0.9;
+  }
+}
+
+// ============================================
+// Menu Items
+// ============================================
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: map-get($spacing, md);
+  padding: map-get($spacing, md);
+  border-radius: 8px;
+  @include transition(background);
+  position: relative;
+
+  @include tablet {
+    flex-direction: column;
+    gap: map-get($spacing, xs);
+    padding: map-get($spacing, sm);
+    min-width: 80px;
+  }
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  &--active {
+    background: rgba(255, 255, 255, 0.15);
+    font-weight: 600;
+
+    &::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 4px;
+      height: 70%;
+      background: map-get($colors, text);
+      border-radius: 0 4px 4px 0;
+
+      @include tablet {
+        display: none;
+      }
+    }
+  }
+
+  &__icon {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+    color: map-get($colors, text);
+  }
+
+  &__text {
+    font-size: map-get($font-sizes, base);
+    white-space: nowrap;
+
+    @include tablet {
+      font-size: map-get($font-sizes, xs);
+    }
+  }
+
+  &__badge {
+    margin-left: auto;
+    background: map-get($colors, danger);
+    color: map-get($colors, text);
+    font-size: map-get($font-sizes, xs);
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 12px;
+    min-width: 20px;
+    text-align: center;
+
+    @include tablet {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      margin-left: 0;
+    }
+  }
+}
+
+// ============================================
+// Contenido Principal
+// ============================================
+
+.content {
+  flex: 1;
+  padding: map-get($spacing, xxl);
+  overflow-y: auto;
+  background: map-get($colors, bg);
+
+  @include tablet {
+    padding: map-get($spacing, lg);
+  }
+
+  @include mobile {
+    padding: map-get($spacing, md);
+  }
+}
+
+// ============================================
+// Header
+// ============================================
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: map-get($spacing, xl);
+  padding-bottom: map-get($spacing, lg);
+  border-bottom: 2px solid map-get($colors, border);
+
+  @include mobile {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: map-get($spacing, md);
+  }
+
+  &__title {
+    h2 {
+      font-size: map-get($font-sizes, xxxl);
+      margin: 0 0 map-get($spacing, sm);
+      color: map-get($colors, text-dark);
+      font-weight: 700;
+
+      @include mobile {
+        font-size: map-get($font-sizes, xxl);
+      }
+    }
+  }
+
+  &__breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: map-get($spacing, sm);
+    font-size: map-get($font-sizes, sm);
+    color: map-get($colors, text-muted);
+
+    a {
+      @include transition(color);
+
+      &:hover {
+        color: map-get($colors, primary);
+      }
+    }
+
+    &-separator {
+      color: map-get($colors, border);
+    }
+
+    &-current {
+      font-weight: 600;
+      color: map-get($colors, text-dark);
+    }
+  }
+
+  &__user {
+    display: flex;
+    align-items: center;
+    gap: map-get($spacing, md);
+  }
+
+  &__user-name {
+    font-size: map-get($font-sizes, base);
+    font-weight: 600;
+    color: map-get($colors, text-dark);
+
+    @include mobile {
+      display: none;
+    }
+  }
+
+  &__user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid map-get($colors, primary);
+  }
+}
+
+// ============================================
+// Perfil
+// ============================================
+
+.profile {
+  display: flex;
+  flex-direction: column;
+  gap: map-get($spacing, lg);
+
+  // Tarjeta principal
+  &__card {
+    background: map-get($colors, card);
+    padding: map-get($spacing, xxl);
+    border-radius: 12px;
+    @include card-shadow;
+
+    @include mobile {
+      padding: map-get($spacing, lg);
+    }
+  }
+
+  &__main {
+    display: flex;
+    align-items: center;
+    gap: map-get($spacing, lg);
+    margin-bottom: map-get($spacing, xl);
+
+    @include mobile {
+      flex-direction: column;
+      text-align: center;
+    }
+  }
+
+  &__picture {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid map-get($colors, primary);
+    flex-shrink: 0;
+
+    @include mobile {
+      width: 120px;
+      height: 120px;
+    }
+  }
+
+  &__info {
+    flex: 1;
+  }
+
+  &__name {
+    font-size: map-get($font-sizes, xxl);
+    margin: 0 0 map-get($spacing, xs);
+    color: map-get($colors, text-dark);
+    font-weight: 700;
+  }
+
+  &__role {
+    font-size: map-get($font-sizes, base);
+    color: map-get($colors, text-muted);
+    margin: 0 0 map-get($spacing, sm);
+  }
+
+  &__badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 16px;
+    font-size: map-get($font-sizes, sm);
+    font-weight: 600;
+    margin-bottom: map-get($spacing, sm);
+
+    &--active {
+      background: rgba(40, 167, 69, 0.1);
+      color: map-get($colors, badge-active);
+    }
+  }
+
+  &__description {
+    font-size: map-get($font-sizes, base);
+    color: map-get($colors, text-muted);
+    margin: map-get($spacing, sm) 0 0;
+  }
+
+  // Botones de acción
+  &__actions {
+    display: flex;
+    gap: map-get($spacing, md);
+
+    @include mobile {
+      flex-direction: column;
+    }
+  }
+
+  // Detalles adicionales
+  &__details {
+    background: map-get($colors, card);
+    padding: map-get($spacing, xl);
+    border-radius: 12px;
+    @include card-shadow;
+
+    @include mobile {
+      padding: map-get($spacing, lg);
+    }
+  }
+
+  &__details-title {
+    font-size: map-get($font-sizes, lg);
+    margin: 0 0 map-get($spacing, lg);
+    color: map-get($colors, text-dark);
+    font-weight: 600;
+    padding-bottom: map-get($spacing, md);
+    border-bottom: 2px solid map-get($colors, border);
+  }
+
+  &__detail-item {
+    display: flex;
+    justify-content: space-between;
+    padding: map-get($spacing, md) 0;
+    border-bottom: 1px solid map-get($colors, border);
+
+    @include mobile {
+      flex-direction: column;
+      gap: map-get($spacing, xs);
+    }
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+
+  &__detail-label {
+    font-weight: 600;
+    color: map-get($colors, text-dark);
+    font-size: map-get($font-sizes, base);
+  }
+
+  &__detail-value {
+    color: map-get($colors, text-muted);
+    font-size: map-get($font-sizes, base);
+  }
+}
+
+// ============================================
+// Botones
+// ============================================
+
+.btn {
+  padding: map-get($spacing, md) map-get($spacing, lg);
+  border-radius: 8px;
+  font-size: map-get($font-sizes, base);
+  font-weight: 600;
+  @include transition();
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: map-get($spacing, sm);
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  &--primary {
+    background: map-get($colors, primary);
+    color: map-get($colors, text);
+
+    &:hover:not(:disabled) {
+      background: map-get($colors, primary-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 51, 102, 0.3);
+    }
+  }
+
+  &--secondary {
+    background: map-get($colors, secondary);
+    color: map-get($colors, text-dark);
+
+    &:hover:not(:disabled) {
+      background: darken(#f0f4f8, 5%);
+      transform: translateY(-2px);
+    }
+  }
+}
+
+// Modal de Compartir
+.share-modal {
+  text-align: center;
+  padding: map-get($spacing, lg);
+
+  &__icon {
+    margin-bottom: map-get($spacing, lg);
+    
+    svg {
+      display: block;
+      margin: 0 auto;
+    }
+  }
+
+  &__title {
+    font-size: map-get($font-sizes, xxl);
+    font-weight: 700;
+    margin: 0 0 map-get($spacing, md);
+    color: map-get($colors, text);
+  }
+
+  &__description {
+    color: map-get($colors, text-muted);
+    margin-bottom: map-get($spacing, xl);
+    font-size: map-get($font-sizes, base);
+  }
+
+  &__link-container {
+    margin-bottom: map-get($spacing, xl);
+  }
+
+  &__link-item {
+    background: map-get($colors, secondary);
+    border-radius: 8px;
+    margin-bottom: map-get($spacing, md);
+    --padding-start: 16px;
+    --padding-end: 16px;
+  }
+
+  &__link {
+    font-size: map-get($font-sizes, sm);
+    color: map-get($colors, text);
+    font-family: monospace;
+    word-break: break-all;
+  }
+
+  &__footer {
+    margin-top: map-get($spacing, xl);
+    padding-top: map-get($spacing, lg);
+    border-top: 1px solid map-get($colors, border);
+
+    p {
+      color: map-get($colors, text-muted);
+      font-size: map-get($font-sizes, sm);
+      margin-bottom: map-get($spacing, md);
+    }
+  }
+
+  &__social {
+    display: flex;
+    justify-content: center;
+    gap: map-get($spacing, md);
+  }
+}
+
+.social-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: none;
+  @include flex-center;
+  @include transition();
+  cursor: pointer;
+
+  &--whatsapp {
+    background: #25D366;
+    color: white;
+
+    &:hover {
+      background: darken(#25D366, 10%);
+      transform: translateY(-2px);
+    }
+  }
+
+  &--facebook {
+    background: #1877F2;
+    color: white;
+
+    &:hover {
+      background: darken(#1877F2, 10%);
+      transform: translateY(-2px);
+    }
+  }
+
+  &--twitter {
+    background: #1DA1F2;
+    color: white;
+
+    &:hover {
+      background: darken(#1DA1F2, 10%);
+      transform: translateY(-2px);
+    }
+  }
+}
+
+// ============================================
+// Utilidades
+// ============================================
+
+.text-center {
+  text-align: center;
+}
+
+.mt-sm {
+  margin-top: map-get($spacing, sm);
+}
+
+.mt-md {
+  margin-top: map-get($spacing, md);
+}
+
+.mt-lg {
+  margin-top: map-get($spacing, lg);
+}
+
+.mb-sm {
+  margin-bottom: map-get($spacing, sm);
+}
+
+.mb-md {
+  margin-bottom: map-get($spacing, md);
+}
+
+.mb-lg {
+  margin-bottom: map-get($spacing, lg);
+}
