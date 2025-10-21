@@ -1,5 +1,4 @@
-import { Component, computed, signal } from '@angular/core';
-import { Component, OnInit } from '@angular/core';
+import { Component, computed, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {
@@ -7,10 +6,6 @@ import {
   IonHeader,
   IonTitle,
   IonToolbar,
-} from '@ionic/angular/standalone';
-
-@Component({
-  selector: 'app-home',
   IonButtons,
   IonButton,
   IonIcon,
@@ -31,8 +26,8 @@ import {
   IonList,
   IonCheckbox,
   IonRange,
-  IonToolbar,
 } from '@ionic/angular/standalone';
+
 import { addIcons } from 'ionicons';
 import {
   searchOutline,
@@ -65,19 +60,16 @@ addIcons({
 
 @Component({
   selector: 'app-home',
-  standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-@Component({
-  selector: 'app-home',
   templateUrl: './home.page.html',
   styleUrls: ['./home.page.scss'],
   standalone: true,
   imports: [
+    CommonModule,
+    FormsModule,
     IonContent,
     IonHeader,
     IonTitle,
+    IonToolbar,
     IonButtons,
     IonButton,
     IonIcon,
@@ -98,15 +90,9 @@ addIcons({
     IonList,
     IonCheckbox,
     IonRange,
-    IonToolbar,
-    CommonModule,
-    FormsModule,
   ],
 })
-  templateUrl: './home.page.html',
-  styleUrls: ['./home.page.scss'],
-})
-export class HomePage {
+export class HomePage implements OnInit {
   // --- Estado UI ---
   q = signal<string>('');
   estadoSel = signal<Estado>('todos');
@@ -119,7 +105,7 @@ export class HomePage {
     Deportes: true,
   });
 
-  campus = signal<Record<string, boolean>>({
+  campus = signal<Record<Producto['campus'], boolean>>({
     'Isabel Brown Cases': true,
     'Casa Central': true,
     Curauma: true,
@@ -198,11 +184,11 @@ export class HomePage {
   toggleCat(k: Categoria, checked: boolean) {
     this.cats.set({ ...this.cats(), [k]: checked });
   }
-  toggleCampus(k: keyof HomePage['campus']['prototype'], checked: boolean) {
+  toggleCampus(k: Producto['campus'], checked: boolean) {
     this.campus.set({ ...this.campus(), [k]: checked });
   }
   trackById = (_: number, p: Producto) => p.id;
-export class HomePage implements OnInit {
+
   constructor() {}
 
   ngOnInit() {}
