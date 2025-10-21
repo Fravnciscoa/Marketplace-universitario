@@ -6,11 +6,6 @@ import {
   IonContent,
   IonHeader,
   IonTitle,
-  IonToolbar,
-} from '@ionic/angular/standalone';
-
-@Component({
-  selector: 'app-home',
   IonButtons,
   IonButton,
   IonIcon,
@@ -102,7 +97,6 @@ addIcons({
     CommonModule,
     FormsModule,
   ],
-})
   templateUrl: './home.page.html',
   styleUrls: ['./home.page.scss'],
 })

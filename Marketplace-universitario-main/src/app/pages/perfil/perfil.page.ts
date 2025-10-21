@@ -7,7 +7,6 @@ import {
   IonHeader,
   IonTitle,
   IonToolbar,
-} from '@ionic/angular/standalone';
   IonButtons,
   IonButton,
   IonModal,
@@ -30,15 +29,6 @@ import { close, save, copy, shareOutline, checkmarkCircle } from 'ionicons/icons
     IonHeader,
     IonTitle,
     IonToolbar,
-    CommonModule,
-    FormsModule,
-  ],
-})
-export class PerfilPage implements OnInit {
-  constructor() {}
-
-  ngOnInit() {}
-}
     IonButton,
     IonModal,
     IonInput,

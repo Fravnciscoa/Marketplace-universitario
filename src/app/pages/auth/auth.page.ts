@@ -1,3 +1,7 @@
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { IonContent, IonHeader, IonTitle, IonToolbar } from '@ionic/angular/standalone';
 import { Component, signal } from '@angular/core';
 import { IonicModule, ToastController } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
@@ -25,6 +29,15 @@ import {
   templateUrl: './auth.page.html',
   styleUrls: ['./auth.page.scss'],
   standalone: true,
+  imports: [IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule]
+})
+export class AuthPage implements OnInit {
+
+  constructor() { }
+
+  ngOnInit() {
+  }
+
   imports: [IonicModule, CommonModule, ReactiveFormsModule],
   template: `
     <ion-content class="ion-padding">
