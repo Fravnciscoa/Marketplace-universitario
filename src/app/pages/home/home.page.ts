@@ -1,10 +1,10 @@
 import { Component, computed, signal } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {
   IonContent,
   IonHeader,
-  IonToolbar,
   IonTitle,
   IonButtons,
   IonButton,
@@ -26,6 +26,7 @@ import {
   IonList,
   IonCheckbox,
   IonRange,
+  IonToolbar,
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import {
@@ -63,9 +64,14 @@ addIcons({
   imports: [
     CommonModule,
     FormsModule,
+@Component({
+  selector: 'app-home',
+  templateUrl: './home.page.html',
+  styleUrls: ['./home.page.scss'],
+  standalone: true,
+  imports: [
     IonContent,
     IonHeader,
-    IonToolbar,
     IonTitle,
     IonButtons,
     IonButton,
@@ -87,6 +93,9 @@ addIcons({
     IonList,
     IonCheckbox,
     IonRange,
+    IonToolbar,
+    CommonModule,
+    FormsModule,
   ],
   templateUrl: './home.page.html',
   styleUrls: ['./home.page.scss'],
@@ -187,4 +196,8 @@ export class HomePage {
     this.campus.set({ ...this.campus(), [k]: checked });
   }
   trackById = (_: number, p: Producto) => p.id;
+export class HomePage implements OnInit {
+  constructor() {}
+
+  ngOnInit() {}
 }

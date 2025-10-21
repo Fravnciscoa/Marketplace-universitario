@@ -10,9 +10,20 @@ import {
   ValidationErrors,
 } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import {
+  IonContent,
+  IonHeader,
+  IonTitle,
+  IonToolbar,
+} from '@ionic/angular/standalone';
 
 @Component({
   selector: 'app-auth',
+  templateUrl: './auth.page.html',
+  styleUrls: ['./auth.page.scss'],
   standalone: true,
   imports: [IonicModule, CommonModule, ReactiveFormsModule],
   template: `
@@ -320,4 +331,17 @@ export class AuthPage {
     });
     await t.present();
   }
+  imports: [
+    IonContent,
+    IonHeader,
+    IonTitle,
+    IonToolbar,
+    CommonModule,
+    FormsModule,
+  ],
+})
+export class AuthPage implements OnInit {
+  constructor() {}
+
+  ngOnInit() {}
 }
