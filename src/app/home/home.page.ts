@@ -1,190 +1,121 @@
-import { Component, computed, signal } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import {
-  IonContent,
-  IonHeader,
-  IonToolbar,
-  IonTitle,
-  IonButtons,
-  IonButton,
-  IonIcon,
-  IonSearchbar,
-  IonGrid,
-  IonRow,
-  IonCol,
-  IonCard,
-  IonCardHeader,
-  IonCardTitle,
-  IonCardSubtitle,
-  IonCardContent,
-  IonLabel,
-  IonSegment,
-  IonSegmentButton,
-  IonInput,
-  IonItem,
-  IonList,
-  IonCheckbox,
-  IonRange,
-} from '@ionic/angular/standalone';
-import { addIcons } from 'ionicons';
-import {
-  searchOutline,
-  funnelOutline,
-  pricetagOutline,
-  logInOutline,
-  personAddOutline,
-} from 'ionicons/icons';
+import { IonicModule } from '@ionic/angular';
 
-type Estado = 'todos' | 'venta' | 'intercambio' | 'prestamo';
-type Categoria = 'Libros' | 'Electrónica' | 'Deportes';
-
-interface Producto {
-  id: number;
+interface Product {
+  id: string;
   titulo: string;
-  precio: number; // 0 = Gratis
-  estado: Exclude<Estado, 'todos'>;
-  categoria: Categoria;
-  campus: 'Isabel Brown Cases' | 'Casa Central' | 'Curauma';
-  img: string; // ruta en /assets
+  precio: number;
+  img: string;
+  categoria: string;
+  campus: string;
 }
-
-addIcons({
-  searchOutline,
-  funnelOutline,
-  pricetagOutline,
-  logInOutline,
-  personAddOutline,
-});
 
 @Component({
   selector: 'app-home',
-  standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonContent,
-    IonHeader,
-    IonToolbar,
-    IonTitle,
-    IonButtons,
-    IonButton,
-    IonIcon,
-    IonSearchbar,
-    IonGrid,
-    IonRow,
-    IonCol,
-    IonCard,
-    IonCardHeader,
-    IonCardTitle,
-    IonCardSubtitle,
-    IonCardContent,
-    IonLabel,
-    IonSegment,
-    IonSegmentButton,
-    IonInput,
-    IonItem,
-    IonList,
-    IonCheckbox,
-    IonRange,
-  ],
   templateUrl: './home.page.html',
   styleUrls: ['./home.page.scss'],
+  standalone: true,
+  imports: [CommonModule, IonicModule],
 })
-export class HomePage {
-  // --- Estado UI ---
-  q = signal<string>('');
-  estadoSel = signal<Estado>('todos');
-  minPrecio = signal<number>(0);
-  maxPrecio = signal<number>(500000);
-
-  cats = signal<Record<Categoria, boolean>>({
-    Libros: true,
-    Electrónica: true,
-    Deportes: true,
-  });
-
-  campus = signal<Record<string, boolean>>({
-    'Isabel Brown Cases': true,
-    'Casa Central': true,
-    Curauma: true,
-  });
-
-  // --- Datos demo (reemplaza por tu fetch) ---
-  productos = signal<Producto[]>([
+export class HomePage implements OnInit {
+  productos: Product[] = [
     {
-      id: 1,
-      titulo: 'Calculadora',
-      precio: 10000,
-      estado: 'venta',
-      categoria: 'Electrónica',
-      campus: 'Casa Central',
-      img: 'assets/demo/calculadora.jpg',
-    },
-    {
-      id: 2,
-      titulo: 'Lógica de programación',
-      precio: 5000,
-      estado: 'venta',
+      id: '1',
+      titulo: 'Libro A',
+      precio: 12000,
+      img: 'assets/book-a.jpg',
       categoria: 'Libros',
-      campus: 'Curauma',
-      img: 'assets/demo/libro.jpg',
+      campus: 'Casa Central',
     },
     {
-      id: 3,
-      titulo: 'Bicicleta usada',
-      precio: 100000,
-      estado: 'venta',
+      id: '2',
+      titulo: 'Auriculares',
+      precio: 35000,
+      img: 'assets/headphones.jpg',
+      categoria: 'Electrónica',
+      campus: 'Curauma',
+    },
+    {
+      id: '3',
+      titulo: 'Pelota',
+      precio: 8000,
+      img: 'assets/ball.jpg',
       categoria: 'Deportes',
       campus: 'Isabel Brown Cases',
-      img: 'assets/demo/bici.jpg',
     },
-    {
-      id: 4,
-      titulo: 'Mochila',
-      precio: 20000,
-      estado: 'venta',
-      categoria: 'Deportes',
-      campus: 'Casa Central',
-      img: 'assets/demo/mochila.jpg',
-    },
-  ]);
+  ];
 
-  // --- Filtro computado ---
-  visibles = computed(() => {
-    const q = this.q().trim().toLowerCase();
-    const est = this.estadoSel();
-    const min = this.minPrecio();
-    const max = this.maxPrecio();
-    const okCat = this.cats();
-    const okCampus = this.campus();
-    return this.productos().filter((p) => {
-      const byQ = !q || p.titulo.toLowerCase().includes(q);
-      const byE = est === 'todos' ? true : p.estado === est;
-      const byP = p.precio >= min && p.precio <= max;
-      const byC = okCat[p.categoria];
-      const byCampus = okCampus[p.campus];
-      return byQ && byE && byP && byC && byCampus;
+  // filtros
+  selectedCats: Record<string, boolean> = {};
+  selectedCampus: Record<string, boolean> = {};
+  minPrice = 0;
+  maxPrice = 500000;
+  searchTerm = '';
+
+  constructor() {}
+
+  ngOnInit(): void {}
+
+  // helpers para template
+  cats() {
+    return this.selectedCats;
+  }
+  campus() {
+    return this.selectedCampus;
+  }
+  minPrecio() {
+    return this.minPrice;
+  }
+  maxPrecio() {
+    return this.maxPrice;
+  }
+
+  toggleCat(name: string, checked: boolean) {
+    this.selectedCats[name] = checked;
+  }
+
+  toggleCampus(name: string, checked: boolean) {
+    this.selectedCampus[name] = checked;
+  }
+
+  onPrecioRange(ev: any) {
+    const v = ev?.detail?.value ?? ev?.detail ?? ev;
+    if (v && typeof v === 'object') {
+      this.minPrice = v.lower ?? v[0] ?? this.minPrice;
+      this.maxPrice = v.upper ?? v[1] ?? this.maxPrice;
+    }
+  }
+
+  onSearch(ev: any) {
+    this.searchTerm = ev?.detail?.value ?? '';
+  }
+
+  visibles() {
+    return this.productos.filter((p) => {
+      if (
+        this.searchTerm &&
+        !p.titulo.toLowerCase().includes(this.searchTerm.toLowerCase())
+      )
+        return false;
+
+      const catsSelected = Object.keys(this.selectedCats).filter(
+        (k) => this.selectedCats[k]
+      );
+      if (catsSelected.length && !catsSelected.includes(p.categoria)) return false;
+
+      const campusSelected = Object.keys(this.selectedCampus).filter(
+        (k) => this.selectedCampus[k]
+      );
+      if (campusSelected.length && !campusSelected.includes(p.campus)) return false;
+
+      if (p.precio < this.minPrice || p.precio > this.maxPrice) return false;
+
+      return true;
     });
-  });
+  }
 
-  // --- Handlers ---
-  onSearch(ev: CustomEvent) {
-    this.q.set((ev.detail as any).value || '');
+  trackById(_: number, item: Product) {
+    return item.id;
   }
-  onEstadoChange(ev: CustomEvent) {
-    this.estadoSel.set((ev.detail as any).value as Estado);
-  }
-  onPrecioRange(ev: CustomEvent) {
-    const { lower, upper } = (ev.detail as any).value ?? {};
-    if (typeof lower === 'number') this.minPrecio.set(lower);
-    if (typeof upper === 'number') this.maxPrecio.set(upper);
-  }
-  toggleCat(k: Categoria, checked: boolean) {
-    this.cats.set({ ...this.cats(), [k]: checked });
-  }
-  toggleCampus(k: keyof HomePage['campus']['prototype'], checked: boolean) {
-    this.campus.set({ ...this.campus(), [k]: checked });
-  }
-  trackById = (_: number, p: Producto) => p.id;
 }
