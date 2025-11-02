@@ -1,69 +1,53 @@
-import { Component, computed, signal } from '@angular/core';
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import {
   IonContent,
   IonHeader,
   IonTitle,
-  IonButtons,
+  IonToolbar,
+  IonSearchbar,
   IonButton,
   IonIcon,
-  IonSearchbar,
-  IonGrid,
-  IonRow,
-  IonCol,
+  IonCheckbox,
+  IonRange,
   IonCard,
+  IonCardContent,
   IonCardHeader,
   IonCardTitle,
   IonCardSubtitle,
-  IonCardContent,
   IonLabel,
-  IonSegment,
-  IonSegmentButton,
-  IonInput,
   IonItem,
   IonList,
-  IonCheckbox,
-  IonRange,
-  IonToolbar,
+  IonMenuButton,
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import {
   searchOutline,
-  funnelOutline,
-  pricetagOutline,
-  logInOutline,
-  personAddOutline,
+  filterOutline,
+  cartOutline,
+  heartOutline,
+  chevronDownOutline,
+  closeOutline,
 } from 'ionicons/icons';
-
-type Estado = 'todos' | 'venta' | 'intercambio' | 'prestamo';
-type Categoria = 'Libros' | 'Electrónica' | 'Deportes';
+import { ProductosService } from '../../services/productos.service';
 
 interface Producto {
   id: number;
   titulo: string;
-  precio: number; // 0 = Gratis
-  estado: Exclude<Estado, 'todos'>;
-  categoria: Categoria;
-  campus: 'Isabel Brown Cases' | 'Casa Central' | 'Curauma';
-  img: string; // ruta en /assets
+  precio: number;
+  imagen: string;
+  descripcion: string;
+  categoria: string;
+  campus: string;
 }
 
-addIcons({
-  searchOutline,
-  funnelOutline,
-  pricetagOutline,
-  logInOutline,
-  personAddOutline,
-});
+interface FiltroRango {
+  lower: number;
+  upper: number;
+}
 
-@Component({
-  selector: 'app-home',
-  standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
 @Component({
   selector: 'app-home',
   templateUrl: './home.page.html',
@@ -73,131 +57,159 @@ addIcons({
     IonContent,
     IonHeader,
     IonTitle,
-    IonButtons,
+    IonToolbar,
+    IonSearchbar,
     IonButton,
     IonIcon,
-    IonSearchbar,
-    IonGrid,
-    IonRow,
-    IonCol,
+    IonCheckbox,
+    IonRange,
     IonCard,
+    IonCardContent,
     IonCardHeader,
     IonCardTitle,
     IonCardSubtitle,
-    IonCardContent,
     IonLabel,
-    IonSegment,
-    IonSegmentButton,
-    IonInput,
     IonItem,
     IonList,
-    IonCheckbox,
-    IonRange,
-    IonToolbar,
+    IonMenuButton,
     CommonModule,
     FormsModule,
+    RouterLink,
   ],
-  templateUrl: './home.page.html',
-  styleUrls: ['./home.page.scss'],
 })
-export class HomePage {
-  // --- Estado UI ---
-  q = signal<string>('');
-  estadoSel = signal<Estado>('todos');
-  minPrecio = signal<number>(0);
-  maxPrecio = signal<number>(500000);
-
-  cats = signal<Record<Categoria, boolean>>({
-    Libros: true,
-    Electrónica: true,
-    Deportes: true,
-  });
-
-  campus = signal<Record<string, boolean>>({
-    'Isabel Brown Cases': true,
-    'Casa Central': true,
-    Curauma: true,
-  });
-
-  // --- Datos demo (reemplaza por tu fetch) ---
-  productos = signal<Producto[]>([
-    {
-      id: 1,
-      titulo: 'Calculadora',
-      precio: 10000,
-      estado: 'venta',
-      categoria: 'Electrónica',
-      campus: 'Casa Central',
-      img: 'assets/demo/calculadora.jpg',
-    },
-    {
-      id: 2,
-      titulo: 'Lógica de programación',
-      precio: 5000,
-      estado: 'venta',
-      categoria: 'Libros',
-      campus: 'Curauma',
-      img: 'assets/demo/libro.jpg',
-    },
-    {
-      id: 3,
-      titulo: 'Bicicleta usada',
-      precio: 100000,
-      estado: 'venta',
-      categoria: 'Deportes',
-      campus: 'Isabel Brown Cases',
-      img: 'assets/demo/bici.jpg',
-    },
-    {
-      id: 4,
-      titulo: 'Mochila',
-      precio: 20000,
-      estado: 'venta',
-      categoria: 'Deportes',
-      campus: 'Casa Central',
-      img: 'assets/demo/mochila.jpg',
-    },
-  ]);
-
-  // --- Filtro computado ---
-  visibles = computed(() => {
-    const q = this.q().trim().toLowerCase();
-    const est = this.estadoSel();
-    const min = this.minPrecio();
-    const max = this.maxPrecio();
-    const okCat = this.cats();
-    const okCampus = this.campus();
-    return this.productos().filter((p) => {
-      const byQ = !q || p.titulo.toLowerCase().includes(q);
-      const byE = est === 'todos' ? true : p.estado === est;
-      const byP = p.precio >= min && p.precio <= max;
-      const byC = okCat[p.categoria];
-      const byCampus = okCampus[p.campus];
-      return byQ && byE && byP && byC && byCampus;
-    });
-  });
-
-  // --- Handlers ---
-  onSearch(ev: CustomEvent) {
-    this.q.set((ev.detail as any).value || '');
-  }
-  onEstadoChange(ev: CustomEvent) {
-    this.estadoSel.set((ev.detail as any).value as Estado);
-  }
-  onPrecioRange(ev: CustomEvent) {
-    const { lower, upper } = (ev.detail as any).value ?? {};
-    if (typeof lower === 'number') this.minPrecio.set(lower);
-    if (typeof upper === 'number') this.maxPrecio.set(upper);
-  }
-  toggleCat(k: Categoria, checked: boolean) {
-    this.cats.set({ ...this.cats(), [k]: checked });
-  }
-  toggleCampus(k: keyof HomePage['campus']['prototype'], checked: boolean) {
-    this.campus.set({ ...this.campus(), [k]: checked });
-  }
-  trackById = (_: number, p: Producto) => p.id;
 export class HomePage implements OnInit {
-  constructor() {}
+  mostrarFiltros = true;
+  terminoBusqueda = '';
 
-  ngOnInit() {}
+  tipoServicioFiltros = {
+    comprar: false,
+    reservar: false,
+  };
+
+  categoriaFiltros = {
+    libros: false,
+    electronica: false,
+    deportes: false,
+  };
+
+  rangoPrecio: FiltroRango = {
+    lower: 5000,
+    upper: 500000,
+  };
+
+  precioMin = 5000;
+  precioMax = 500000;
+
+  campusFiltros = {
+    isabelBrown: false,
+    casaCentral: false,
+    curauma: false,
+  };
+
+  productos: Producto[] = [];
+  productosFiltrados: Producto[] = [];
+
+  constructor(private productosService: ProductosService) {
+    addIcons({
+      searchOutline,
+      filterOutline,
+      cartOutline,
+      heartOutline,
+      chevronDownOutline,
+      closeOutline,
+    });
+  }
+
+  ngOnInit() {
+    this.cargarProductos();
+  }
+
+  cargarProductos() {
+  console.log('🔥 Intentando cargar productos...'); // Debug
+  
+  this.productosService.getProductos().subscribe({
+    next: (data) => {
+      console.log('✅ Productos recibidos:', data); // Debug
+      this.productos = data;
+      this.aplicarFiltros();
+      console.log('✅ Productos filtrados:', this.productosFiltrados); // Debug
+    },
+    error: (err) => {
+      console.error('❌ Error al cargar productos:', err);
+    }
+  });
+}
+
+  toggleFiltros() {
+    this.mostrarFiltros = !this.mostrarFiltros;
+  }
+
+  aplicarFiltros() {
+    this.productosFiltrados = this.productos.filter(producto => {
+      const coincideBusqueda = this.terminoBusqueda === '' ||
+        producto.titulo.toLowerCase().includes(this.terminoBusqueda.toLowerCase()) ||
+        producto.descripcion.toLowerCase().includes(this.terminoBusqueda.toLowerCase());
+
+      const categoriaSeleccionada = Object.values(this.categoriaFiltros).some(v => v);
+      const coincideCategoria = !categoriaSeleccionada ||
+        this.categoriaFiltros[producto.categoria as keyof typeof this.categoriaFiltros];
+
+      const coincidePrecio = producto.precio >= this.rangoPrecio.lower &&
+        producto.precio <= this.rangoPrecio.upper;
+
+      const campusSeleccionado = Object.values(this.campusFiltros).some(v => v);
+      const coincideCampus = !campusSeleccionado ||
+        this.campusFiltros[producto.campus as keyof typeof this.campusFiltros];
+
+      return coincideBusqueda && coincideCategoria && coincidePrecio && coincideCampus;
+    });
+  }
+
+  onBusquedaChange(event: any) {
+    this.terminoBusqueda = event.detail.value || '';
+    this.aplicarFiltros();
+  }
+
+  onRangoPrecioChange(event: any) {
+    this.rangoPrecio = event.detail.value;
+    this.aplicarFiltros();
+  }
+
+  onFiltroChange() {
+    this.aplicarFiltros();
+  }
+
+  limpiarFiltros() {
+    this.tipoServicioFiltros = {
+      comprar: false,
+      reservar: false,
+    };
+
+    this.categoriaFiltros = {
+      libros: false,
+      electronica: false,
+      deportes: false,
+    };
+
+    this.rangoPrecio = {
+      lower: this.precioMin,
+      upper: this.precioMax,
+    };
+
+    this.campusFiltros = {
+      isabelBrown: false,
+      casaCentral: false,
+      curauma: false,
+    };
+
+    this.aplicarFiltros();
+  }
+
+  formatearPrecio(precio: number): string {
+    return precio === 0 ? '$0' : `$${precio.toLocaleString('es-CL')}`;
+  }
+
+  formatearRangoPrecio(valor: number): string {
+    return `$${(valor / 1000).toFixed(0)}.000`;
+  }
 }

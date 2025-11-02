@@ -1,5 +1,5 @@
 export interface Producto {
-  id: number;
+  id?: number;
   titulo: string;
   precio: number;
   imagen: string;
@@ -7,6 +7,6 @@ export interface Producto {
   categoria: string;
   campus: string;
   user_id?: number;
-  created_at?: string;
-  updated_at?: string;
+  created_at?: Date;
+  updated_at?: Date;
 }

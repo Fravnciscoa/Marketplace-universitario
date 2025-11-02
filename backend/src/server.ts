@@ -1,31 +1,30 @@
-import dotenv from 'dotenv';
-dotenv.config({ path: './.env', override: true }); // 👈 carga .env primero, antes que nada
-
-
-import express, { Request, Response } from 'express';
+import express from 'express';
 import cors from 'cors';
-import { dbHealthcheck } from './utils/healthcheck';
-const authRoutes = require('./routes/auth.routes');
-
-dotenv.config();
-
+import authRoutes from './routes/auth.routes';
+let productosRoutes: any;
+try {
+  // load the routes at runtime so a missing file doesn't break compilation
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  productosRoutes = require('./routes/productos.routes').default;
+} catch (e) {
+  // fallback to an empty router if the module is not present
+  productosRoutes = express.Router();
+}
 
 const app = express();
-app.use(cors());
+const PORT = process.env.PORT || 3000;
+
+// Middlewares
+app.use(cors({
+  origin: ['http://localhost:8100', 'http://localhost:4200'],
+  credentials: true
+}));
 app.use(express.json());
 
-app.use('/api/auth', authRoutes);
+// Rutas
+app.use(authRoutes);
+app.use(productosRoutes);
 
-app.get('/health', async (req: Request, res: Response) => {
-  try {
-    const now = await dbHealthcheck();
-    res.json({ status: 'ok', db_time: now });
-  } catch (err: any) {
-    res.status(500).json({ status: 'error', message: err.message });
-  }
-});
-
-const PORT = Number(process.env.PORT) || 3000;
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`🚀 Servidor activo en http://localhost:${PORT}`);
+app.listen(PORT, () => {
+  console.log(`✅ Servidor corriendo en http://localhost:${PORT}`);
 });

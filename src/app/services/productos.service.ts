@@ -1,40 +1,34 @@
 import { Injectable } from '@angular/core';
-import { Producto } from '../models/producto.model';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
+import { Producto } from '../models/producto.model';  // 🔥 Importa desde el modelo compartido
 
-@Injectable({ providedIn: 'root' })
+@Injectable({
+  providedIn: 'root'
+})
 export class ProductosService {
-  private readonly data: Producto[] = [
-    {
-      id: 'p1',
-      titulo: 'Calculadora científica',
-      precio: 12000,
-      estado: 'venta',
-      categoria: 'Tecnología',
-    },
-    {
-      id: 'p2',
-      titulo: 'Libro Cálculo I',
-      precio: 8000,
-      estado: 'intercambio',
-      categoria: 'Libros',
-    },
-    {
-      id: 'p3',
-      titulo: 'Mochila universitaria',
-      precio: 0,
-      estado: 'prestamo',
-      categoria: 'Accesorios',
-    },
-    {
-      id: 'p4',
-      titulo: 'Auriculares',
-      precio: 15000,
-      estado: 'venta',
-      categoria: 'Tecnología',
-    },
-  ];
+  private apiUrl = `${environment.apiUrl}/api/productos`;
 
-  list(): Producto[] {
-    return this.data;
+  constructor(private http: HttpClient) {}
+
+  getProductos(): Observable<Producto[]> {
+    return this.http.get<Producto[]>(this.apiUrl);
+  }
+
+  getProductoById(id: number): Observable<Producto> {
+    return this.http.get<Producto>(`${this.apiUrl}/${id}`);
+  }
+
+  createProducto(producto: Producto): Observable<Producto> {
+    return this.http.post<Producto>(this.apiUrl, producto);
+  }
+
+  updateProducto(id: number, producto: Producto): Observable<Producto> {
+    return this.http.put<Producto>(`${this.apiUrl}/${id}`, producto);
+  }
+
+  deleteProducto(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/${id}`);
   }
 }

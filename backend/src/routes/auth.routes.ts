@@ -1,49 +1,60 @@
-const express = require('express');
-const { register, login } = require('../controllers/auth.controller'); // 👈 sin .js
-const router = express.Router();
+import { Router } from 'express';
+import { pool } from '../db/pool';  // 🔥 Importa el pool correcto
 
-router.post('/register', register);
-router.post('/login', login);
+const router = Router();
 
-module.exports = router;
+// GET todos los productos
+router.get('/api/productos', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM productos ORDER BY id');
+    res.json(result.rows);
+  } catch (error) {
+    console.error('Error al obtener productos:', error);
+    res.status(500).json({ error: 'Error al obtener productos' });
+  }
+});
 
-import { verifyToken } from '../middlewares/verifyToken';
+// POST crear producto
+router.post('/api/productos', async (req, res) => {
+  const { titulo, precio, imagen, descripcion, categoria, campus } = req.body;
+  try {
+    const result = await pool.query(
+      'INSERT INTO productos (titulo, precio, imagen, descripcion, categoria, campus) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
+      [titulo, precio, imagen, descripcion, categoria, campus]
+    );
+    res.status(201).json(result.rows[0]);
+  } catch (error) {
+    console.error('Error al crear producto:', error);
+    res.status(500).json({ error: 'Error al crear producto' });
+  }
+});
 
+// PUT actualizar producto
+router.put('/api/productos/:id', async (req, res) => {
+  const { id } = req.params;
+  const { titulo, precio, imagen, descripcion, categoria, campus } = req.body;
+  try {
+    const result = await pool.query(
+      'UPDATE productos SET titulo=$1, precio=$2, imagen=$3, descripcion=$4, categoria=$5, campus=$6 WHERE id=$7 RETURNING *',
+      [titulo, precio, imagen, descripcion, categoria, campus, id]
+    );
+    res.json(result.rows[0]);
+  } catch (error) {
+    console.error('Error al actualizar producto:', error);
+    res.status(500).json({ error: 'Error al actualizar producto' });
+  }
+});
 
-router.post('/register', register);
-router.post('/login', login);
-
-// Ruta protegida — solo accesible con token
-router.get('/profile', verifyToken, (req: any, res: { json: (arg0: { message: string; user: any; }) => void; }) => {
-  res.json({
-    message: 'Perfil del usuario autenticado',
-    user: (req as any).user,
-  });
+// DELETE eliminar producto
+router.delete('/api/productos/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+    await pool.query('DELETE FROM productos WHERE id=$1', [id]);
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Error al eliminar producto:', error);
+    res.status(500).json({ error: 'Error al eliminar producto' });
+  }
 });
 
 export default router;
-
-import { pool } from '../db/pool';
-
-router.get('/profile', verifyToken, async (req: any, res: any) => {
-  try {
-    const userId = req.user.id;
-
-    const result = await pool.query(
-      'SELECT id, nombre, correo, usuario FROM usuarios WHERE id = $1',
-      [userId]
-    );
-
-    if (result.rows.length === 0) {
-      return res.status(404).json({ message: 'Usuario no encontrado' });
-    }
-
-    res.json({
-      message: 'Perfil del usuario',
-      usuario: result.rows[0],
-    });
-  } catch (error: any) {
-    console.error(error);
-    res.status(500).json({ message: 'Error al obtener el perfil', error: error.message });
-  }
-});
