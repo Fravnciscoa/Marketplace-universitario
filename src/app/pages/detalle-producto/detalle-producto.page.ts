@@ -85,42 +85,42 @@ export class DetalleProductoPage implements OnInit {
     this.cargarProducto();
   }
 
-  cargarProducto() {
-    this.route.paramMap.subscribe(params => {
-      let id = params.get('id');
-      
-      console.log('📦 ID del producto (raw):', id);
+    cargarProducto() {
+      this.route.paramMap.subscribe(params => {
+        const rawId = params.get('id');
+        
+        console.log('📦 Raw ID:', rawId);
 
-      // Limpia el ID si tiene caracteres extraños
-      if (id) {
-        id = id.split(':')[0]; // Si es "1:1" extrae solo "1"
-      }
+        // Asegúrate que sea solo un número
+        const productId = parseInt(rawId?.split(':')[0] || '0', 10);
+        
+        console.log('📦 Clean ID:', productId);
 
-      const productId = Number(id);
-      
-      console.log('📦 ID del producto (limpio):', productId);
-
-      if (!productId || isNaN(productId)) {
-        console.error('❌ ID de producto no válido');
-        this.isLoading = false;
-        this.mostrarError('ID de producto inválido');
-        return;
-      }
-
-      this.productosService.getProductoById(productId).subscribe({
-        next: (data) => {
-          console.log('✅ Producto cargado exitosamente:', data);
-          this.producto = data;
+        if (!productId || isNaN(productId)) {
+          console.error('❌ ID no válido');
           this.isLoading = false;
-        },
-        error: (error) => {
-          console.error('❌ Error al cargar producto:', error);
-          this.isLoading = false;
-          this.mostrarError('No se pudo cargar el producto');
-        },
+          this.mostrarError('ID de producto inválido');
+          return;
+        }
+
+        // URL DIRECTA sin usar el servicio (temporal)
+        const apiUrl = `http://localhost:3000/api/productos/${productId}`;
+        
+        this.productosService.getProductoById(productId).subscribe({
+          next: (data) => {
+            console.log('✅ Producto cargado:', data);
+            this.producto = data;
+            this.isLoading = false;
+          },
+          error: (error) => {
+            console.error('❌ Error:', error);
+            this.isLoading = false;
+            this.mostrarError('No se pudo cargar el producto');
+          },
+        });
       });
-    });
-  }
+    }
+
 
   formatearPrecio(precio: number): string {
     return `$${precio.toLocaleString('es-CL')}`;

@@ -11,7 +11,7 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/home/home.page').then(m => m.HomePage)
   },
   {
-    path: 'categorias',  // 🔥 Agrega esta ruta
+    path: 'categorias',
     loadComponent: () => import('./pages/categorias/categorias.page').then(m => m.CategoriasPage)
   },
   {
@@ -27,11 +27,7 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/detalle-producto/detalle-producto.page').then(m => m.DetalleProductoPage)
   },
   {
-    path: '**',  // Ruta wildcard para URLs no encontradas
+    path: '**',
     redirectTo: 'home'
-  },  {
-    path: 'categorias',
-    loadComponent: () => import('./pages/categorias/categorias.page').then( m => m.CategoriasPage)
   }
-
 ];

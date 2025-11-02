@@ -13,6 +13,7 @@ const router = Router();
 // Rutas públicas
 router.get('/api/productos', getProductos);
 router.get('/api/productos/:id', getProductoById);
+router.get('/:id', getProductoById);  // ❌ Esto falta probablemente
 
 // Rutas protegidas
 router.post('/api/productos', verifyToken, createProducto);
