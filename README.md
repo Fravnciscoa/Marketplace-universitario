@@ -118,3 +118,88 @@
 
 
 
+---
+
+## Instalación y Ejecución
+
+### Requisitos previos
+- Node.js v18+
+- PostgreSQL 12+
+- Git
+
+### Pasos para ejecutar
+
+1. **Clonar el repositorio**
+git clone https://github.com/Fravnciscoa/Marketplace-universitario.git
+cd Marketplace-universitario-main
+2. **Instalar dependencias del backend**
+cd backend
+npm install
+3. **Configurar variables de entorno (backend)**
+Crear archivo `.env` en la carpeta `backend/`:
+DB_HOST=localhost
+DB_PORT=5432
+DB_DATABASE=IngWeb
+DB_USER=postgres
+DB_PASSWORD=tu_contraseña
+PORT=3000
+JWT_SECRET=tu_clave_secreta_muy_segura_aqui_2025
+4. **Crear base de datos y tabla**
+-- Ejecutar los scripts SQL en src/db/
+5. **Instalar dependencias del frontend**
+cd ..
+npm install
+
+6. **Ejecutar en dos terminales**
+
+Terminal 1 (Backend):
+cd backend
+npm run dev
+Terminal 2 (Frontend):
+ionic serve
+
+
+La aplicación estará disponible en: `http://localhost:8100`
+
+---
+
+## API Endpoints Disponibles
+
+### Autenticación
+- `POST /api/auth/register` - Registrar usuario
+- `POST /api/auth/login` - Iniciar sesión
+- `GET /api/auth/profile` - Obtener perfil (requiere autenticación)
+
+### Productos
+- `GET /api/productos` - Obtener todos los productos
+- `GET /api/productos/:id` - Obtener producto por ID
+- `POST /api/productos` - Crear producto (requiere autenticación)
+- `PUT /api/productos/:id` - Actualizar producto (requiere autenticación)
+- `DELETE /api/productos/:id` - Eliminar producto (requiere autenticación)
+
+---
+
+## Estructura del Proyecto
+├── backend/
+│ ├── src/
+│ │ ├── controllers/
+│ │ ├── routes/
+│ │ ├── middlewares/
+│ │ ├── models/
+│ │ ├── db/
+│ │ └── server.ts
+│ ├── .env
+│ └── package.json
+├── src/
+│ ├── app/
+│ │ ├── pages/
+│ │ ├── services/
+│ │ ├── models/
+│ │ ├── interceptors/
+│ │ └── app.routes.ts
+│ └── main.ts
+├── otros/
+│ ├── diagramas/
+│ └── documentacion/
+├── README.md
+└── .gitignore
