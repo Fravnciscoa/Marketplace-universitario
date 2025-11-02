@@ -10,14 +10,13 @@ import { verifyToken } from '../middlewares/verifyToken';
 
 const router = Router();
 
-// Rutas públicas
-router.get('/api/productos', getProductos);
-router.get('/api/productos/:id', getProductoById);
-router.get('/:id', getProductoById);  // ❌ Esto falta probablemente
+// Rutas públicas (sin autenticación)
+router.get('/', getProductos);
+router.get('/:id', getProductoById);
 
-// Rutas protegidas
-router.post('/api/productos', verifyToken, createProducto);
-router.put('/api/productos/:id', verifyToken, updateProducto);
-router.delete('/api/productos/:id', verifyToken, deleteProducto);
+// Rutas protegidas (requieren autenticación)
+router.post('/', verifyToken, createProducto);
+router.put('/:id', verifyToken, updateProducto);
+router.delete('/:id', verifyToken, deleteProducto);
 
 export default router;
