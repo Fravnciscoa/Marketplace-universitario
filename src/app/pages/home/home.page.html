@@ -201,44 +201,41 @@
 
       <!-- Grid de Productos -->
       <main class="productos-main">
-        <div class="productos-grid">
-          
-          <!-- Tarjeta de Producto -->
-          <ion-card 
-            *ngFor="let producto of productosFiltrados" 
-            class="producto-card"
+        <!-- PRODUCTOS GRID -->
+      <div class="productos-grid">
+        <div *ngFor="let producto of productosFiltrados" 
+            class="producto-item"
             [routerLink]="['/detalle-producto', producto.id]"
-          >
-            <div class="producto-imagen-container">
-              <img 
-                [src]="producto.imagen" 
-                [alt]="producto.titulo"
-                class="producto-imagen"
-              >
+            style="cursor: pointer;">
+          
+          <ion-card class="producto-card">
+            <!-- Imagen del producto -->
+            <div class="imagen-container">
+              <img [src]="producto.imagen" [alt]="producto.titulo" class="producto-imagen">
             </div>
-            
-            <ion-card-header class="producto-header">
-              <ion-card-title class="producto-titulo">
-                {{ producto.titulo }}
-              </ion-card-title>
-              <ion-card-subtitle class="producto-precio">
-                {{ formatearPrecio(producto.precio) }}
-              </ion-card-subtitle>
-            </ion-card-header>
-            
-            <ion-card-content class="producto-content">
-              <p class="producto-descripcion">{{ producto.descripcion }}</p>
+
+            <!-- Información del producto -->
+            <ion-card-content class="producto-contenido">
+              <!-- Título -->
+              <h3 class="titulo">{{ producto.titulo }}</h3>
+
+              <!-- Precio -->
+              <div class="precio-section">
+                <span class="precio">{{ formatearPrecio(producto.precio) }}</span>
+              </div>
+
+              <!-- Descripción corta -->
+              <p class="descripcion">{{ producto.descripcion | slice:0:80 }}...</p>
+
+              <!-- Categoría y Campus -->
+              <div class="meta-info">
+                <span class="categoria-badge">{{ producto.categoria }}</span>
+                <span class="campus-badge">{{ producto.campus }}</span>
+              </div>
             </ion-card-content>
           </ion-card>
-
-          <!-- Mensaje cuando no hay resultados -->
-          <div *ngIf="productosFiltrados.length === 0" class="sin-resultados">
-            <ion-icon name="search-outline" class="sin-resultados-icon"></ion-icon>
-            <h3>No se encontraron productos</h3>
-            <p>Intenta ajustar los filtros o cambia tu búsqueda</p>
-          </div>
-
         </div>
+      </div>
       </main>
 
     </div>

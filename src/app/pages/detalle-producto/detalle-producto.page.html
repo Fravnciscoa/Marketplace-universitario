@@ -1,200 +1,125 @@
-<ion-header [translucent]="true">
+<ion-header>
   <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-back-button defaultHref="/"></ion-back-button>
-    </ion-buttons>
-    <ion-title> MarketPUCV </ion-title>
-    <ion-buttons slot="end">
-      <ion-button>
-        <ion-icon name="cart-outline"></ion-icon>
-      </ion-button>
-    </ion-buttons>
+    <ion-back-button defaultHref="/home" slot="start"></ion-back-button>
+    <ion-title>MarketPUCV</ion-title>
+    <ion-icon name="cart-outline" slot="end" style="margin-right: 20px;"></ion-icon>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <!-- Header con logo y título -->
-  <div class="header-section">
-    <div class="logo-container">
-      <h1 class="app-title">MarketPUCV</h1>
-      <p class="app-subtitle">COMPRA Y VENTA MARKETPLACE UNIVERSITARIO</p>
-    </div>
+<ion-content>
+  <!-- Loading spinner -->
+  <div *ngIf="isLoading" style="display: flex; justify-content: center; align-items: center; height: 100vh;">
+    <ion-spinner name="crescent" color="primary"></ion-spinner>
   </div>
 
-  <!-- Información del producto principal -->
-  <ion-card class="product-card">
-    <!-- Galería de imágenes del producto -->
-    <div class="product-gallery">
-      <img
-        [src]="product.images[0]"
-        [alt]="product.name"
-        class="main-product-image"
-      />
-      <div class="image-thumbnails">
-        <img
-          *ngFor="let image of product.images; let i = index"
-          [src]="image"
-          [alt]="'Vista ' + (i + 1)"
-          class="thumbnail"
-          [class.active]="i === 0"
-          (click)="changeMainImage(image, $event)"
-        />
-      </div>
+  <!-- Contenido del producto -->
+  <div *ngIf="!isLoading && producto">
+    <!-- Imagen -->
+    <div class="producto-header">
+      <img [src]="producto.imagen" [alt]="producto.titulo" class="producto-imagen" />
     </div>
 
-    <ion-card-header>
-      <div class="price-section">
-        <h2 class="price">{{ formatPrice(product.price) }}</h2>
-        <div class="rating">
-          <ion-icon
-            *ngFor="let star of [1,2,3,4,5]"
-            [name]="getStarIcon(star, product.rating)"
-            class="star"
-          ></ion-icon>
-          <span class="rating-text">({{ product.rating }})</span>
-        </div>
-      </div>
-      <ion-card-title class="product-title">
-        {{ product.name }}
-      </ion-card-title>
-    </ion-card-header>
+    <!-- Información principal -->
+    <ion-card class="producto-info">
+      <ion-card-header>
+        <ion-card-title class="precio">{{ formatearPrecio(producto.precio) }}</ion-card-title>
+        <ion-card-subtitle class="rating">(4.5 ⭐)</ion-card-subtitle>
+      </ion-card-header>
 
-    <ion-card-content>
-      <div class="product-info">
-        <div class="usage-info"><strong>Uso:</strong> {{ product.usage }}</div>
+      <ion-card-content>
+        <!-- Título -->
+        <h2 class="titulo-producto">{{ producto.titulo }}</h2>
 
-        <div class="description">
-          <p>{{ product.description }}</p>
-          <p class="negotiable">Precio conversable.</p>
-        </div>
+        <!-- Descripción -->
+        <ion-item lines="none">
+          <ion-label class="descripcion-label">
+            <p class="label-small">Descripción:</p>
+            <p class="descripcion-texto">{{ producto.descripcion }}</p>
+          </ion-label>
+        </ion-item>
+
+        <!-- Nota de precio -->
+        <p class="nota-precio">Precio conversable.</p>
 
         <!-- Botones de acción -->
-        <div class="action-buttons">
-          <ion-button
-            expand="block"
-            color="primary"
-            class="buy-now-btn"
-            (click)="buyNow()"
-          >
-            <ion-icon name="bag-handle-outline" slot="start"></ion-icon>
-            Comprar ahora
-          </ion-button>
-          <ion-button
-            expand="block"
-            fill="outline"
-            color="primary"
-            class="add-cart-btn"
-            (click)="addToCart()"
-          >
-            <ion-icon name="cart-outline" slot="start"></ion-icon>
-            Añadir al carrito
-          </ion-button>
-        </div>
-      </div>
-    </ion-card-content>
-  </ion-card>
+        <ion-button expand="block" color="primary" (click)="comprar()" class="btn-comprar">
+          COMPRAR AHORA
+        </ion-button>
 
-  <!-- Información adicional del producto -->
-  <ion-card class="specs-card">
-    <ion-card-header>
-      <ion-card-title>Información adicional</ion-card-title>
-    </ion-card-header>
+        <ion-button
+          expand="block"
+          fill="outline"
+          color="primary"
+          (click)="contactarVendedor()"
+          class="btn-secundario"
+        >
+          <ion-icon name="chatbubble-outline" slot="start"></ion-icon>
+          CONTACTAR VENDEDOR
+        </ion-button>
 
-    <ion-card-content>
-      <div class="specs-grid">
-        <div class="spec-item"><strong>Marca:</strong> {{ product.brand }}</div>
-        <div class="spec-item">
-          <strong>Modelo:</strong> {{ product.model }}
-        </div>
-        <div class="spec-item">
-          <strong>Pantalla:</strong> {{ product.screen }}
-        </div>
-        <div class="spec-item">
-          <strong>Funciones:</strong> {{ product.functions }}
-        </div>
-        <div class="spec-item">
-          <strong>Energía:</strong> {{ product.power }}
-        </div>
-        <div class="spec-item">
-          <strong>Estado:</strong> {{ product.condition }}
-        </div>
-        <div class="spec-item">
-          <strong>Incluye:</strong> {{ product.includes }}
-        </div>
-      </div>
-    </ion-card-content>
-  </ion-card>
+        <ion-button
+          expand="block"
+          fill="outline"
+          color="primary"
+          (click)="toggleFavorite()"
+          class="btn-secundario"
+        >
+          <ion-icon [name]="isFavorite ? 'heart' : 'heart-outline'" slot="start"></ion-icon>
+          {{ isFavorite ? 'FAVORITO' : 'AGREGAR FAVORITO' }}
+        </ion-button>
+      </ion-card-content>
+    </ion-card>
 
-  <!-- Productos relacionados -->
-  <div class="related-section">
-    <h2 class="section-title">Productos relacionados</h2>
+    <!-- Información adicional -->
+    <ion-card class="info-adicional">
+      <ion-card-header>
+        <ion-card-title>Información adicional</ion-card-title>
+      </ion-card-header>
 
-    <div class="related-products-grid">
-      <!-- Producto relacionado -->
-      <ion-card
-        class="related-product-card"
-        *ngFor="let relatedProduct of relatedProducts"
-      >
-        <div class="product-image-container">
-          <img [src]="relatedProduct.image" [alt]="relatedProduct.name" />
-          <span class="category-tag">{{ relatedProduct.category }}</span>
-          <span
-            class="new-tag"
-            *ngIf="relatedProduct.condition === 'SIN ESTRENAR'"
-            >{{ relatedProduct.condition }}</span
-          >
-          <span class="used-tag" *ngIf="relatedProduct.condition === 'Usado'"
-            >{{ relatedProduct.condition }}</span
-          >
-        </div>
+      <ion-card-content>
+        <ion-item lines="none">
+          <ion-label>
+            <p class="label-small">Categoría:</p>
+            <p class="valor">{{ producto.categoria }}</p>
+          </ion-label>
+        </ion-item>
 
-        <ion-card-content>
-          <h3 class="product-name">{{ relatedProduct.name }}</h3>
-          <p class="product-description">{{ relatedProduct.description }}</p>
-          <div class="product-price">
-            {{ formatPrice(relatedProduct.price) }}
-          </div>
+        <ion-item lines="none">
+          <ion-label>
+            <p class="label-small">Campus:</p>
+            <p class="valor">{{ producto.campus }}</p>
+          </ion-label>
+        </ion-item>
 
-          <div class="product-actions">
-            <ion-button
-              size="small"
-              color="primary"
-              fill="solid"
-              (click)="addRelatedToCart(relatedProduct)"
-            >
-              <ion-icon name="cart-outline"></ion-icon>
-            </ion-button>
-            <ion-button
-              size="small"
-              color="primary"
-              fill="outline"
-              (click)="viewRelatedProduct(relatedProduct)"
-            >
-              Ver
-            </ion-button>
-          </div>
-        </ion-card-content>
-      </ion-card>
-    </div>
+        <ion-item lines="none">
+          <ion-label>
+            <p class="label-small">Publicado:</p>
+            <p class="valor">{{ producto.created_at | date: 'short' }}</p>
+          </ion-label>
+        </ion-item>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Vendedor -->
+    <ion-card class="info-vendedor">
+      <ion-card-header>
+        <ion-card-title>Vendedor</ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content>
+        <ion-item lines="none">
+          <ion-icon name="person-circle-outline" slot="start" style="font-size: 50px; color: #003366;"></ion-icon>
+          <ion-label>
+            <p class="vendedor-nombre">Usuario del Marketplace</p>
+            <p class="vendedor-rating">⭐ 4.8 (45 valoraciones)</p>
+          </ion-label>
+        </ion-item>
+      </ion-card-content>
+    </ion-card>
   </div>
 
-  <!-- Información de contacto -->
-  <ion-card class="contact-card">
-    <ion-card-content>
-      <div class="contact-info">
-        <div class="contact-item">
-          <ion-icon name="call-outline"></ion-icon>
-          <span>+56 9 1234 5678</span>
-        </div>
-        <div class="contact-item">
-          <ion-icon name="mail-outline"></ion-icon>
-          <span>ejemplo&#64;mail.pucv.cl</span>
-        </div>
-        <div class="contact-item">
-          <ion-icon name="location-outline"></ion-icon>
-          <span>Universidad PUCV, Valparaíso</span>
-        </div>
-      </div>
-    </ion-card-content>
-  </ion-card>
+  <!-- Error -->
+  <div *ngIf="!isLoading && !producto" style="padding: 40px; text-align: center;">
+    <p>No se pudo cargar el producto</p>
+  </div>
 </ion-content>

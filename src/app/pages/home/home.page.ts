@@ -20,7 +20,6 @@ import {
   IonLabel,
   IonItem,
   IonList,
-  IonMenuButton,
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import {
@@ -32,16 +31,7 @@ import {
   closeOutline,
 } from 'ionicons/icons';
 import { ProductosService } from '../../services/productos.service';
-
-interface Producto {
-  id: number;
-  titulo: string;
-  precio: number;
-  imagen: string;
-  descripcion: string;
-  categoria: string;
-  campus: string;
-}
+import { Producto } from '../../models/producto.model';
 
 interface FiltroRango {
   lower: number;
@@ -71,7 +61,6 @@ interface FiltroRango {
     IonLabel,
     IonItem,
     IonList,
-    IonMenuButton,
     CommonModule,
     FormsModule,
     RouterLink,
@@ -125,20 +114,20 @@ export class HomePage implements OnInit {
   }
 
   cargarProductos() {
-  console.log('🔥 Intentando cargar productos...'); // Debug
-  
-  this.productosService.getProductos().subscribe({
-    next: (data) => {
-      console.log('✅ Productos recibidos:', data); // Debug
-      this.productos = data;
-      this.aplicarFiltros();
-      console.log('✅ Productos filtrados:', this.productosFiltrados); // Debug
-    },
-    error: (err) => {
-      console.error('❌ Error al cargar productos:', err);
-    }
-  });
-}
+    console.log('🔥 Cargando productos desde el backend...');
+    
+    this.productosService.getProductos().subscribe({
+      next: (data) => {
+        console.log('✅ Productos recibidos:', data);
+        this.productos = data;
+        this.aplicarFiltros();
+        console.log('✅ Productos filtrados:', this.productosFiltrados.length);
+      },
+      error: (err) => {
+        console.error('❌ Error al cargar productos:', err);
+      }
+    });
+  }
 
   toggleFiltros() {
     this.mostrarFiltros = !this.mostrarFiltros;
