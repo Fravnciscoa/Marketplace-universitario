@@ -19,8 +19,7 @@ import {
   IonCardSubtitle,
   IonLabel,
   IonItem,
-  IonList,
-} from '@ionic/angular/standalone';
+  IonList, IonButtons } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import {
   searchOutline,
@@ -43,7 +42,7 @@ interface FiltroRango {
   templateUrl: './home.page.html',
   styleUrls: ['./home.page.scss'],
   standalone: true,
-  imports: [
+  imports: [IonButtons, 
     IonContent,
     IonHeader,
     IonTitle,
