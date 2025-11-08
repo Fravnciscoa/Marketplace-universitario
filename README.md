@@ -19,13 +19,7 @@
 
 - La aplicación permitirá a los usuarios registrarse, publicar productos, buscar lo que necesiten, reservar o comprar, y comunicarse entre sí. Todo esto con una interfaz sencilla, accesible y atractiva, basada en los colores institucionales de la universidad.
 
-## Requerimientos Funcionales por rol
-
-### Rol-Administrador
-
-- **1 – RF – Gestion de categorias (Administrador)**: Gestionar categorías de productos/servicios para organizar el marketplace.
-  
-- **2 – RF – Moderacion de administradores (Administradores)**: El sistema debera poder ser administrado y moderado por los usuarios con rol de admin que podran eliminar si no se cumplen las normas de comunidad y revisar publicaciones.
+## Requerimientos Funcionales 
 
 ### Rol usuario
 
@@ -64,6 +58,8 @@
 ## Diagramas de flujo de datos
 
 [Miro - Diagrama de flujo de navegacion de usuario](https://miro.com/app/board/uXjVJBmUGrc=/?share_link_id=335988796617)
+
+![Modelo relacional del proyecto](./src/assets/Modelos/Modelo%20relacional.png)
 
 ## Experiencia de usuario
 
