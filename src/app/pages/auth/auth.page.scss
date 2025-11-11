@@ -1,135 +1,344 @@
-:host {
-  --auth-bg-size: 30%; /* tamaño del logo de fondo */
-  --brand-color: #003366; /* color principal */
-  --brand-contrast: #ffffff;
-}
-
-/* Fondo con esquinas + degradado + logo + respaldo */
 ion-content {
-  --corner-size: 120px; /* tamaño de las “alas” de esquina */
-
-  --background:
-    /* 4 esquinas (alas), usando color de marca */
-    radial-gradient(
-      var(--corner-size) var(--corner-size) at 0 0,
-      var(--brand-color) 0 74%,
-      transparent 75%
-    ),
-    radial-gradient(
-      var(--corner-size) var(--corner-size) at 100% 0,
-      var(--brand-color) 0 74%,
-      transparent 75%
-    ),
-    radial-gradient(
-      var(--corner-size) var(--corner-size) at 0 100%,
-      var(--brand-color) 0 74%,
-      transparent 75%
-    ),
-    radial-gradient(
-      var(--corner-size) var(--corner-size) at 100% 100%,
-      var(--brand-color) 0 74%,
-      transparent 75%
-    ),
-    /* capa de oscurecimiento suave para legibilidad */
-      linear-gradient(180deg, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.25)),
-    /* logo centrado */ url("/assets/auth-bg.png") center center /
-      var(--auth-bg-size) no-repeat fixed,
-    /* color de respaldo */ #f0f0f0;
-
-  --ion-background-color: transparent;
+  --background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
 
-/* Menos padding vertical del ion-content */
-ion-content.ion-padding {
-  --padding-top: 8px;
-  --padding-bottom: 8px;
-}
-
-/* ===== Layout: tabs arriba, formulario centrado ===== */
-.auth-wrap {
-  min-height: 100dvh;
-  display: grid;
-  grid-template-rows: auto 1fr; /* fila 1: segment, fila 2: form */
-  gap: 12px;
-}
-
-ion-segment {
-  width: 100%;
-  max-width: 720px; /* alinear visualmente con el card */
-  margin-inline: auto;
-  margin-top: 8px;
-  background: rgba(255, 255, 255, 0.4);
-  border-radius: 12px;
-  padding: 4px;
-}
-
-/* SOLO el formulario centrado */
-.form-wrap {
-  width: 100%;
-  min-height: 0;
-  display: flex;
-  justify-content: center; /* centra horizontal */
-  align-items: center; /* centra vertical */
-  padding: 8px 12px;
-}
-
-/* ===== Panel del formulario ===== */
-.form-wrap > ion-card {
-  width: 100%;
-  max-width: 720px; /* << más ancho (“gordo”) */
-  margin-inline: auto;
-  background: rgba(255, 255, 255, 0.4);
-  -webkit-backdrop-filter: blur(4px);
-  backdrop-filter: blur(4px);
-  border-radius: 16px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
-  border: 2px solid var(--brand-color);
-}
-
-ion-card-title {
-  font-weight: 700;
-}
-
-/* Inputs / focus */
-ion-item {
-  --highlight-color-focused: var(--brand-color);
-}
-
-/* Checkbox T&C */
-ion-checkbox {
-  --checkbox-background-checked: var(--brand-color);
-  --checkbox-border-color-checked: var(--brand-color);
-}
-
-/* Botones de enviar */
-ion-button[type="submit"] {
-  --background: var(--brand-color);
-  --background-hover: var(--brand-color);
-  --background-activated: var(--brand-color);
-  --background-focused: var(--brand-color);
-  --color: var(--brand-contrast);
-}
-ion-button[type="submit"][disabled] {
-  opacity: 0.55;
-}
-
-/* Segment activo con color de marca */
-ion-segment-button {
-  --indicator-color: var(--brand-color);
-  --color-checked: var(--brand-color);
-}
-
-/* Espaciado acciones */
-.actions {
-  margin-top: 12px;
-}
-
-/* ===== Responsive ===== */
-@media (min-width: 768px) {
-  :host {
-    --auth-bg-size: 35%;
+// Logo y título superior
+.logo-container {
+  text-align: center;
+  padding: 40px 20px 20px;
+  animation: fadeInDown 0.6s ease-out;
+  
+  .app-title {
+    font-size: 32px;
+    font-weight: 700;
+    color: white;
+    margin: 0;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    letter-spacing: -0.5px;
   }
-  ion-content {
-    --corner-size: 160px;
-  } /* esquinas un poco más grandes en desktop */
+  
+  .app-subtitle {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.9);
+    margin: 8px 0 0;
+    font-weight: 300;
+  }
+}
+
+// Wrapper principal
+.auth-wrapper {
+  display: flex;
+  justify-content: center;
+  padding: 0 20px 60px;
+  animation: fadeInUp 0.8s ease-out;
+}
+
+// Card principal
+.auth-card {
+  width: 100%;
+  max-width: 480px;
+  border-radius: 24px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  background: white;
+  margin: 0;
+  overflow: hidden;
+}
+
+// Tabs modernos
+.tabs-container {
+  display: flex;
+  background: linear-gradient(to bottom, #f8f9fa, #ffffff);
+  border-bottom: 1px solid #e9ecef;
+  padding: 8px;
+  gap: 8px;
+  
+  .tab-button {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 14px 20px;
+    border: none;
+    background: transparent;
+    color: #6c757d;
+    font-size: 15px;
+    font-weight: 500;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    ion-icon {
+      font-size: 20px;
+    }
+    
+    &:hover {
+      background: rgba(102, 126, 234, 0.1);
+      color: #667eea;
+    }
+    
+    &.active {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+      transform: translateY(-2px);
+    }
+  }
+}
+
+// Contenido del formulario
+.form-content {
+  padding: 32px 24px;
+}
+
+.form-section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+// Grupos de input modernos
+.input-group {
+  position: relative;
+  
+  .input-icon {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 20px;
+    color: #667eea;
+    z-index: 10;
+    pointer-events: none;
+  }
+  
+  .modern-input {
+    --background: #f8f9fa;
+    --border-radius: 12px;
+    --padding-start: 48px;
+    --padding-end: 16px;
+    --padding-top: 14px;
+    --padding-bottom: 14px;
+    --color: #212529;
+    --placeholder-color: #6c757d;
+    --placeholder-opacity: 0.7;
+    
+    font-size: 15px;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+    
+    &:focus-within {
+      --background: white;
+      border-color: #667eea;
+      box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+    }
+  }
+  
+  .modern-select {
+    --background: #f8f9fa;
+    --border-radius: 12px;
+    --padding-start: 48px;
+    --padding-end: 16px;
+    
+    font-size: 15px;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+    
+    &::part(icon) {
+      color: #667eea;
+    }
+  }
+}
+
+// Checkbox moderno
+.checkbox-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 8px;
+  
+  .modern-checkbox {
+    --size: 22px;
+    --border-radius: 6px;
+    --border-color: #dee2e6;
+    --border-color-checked: #667eea;
+    --background-checked: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  }
+  
+  .checkbox-label {
+    font-size: 14px;
+    color: #6c757d;
+    line-height: 1.5;
+    margin: 0;
+  }
+}
+
+// Botón principal
+.primary-button {
+  --background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --border-radius: 12px;
+  --padding-top: 16px;
+  --padding-bottom: 16px;
+  --box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
+  
+  margin-top: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: none;
+  
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  &:hover:not([disabled]) {
+    --box-shadow: 0 12px 32px rgba(102, 126, 234, 0.5);
+    transform: translateY(-2px);
+  }
+  
+  &:active:not([disabled]) {
+    transform: translateY(0);
+  }
+  
+  &[disabled] {
+    opacity: 0.6;
+  }
+  
+  ion-spinner {
+    --color: white;
+  }
+}
+
+// Texto de ayuda
+.help-text {
+  text-align: center;
+  font-size: 14px;
+  color: #6c757d;
+  margin: 16px 0 0;
+  
+  .link {
+    color: #667eea;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: color 0.3s ease;
+    
+    &:hover {
+      color: #764ba2;
+      text-decoration: underline;
+    }
+  }
+}
+
+// Decoración inferior
+.footer-decoration {
+  height: 60px;
+  background: linear-gradient(to top, rgba(255, 255, 255, 0.1), transparent);
+  margin-top: -30px;
+}
+
+// Animaciones
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+// Responsive
+@media (max-width: 576px) {
+  .logo-container {
+    padding: 30px 20px 15px;
+    
+    .app-title {
+      font-size: 28px;
+    }
+    
+    .app-subtitle {
+      font-size: 13px;
+    }
+  }
+  
+  .form-content {
+    padding: 24px 20px;
+  }
+  
+  .tabs-container .tab-button {
+    font-size: 14px;
+    padding: 12px 16px;
+    
+    ion-icon {
+      font-size: 18px;
+    }
+  }
+}
+
+// Dark mode support
+@media (prefers-color-scheme: dark) {
+  .auth-card {
+    background: #1e1e1e;
+    
+    .tabs-container {
+      background: linear-gradient(to bottom, #2a2a2a, #1e1e1e);
+      border-bottom-color: #3a3a3a;
+      
+      .tab-button {
+        color: #adb5bd;
+        
+        &:hover {
+          background: rgba(102, 126, 234, 0.15);
+        }
+      }
+    }
+    
+    .input-group {
+      .modern-input {
+        --background: #2a2a2a;
+        --color: #e9ecef;
+        --placeholder-color: #adb5bd;
+        
+        &:focus-within {
+          --background: #343a40;
+        }
+      }
+      
+      .modern-select {
+        --background: #2a2a2a;
+      }
+    }
+    
+    .checkbox-label {
+      color: #adb5bd;
+    }
+    
+    .help-text {
+      color: #adb5bd;
+    }
+  }
 }

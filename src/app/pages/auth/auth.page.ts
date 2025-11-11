@@ -1,141 +1,203 @@
-import { Component, signal } from '@angular/core';
-import { IonicModule, ToastController } from '@ionic/angular';
-import { AuthService } from '../../services/auth.service';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {
-  ReactiveFormsModule,
-  FormBuilder,
-  FormGroup,
-  Validators,
-  AbstractControl,
-  ValidationErrors,
-} from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { 
+  IonContent, 
+  IonCard, 
+  IonCardHeader, 
+  IonCardTitle, 
+  IonCardContent,
+  IonSegment,
+  IonSegmentButton,
+  IonLabel,
+  IonItem,
+  IonInput,
+  IonButton,
+  IonCheckbox,
+  IonSelect,
+  IonSelectOption,
+  ToastController,
+  AlertController, IonIcon, IonSpinner } from '@ionic/angular/standalone';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-auth',
-  standalone: true,
-  imports: [IonicModule, CommonModule, ReactiveFormsModule],
   templateUrl: './auth.page.html',
   styleUrls: ['./auth.page.scss'],
+  standalone: true,
+  imports: [IonSpinner, IonIcon, 
+    CommonModule,
+    FormsModule,
+    IonContent,
+    IonCard,
+    IonCardHeader,
+    IonCardTitle,
+    IonCardContent,
+    IonSegment,
+    IonSegmentButton,
+    IonLabel,
+    IonItem,
+    IonInput,
+    IonButton,
+    IonCheckbox,
+    IonSelect,
+    IonSelectOption
+  ]
 })
 export class AuthPage {
-  mode = signal<'login' | 'register'>('login');
+  segment: 'login' | 'register' = 'login';
+  loading = false;
 
-  loginForm: FormGroup;
-  registerForm: FormGroup;
+  // Login form
+  loginData = {
+    correo: '',
+    contrasena: ''
+  };
+
+  // Register form
+  registerData = {
+    nombre: '',
+    correo: '',
+    usuario: '',
+    contrasena: '',
+    confirmarContrasena: '',
+    rut: '',
+    region: '',
+    comuna: '',
+    terminos_aceptados: false
+  };
+
+  regiones = [
+    'Arica y Parinacota',
+    'Tarapacá',
+    'Antofagasta',
+    'Atacama',
+    'Coquimbo',
+    'Valparaíso',
+    'Metropolitana',
+    'O\'Higgins',
+    'Maule',
+    'Ñuble',
+    'Biobío',
+    'Araucanía',
+    'Los Ríos',
+    'Los Lagos',
+    'Aysén',
+    'Magallanes'
+  ];
 
   constructor(
-    private fb: FormBuilder,
-    private router: Router,
-    private toastCtrl: ToastController,
     private authService: AuthService,
-  ) {
-    this.loginForm = this.fb.group({
-      identifier: ['', [Validators.required, Validators.minLength(3)]],
-      password: ['', [Validators.required, Validators.minLength(6)]],
-    });
+    private router: Router,
+    private toastController: ToastController,
+    private alertController: AlertController
+  ) {}
 
-    this.registerForm = this.fb.group(
-      {
-        username: ['', [Validators.required, Validators.minLength(3)]],
-        rut: ['', [Validators.required, this.rutValidator]],
-        email: ['', [Validators.required, Validators.email]],
-        region: ['', Validators.required],
-        comuna: ['', Validators.required],
-        password: ['', [Validators.required, Validators.minLength(6)]],
-        confirm: ['', [Validators.required]],
-        acceptTerms: [false, Validators.requiredTrue],
+  ngOnInit() {
+    if (this.authService.isLoggedIn) {
+      this.router.navigate(['/home']);
+    }
+  }
+
+  segmentChanged(event: any) {
+    this.segment = event.detail.value;
+  }
+
+  async onLogin() {
+    if (!this.loginData.correo || !this.loginData.contrasena) {
+      await this.showToast('Por favor completa todos los campos', 'warning');
+      return;
+    }
+
+    this.loading = true;
+
+    this.authService.login(this.loginData).subscribe({
+      next: async (response) => {
+        this.loading = false;
+        await this.showToast(`¡Bienvenido ${response.user.nombre}!`, 'success');
+        this.router.navigate(['/home']);
       },
-      { validators: this.matchPasswords('password', 'confirm') },
-    );
-  }
-
-  onModeChange(ev: CustomEvent) {
-    const value = (ev.detail as any).value as 'login' | 'register';
-    this.mode.set(value);
-  }
-
-  // ---- VALIDADORES ----
-  rutValidator(control: AbstractControl): ValidationErrors | null {
-    const v = (control.value || '').toString().trim();
-    const re = /^(\d{1,2}\.?\d{3}\.?\d{3})-([\dkK])$/; // plausible
-    return v === '' || re.test(v) ? null : { rutFormat: true };
-  }
-
-  matchPasswords(passKey: string, confirmKey: string) {
-    return (group: AbstractControl): ValidationErrors | null => {
-      const pass = group.get(passKey)?.value;
-      const confirm = group.get(confirmKey)?.value;
-      if (pass && confirm && pass !== confirm) {
-        group.get(confirmKey)?.setErrors({ mismatch: true });
-        return { passwordMismatch: true };
+      error: async (error) => {
+        this.loading = false;
+        const mensaje = error.error?.error || 'Error al iniciar sesión';
+        await this.showToast(mensaje, 'danger');
       }
-      return null;
-    };
+    });
   }
 
-  // Utilidad de template
-  invalid(form: FormGroup, controlName: string): boolean {
-    const c = form.get(controlName);
-    return !!c && c.invalid && (c.touched || c.dirty);
+  async onRegister() {
+    if (!this.registerData.nombre || !this.registerData.correo || 
+        !this.registerData.usuario || !this.registerData.contrasena ||
+        !this.registerData.rut || !this.registerData.region || !this.registerData.comuna) {
+      await this.showToast('Por favor completa todos los campos', 'warning');
+      return;
+    }
+
+    if (this.registerData.contrasena !== this.registerData.confirmarContrasena) {
+      await this.showToast('Las contraseñas no coinciden', 'warning');
+      return;
+    }
+
+    if (this.registerData.contrasena.length < 6) {
+      await this.showToast('La contraseña debe tener al menos 6 caracteres', 'warning');
+      return;
+    }
+
+    if (!this.registerData.terminos_aceptados) {
+      await this.showToast('Debes aceptar los términos y condiciones', 'warning');
+      return;
+    }
+
+    const correoPUCV = this.registerData.correo.toLowerCase();
+    if (!correoPUCV.includes('@pucv.cl') && !correoPUCV.includes('@mail.pucv.cl')) {
+      await this.showToast('Debes usar un correo institucional PUCV', 'warning');
+      return;
+    }
+
+    this.loading = true;
+
+    const { confirmarContrasena, ...dataToSend } = this.registerData;
+
+    this.authService.register(dataToSend).subscribe({
+      next: async (response) => {
+        this.loading = false;
+        await this.showToast(`¡Cuenta creada exitosamente! Bienvenido ${response.user.nombre}`, 'success');
+        this.router.navigate(['/home']);
+      },
+      error: async (error) => {
+        this.loading = false;
+        const mensaje = error.error?.error || 'Error al registrar usuario';
+        await this.showToast(mensaje, 'danger');
+      }
+    });
   }
 
-  // ---- TOAST ----
-  private async presentToast(message: string) {
-    const toast = await this.toastCtrl.create({
+  async showToast(message: string, color: string) {
+    const toast = await this.toastController.create({
       message,
-      duration: 2500,
+      duration: 3000,
       position: 'top',
+      color
     });
     await toast.present();
   }
 
-  // ---- SUBMITS ----
-  async submitLogin() {
-    if (this.loginForm.invalid) return;
-
-    const { identifier, password } = this.loginForm.value;
-    this.authService
-      .login({ usuario: identifier, contrasena: password })
-      .subscribe({
-        next: (response: any) => {
-          localStorage.setItem('token', response.token);
-          this.presentToast('✅ Login exitoso');
-          this.router.navigateByUrl('/home');
-        },
-        error: (err: any) => {
-          console.error('[AUTH] Error en login:', err);
-          this.presentToast('❌ Usuario o contraseña incorrectos');
-        },
-      });
-  }
-
-  async submitRegister() {
-    if (this.registerForm.invalid) return;
-
-    const formData = this.registerForm.value;
-    this.authService
-      .register({
-        nombre: formData.username,
-        usuario: formData.username,
-        correo: formData.email,
-        contrasena: formData.password,
-        rut: formData.rut,
-        region: formData.region,
-        comuna: formData.comuna,
-        terminos_aceptados: formData.acceptTerms,
-      })
-      .subscribe({
-        next: (response: any) => {
-          localStorage.setItem('token', response.token);
-          this.presentToast('✅ Registro exitoso');
-          this.router.navigateByUrl('/home');
-        },
-        error: (err: any) => {
-          console.error('[AUTH] Error en registro:', err);
-          this.presentToast('❌ El usuario o email ya existe');
-        },
-      });
+  async showTerminos() {
+    const alert = await this.alertController.create({
+      header: 'Términos y Condiciones',
+      message: `
+        <p><strong>Marketplace Universitario PUCV</strong></p>
+        <ul>
+          <li>Solo estudiantes PUCV pueden registrarse</li>
+          <li>Debes usar tu correo institucional</li>
+          <li>Eres responsable de los productos que publiques</li>
+          <li>No está permitida la venta de productos ilegales</li>
+          <li>Respeta a los demás usuarios</li>
+        </ul>
+      `,
+      buttons: ['Cerrar']
+    });
+    await alert.present();
   }
 }

@@ -1,163 +1,187 @@
-<ion-content class="ion-padding">
-  <div class="auth-wrap">
-    <!-- Tabs -->
-    <ion-segment [value]="mode()" (ionChange)="onModeChange($event)">
-      <ion-segment-button value="login">
-        <ion-label>Iniciar sesión</ion-label>
-      </ion-segment-button>
-      <ion-segment-button value="register">
-        <ion-label>Registrarme</ion-label>
-      </ion-segment-button>
-    </ion-segment>
-
-    <!-- SOLO el formulario centrado -->
-    <div class="form-wrap">
-      <!-- LOGIN -->
-      <ng-container *ngIf="mode() === 'login'">
-        <ion-card>
-          <ion-card-header>
-            <ion-card-title>Acceso</ion-card-title>
-          </ion-card-header>
-          <ion-card-content>
-            <form [formGroup]="loginForm" (ngSubmit)="submitLogin()">
-              <ion-list>
-                <ion-item>
-                  <ion-label position="stacked">Usuario / RUT / Correo</ion-label>
-                  <ion-input
-                    formControlName="identifier"
-                    placeholder="tucorreo@dominio.cl"
-                  ></ion-input>
-                </ion-item>
-                <ion-note color="danger" *ngIf="invalid(loginForm, 'identifier')">
-                  Campo requerido (mín. 3 caracteres).
-                </ion-note>
-
-                <ion-item>
-                  <ion-label position="stacked">Contraseña</ion-label>
-                  <ion-input
-                    type="password"
-                    formControlName="password"
-                    placeholder="********"
-                  ></ion-input>
-                </ion-item>
-                <ion-note color="danger" *ngIf="invalid(loginForm, 'password')">
-                  Requerida (mín. 6 caracteres).
-                </ion-note>
-              </ion-list>
-
-              <div class="actions">
-                <ion-button type="submit" expand="block" [disabled]="loginForm.invalid">
-                  Iniciar sesión
-                </ion-button>
-              </div>
-            </form>
-          </ion-card-content>
-        </ion-card>
-      </ng-container>
-
-      <!-- REGISTRO -->
-      <ng-container *ngIf="mode() === 'register'">
-        <ion-card>
-          <ion-card-header>
-            <ion-card-title>Crear cuenta</ion-card-title>
-          </ion-card-header>
-          <ion-card-content>
-            <form [formGroup]="registerForm" (ngSubmit)="submitRegister()">
-              <ion-list>
-                <ion-item>
-                  <ion-label position="stacked">Usuario</ion-label>
-                  <ion-input formControlName="username" placeholder="Ej: sebastian"></ion-input>
-                </ion-item>
-                <ion-note color="danger" *ngIf="invalid(registerForm, 'username')">
-                  Requerido (mín. 3 caracteres).
-                </ion-note>
-
-                <ion-item>
-                  <ion-label position="stacked">RUT</ion-label>
-                  <ion-input formControlName="rut" placeholder="12.345.678-5"></ion-input>
-                </ion-item>
-                <ion-note color="danger" *ngIf="invalid(registerForm, 'rut')">
-                  Formato RUT plausible: 12.345.678-5 o 12345678-5.
-                </ion-note>
-
-                <ion-item>
-                  <ion-label position="stacked">Correo</ion-label>
-                  <ion-input
-                    formControlName="email"
-                    type="email"
-                    placeholder="correo@dominio.cl"
-                  ></ion-input>
-                </ion-item>
-                <ion-note color="danger" *ngIf="invalid(registerForm, 'email')">
-                  Correo inválido.
-                </ion-note>
-
-                <ion-item>
-                  <ion-label position="stacked">Región</ion-label>
-                  <ion-input formControlName="region" placeholder="Valparaíso"></ion-input>
-                </ion-item>
-                <ion-note color="danger" *ngIf="invalid(registerForm, 'region')">
-                  Requerida.
-                </ion-note>
-
-                <ion-item>
-                  <ion-label position="stacked">Comuna</ion-label>
-                  <ion-input formControlName="comuna" placeholder="Limache"></ion-input>
-                </ion-item>
-                <ion-note color="danger" *ngIf="invalid(registerForm, 'comuna')">
-                  Requerida.
-                </ion-note>
-
-                <ion-item>
-                  <ion-label position="stacked">Contraseña</ion-label>
-                  <ion-input
-                    type="password"
-                    formControlName="password"
-                    placeholder="********"
-                  ></ion-input>
-                </ion-item>
-                <ion-note color="danger" *ngIf="invalid(registerForm, 'password')">
-                  Requerida (mín. 6 caracteres).
-                </ion-note>
-
-                <ion-item>
-                  <ion-label position="stacked">Confirmar contraseña</ion-label>
-                  <ion-input
-                    type="password"
-                    formControlName="confirm"
-                    placeholder="********"
-                  ></ion-input>
-                </ion-item>
-                <ion-note
-                  color="danger"
-                  *ngIf="
-                    registerForm.hasError('passwordMismatch') &&
-                    (registerForm.touched || registerForm.dirty)
-                  "
-                >
-                  Las contraseñas no coinciden.
-                </ion-note>
-
-                <ion-item lines="none">
-                  <ion-checkbox formControlName="acceptTerms" slot="start"></ion-checkbox>
-                  <ion-label>Acepto los términos y condiciones</ion-label>
-                </ion-item>
-                <ion-note color="danger" *ngIf="invalid(registerForm, 'acceptTerms')">
-                  Debes aceptar los T&C.
-                </ion-note>
-              </ion-list>
-
-              <div class="actions">
-                <ion-button type="submit" expand="block" [disabled]="registerForm.invalid">
-                  Registrarme
-                </ion-button>
-              </div>
-            </form>
-          </ion-card-content>
-        </ion-card>
-      </ng-container>
-    </div>
-    <!-- /form-wrap -->
+<ion-content [fullscreen]="true">
+  <!-- Logo PUCV fijo arriba -->
+  <div class="logo-container">
+    <h1 class="app-title">Marketplace PUCV</h1>
+    <p class="app-subtitle">Compra y vende entre estudiantes</p>
   </div>
-  <!-- /auth-wrap -->
+
+  <!-- Contenedor principal con sombra y gradiente -->
+  <div class="auth-wrapper">
+    <ion-card class="auth-card">
+      <!-- Tabs modernos -->
+      <div class="tabs-container">
+        <button 
+          class="tab-button" 
+          [class.active]="segment === 'login'"
+          (click)="segment = 'login'">
+          <ion-icon name="log-in-outline"></ion-icon>
+          Iniciar Sesión
+        </button>
+        <button 
+          class="tab-button" 
+          [class.active]="segment === 'register'"
+          (click)="segment = 'register'">
+          <ion-icon name="person-add-outline"></ion-icon>
+          Registrarse
+        </button>
+      </div>
+
+      <!-- Contenido del formulario -->
+      <ion-card-content class="form-content">
+        <!-- FORMULARIO LOGIN -->
+        <div *ngIf="segment === 'login'" class="form-section fade-in">
+          <div class="input-group">
+            <ion-icon name="mail-outline" class="input-icon"></ion-icon>
+            <ion-input 
+              type="email" 
+              [(ngModel)]="loginData.correo"
+              placeholder="tu.correo@pucv.cl"
+              class="modern-input">
+            </ion-input>
+          </div>
+
+          <div class="input-group">
+            <ion-icon name="lock-closed-outline" class="input-icon"></ion-icon>
+            <ion-input 
+              type="password" 
+              [(ngModel)]="loginData.contrasena"
+              placeholder="Contraseña"
+              class="modern-input">
+            </ion-input>
+          </div>
+
+          <ion-button 
+            expand="block" 
+            (click)="onLogin()" 
+            [disabled]="loading"
+            class="primary-button">
+            <ion-spinner *ngIf="loading" name="crescent"></ion-spinner>
+            <span *ngIf="!loading">
+              <ion-icon name="log-in-outline" slot="start"></ion-icon>
+              Entrar
+            </span>
+          </ion-button>
+
+          <p class="help-text">
+            ¿No tienes cuenta? <a (click)="segment = 'register'" class="link">Regístrate aquí</a>
+          </p>
+        </div>
+
+        <!-- FORMULARIO REGISTER -->
+        <div *ngIf="segment === 'register'" class="form-section fade-in">
+          <div class="input-group">
+            <ion-icon name="person-outline" class="input-icon"></ion-icon>
+            <ion-input 
+              type="text" 
+              [(ngModel)]="registerData.nombre"
+              placeholder="Nombre Completo"
+              class="modern-input">
+            </ion-input>
+          </div>
+
+          <div class="input-group">
+            <ion-icon name="at-outline" class="input-icon"></ion-icon>
+            <ion-input 
+              type="text" 
+              [(ngModel)]="registerData.usuario"
+              placeholder="Usuario"
+              class="modern-input">
+            </ion-input>
+          </div>
+
+          <div class="input-group">
+            <ion-icon name="mail-outline" class="input-icon"></ion-icon>
+            <ion-input 
+              type="email" 
+              [(ngModel)]="registerData.correo"
+              placeholder="correo@pucv.cl"
+              class="modern-input">
+            </ion-input>
+          </div>
+
+          <div class="input-group">
+            <ion-icon name="card-outline" class="input-icon"></ion-icon>
+            <ion-input 
+              type="text" 
+              [(ngModel)]="registerData.rut"
+              placeholder="RUT (12345678-9)"
+              class="modern-input">
+            </ion-input>
+          </div>
+
+          <div class="input-group">
+            <ion-icon name="location-outline" class="input-icon"></ion-icon>
+            <ion-select 
+              [(ngModel)]="registerData.region" 
+              placeholder="Selecciona tu región"
+              class="modern-select"
+              interface="action-sheet">
+              <ion-select-option *ngFor="let region of regiones" [value]="region">
+                {{ region }}
+              </ion-select-option>
+            </ion-select>
+          </div>
+
+          <div class="input-group">
+            <ion-icon name="map-outline" class="input-icon"></ion-icon>
+            <ion-input 
+              type="text" 
+              [(ngModel)]="registerData.comuna"
+              placeholder="Comuna"
+              class="modern-input">
+            </ion-input>
+          </div>
+
+          <div class="input-group">
+            <ion-icon name="lock-closed-outline" class="input-icon"></ion-icon>
+            <ion-input 
+              type="password" 
+              [(ngModel)]="registerData.contrasena"
+              placeholder="Contraseña (mínimo 6 caracteres)"
+              class="modern-input">
+            </ion-input>
+          </div>
+
+          <div class="input-group">
+            <ion-icon name="lock-open-outline" class="input-icon"></ion-icon>
+            <ion-input 
+              type="password" 
+              [(ngModel)]="registerData.confirmarContrasena"
+              placeholder="Confirmar Contraseña"
+              class="modern-input">
+            </ion-input>
+          </div>
+
+          <div class="checkbox-group">
+            <ion-checkbox 
+              [(ngModel)]="registerData.terminos_aceptados"
+              class="modern-checkbox">
+            </ion-checkbox>
+            <label class="checkbox-label">
+              Acepto los <a (click)="showTerminos()" class="link">términos y condiciones</a>
+            </label>
+          </div>
+
+          <ion-button 
+            expand="block" 
+            (click)="onRegister()" 
+            [disabled]="loading"
+            class="primary-button">
+            <ion-spinner *ngIf="loading" name="crescent"></ion-spinner>
+            <span *ngIf="!loading">
+              <ion-icon name="checkmark-circle-outline" slot="start"></ion-icon>
+              Crear Cuenta
+            </span>
+          </ion-button>
+
+          <p class="help-text">
+            ¿Ya tienes cuenta? <a (click)="segment = 'login'" class="link">Inicia sesión</a>
+          </p>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <!-- Footer decorativo -->
+  <div class="footer-decoration"></div>
 </ion-content>
