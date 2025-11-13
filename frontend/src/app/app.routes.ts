@@ -1,4 +1,6 @@
 import { Routes } from '@angular/router';
+import { authGuard } from './guards/auth.guard';
+
 
 export const routes: Routes = [
   {
@@ -24,7 +26,8 @@ export const routes: Routes = [
   },
   {
     path: 'perfil',
-    loadComponent: () => import('./pages/perfil/perfil.page').then(m => m.PerfilPage)
+    loadComponent: () => import('./pages/perfil/perfil.page').then(m => m.PerfilPage),
+    canActivate: [authGuard]  // ← AÑADE ESTO
   },
   {
     path: 'carrito',

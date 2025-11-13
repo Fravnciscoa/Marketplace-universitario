@@ -1,154 +1,132 @@
 <ion-header>
-  <ion-toolbar class="header-toolbar">
-    <div class="header-container">
-      <div class="header-logo">
-        <a routerLink="/home">
-          <img src="assets/icon/Escudo_PUCV-2016__Perfil Redes TW_FB.png" alt="PUCV Logo" style="height:40px; cursor:pointer;" />
-        </a>
-        <a routerLink="/home" style="text-decoration:none; color:inherit;">
-          <span class="header-logo-text" style="cursor:pointer;">MarketPUCV</span>
-        </a>
-      </div>
-
-      <nav class="header-nav">
-        <a routerLink="/home" class="nav-link">Inicio</a>
-        <a routerLink="/categorias" class="nav-link">Categorías</a>
-        <a routerLink="/mis-publicaciones" class="nav-link">Mis publicaciones</a>
-        <a routerLink="/ayuda" class="nav-link">Ayuda</a>
-      </nav>
-
-      <div class="header-actions">
-        <ion-button class="btn-auth btn-login" fill="clear">
-          Iniciar sesión
-        </ion-button>
-        <ion-button class="btn-auth btn-register" fill="solid">
-          Registrarse
-        </ion-button>
-      </div>
-    </div>
+  <ion-toolbar>
+    <ion-title>{{ producto?.titulo || 'Cargando...' }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
-
-<ion-content>
-  <div class="detalle-wrapper">
-    <!-- Columna izquierda: Imagen principal -->
-    <div class="producto-imagen-section">
-      <ion-card class="imagen-card">
-        <div class="imagen-principal-container">
-          <img [src]="producto.imagen" [alt]="producto.titulo" />
-        </div>
-      </ion-card>
-    </div>
-
-    <!-- Columna central: Información del producto -->
-    <div class="producto-info-section">
-      <!-- Precio destacado -->
-      <ion-card class="precio-card">
+<!-- Contenido cuando el producto está cargado -->
+<ion-content *ngIf="producto">
+  
+  <div class="detalle-container">
+    
+    <!-- COLUMNA IZQUIERDA: Información del vendedor -->
+    <div class="columna-vendedor">
+      <ion-card>
         <ion-card-content>
-          <h1 class="producto-precio-principal">{{ formatearPrecio(producto.precio) }}</h1>
-        </ion-card-content>
-      </ion-card>
-
-      <!-- Descripción principal -->
-      <ion-card class="info-card">
-        <ion-card-content>
-          <h2 class="producto-titulo-principal">{{ producto.titulo }}</h2>
-          <div class="producto-detalles-rapidos">
-            <span class="detalle-item"><strong>Uso:</strong> {{ producto.uso }}</span>
-            <span class="detalle-item"><strong>Campus:</strong> {{ producto.campus }}</span>
+          <!-- Avatar del vendedor -->
+          <div class="vendedor-avatar">
+            <img src="assets/avatar/4794936.png" alt="Avatar vendedor" />
           </div>
-          <p class="producto-descripcion-principal">{{ producto.descripcion }}</p>
-          <p class="precio-conversable" *ngIf="producto.precioConversable">
-            <strong>Precio conversable</strong>
-          </p>
-        </ion-card-content>
-      </ion-card>
-
-      <!-- Información adicional -->
-      <ion-card class="info-card">
-        <ion-card-header>
-          <ion-card-title class="info-titulo">Información adicional</ion-card-title>
-        </ion-card-header>
-        <ion-card-content>
-          <div class="info-detalle-grid">
-            <div class="info-item" *ngFor="let item of producto.informacionAdicional">
-              <strong>{{ item.label }}:</strong> {{ item.valor }}
+          
+          <h3 class="vendedor-nombre">Vendedor: Sebastián Castro</h3>
+          
+          <!-- Reseñas -->
+          <div class="resenas-section">
+            <h4>Reseñas...</h4>
+            <div class="resena-item" *ngFor="let resena of resenas">
+              <p class="resena-usuario">{{ resena.usuario }}</p>
+              <p class="resena-texto">"{{ resena.comentario }}"</p>
+            </div>
+          </div>
+          
+          <!-- Información de contacto -->
+          <div class="contacto-info">
+            <div class="contacto-item">
+              <ion-icon name="call-outline"></ion-icon>
+              <span>Teléfono: +56 9 1234 5678</span>
+            </div>
+            <div class="contacto-item">
+              <ion-icon name="mail-outline"></ion-icon>
+              <span>example@mail.pucv.cl</span>
             </div>
           </div>
         </ion-card-content>
       </ion-card>
+    </div>
 
+    <!-- COLUMNA CENTRAL: Producto principal -->
+    <div class="columna-producto">
+      <!-- Imagen del producto -->
+      <div class="producto-imagen">
+        <img [src]="producto.imagen" [alt]="producto.titulo" />
+      </div>
+      
+      <!-- Precio -->
+      <div class="producto-precio">
+        <h1>{{ formatearPrecio(producto.precio) }}</h1>
+      </div>
+      
+      <!-- Descripción en card azul -->
+      <ion-card class="descripcion-card">
+        <ion-card-content>
+          <h2>{{ producto.titulo }}</h2>
+          <p><strong>Uso:</strong> 1 Año</p>
+          <p><strong>Información adicional:</strong></p>
+          <p>{{ producto.descripcion }}</p>
+          <p class="conversable">Precio conversable.</p>
+        </ion-card-content>
+      </ion-card>
+      
+      <!-- Información adicional -->
+      <div class="info-adicional">
+        <h3>Información adicional</h3>
+        <div class="info-grid">
+          <div class="info-item">
+            <strong>Marca:</strong> <span>Casio</span>
+          </div>
+          <div class="info-item">
+            <strong>Modelo:</strong> <span>fx-570ES Plus</span>
+          </div>
+          <div class="info-item">
+            <strong>Pantalla:</strong> <span>2 líneas con display natural</span>
+          </div>
+          <div class="info-item">
+            <strong>Funciones:</strong> <span>más de 400 operaciones científicas</span>
+          </div>
+          <div class="info-item">
+            <strong>Energía:</strong> <span>solar + batería</span>
+          </div>
+          <div class="info-item">
+            <strong>Estado:</strong> <span>usado, en perfecto funcionamiento</span>
+          </div>
+          <div class="info-item">
+            <strong>Incluye:</strong> <span>tapa protectora</span>
+          </div>
+        </div>
+      </div>
+      
       <!-- Botones de acción -->
-      <div class="acciones-producto">
-        <ion-button expand="block" color="dark" class="btn-accion btn-carrito">
-          <ion-icon name="cart-outline" slot="start"></ion-icon>
+      <div class="botones-accion">
+        <ion-button expand="block" fill="outline" color="dark">
+          <ion-icon slot="start" name="add-outline"></ion-icon>
           Añadir al carrito
         </ion-button>
-        <ion-button expand="block" class="btn-accion btn-comprar">
+        <ion-button expand="block" color="warning">
           Comprar ahora
         </ion-button>
       </div>
     </div>
 
-    <!-- Columna derecha: Vendedor y productos relacionados -->
-    <div class="sidebar-section">
-      <!-- Info del vendedor -->
-      <ion-card class="vendedor-card">
+    <!-- COLUMNA DERECHA: Productos relacionados -->
+    <div class="columna-relacionados">
+      <ion-card *ngFor="let relacionado of productosRelacionados" [routerLink]="['/detalle-producto', relacionado.id]">
+        <img [src]="relacionado.imagen" [alt]="relacionado.titulo" />
         <ion-card-content>
-          <div class="vendedor-perfil">
-            <div class="vendedor-avatar">
-              <ion-icon name="person"></ion-icon>
-            </div>
-            <h3 class="vendedor-nombre">Vendedor</h3>
-            <p class="vendedor-nombre-real">{{ producto.vendedor }}</p>
-          </div>
-          
-          <div class="vendedor-contacto">
-            <div class="contacto-item">
-              <ion-icon name="call-outline"></ion-icon>
-              <span>{{ producto.telefono }}</span>
-            </div>
-            <div class="contacto-item">
-              <ion-icon name="mail-outline"></ion-icon>
-              <span>{{ producto.email }}</span>
-            </div>
-          </div>
+          <ion-card-title>{{ relacionado.titulo }}</ion-card-title>
+          <p class="precio-relacionado">{{ formatearPrecio(relacionado.precio) }}</p>
+          <p class="descripcion-relacionado">{{ relacionado.descripcionCorta }}</p>
         </ion-card-content>
       </ion-card>
-
-     <!-- Reseñas -->
-<ion-card class="resenas-card">
-  <ion-card-header>
-    <ion-card-title class="resenas-titulo">Reseñas</ion-card-title>
-  </ion-card-header>
-  <ion-card-content>
-    <div class="resena-item" *ngFor="let resena of resenas">
-      <div class="resena-header">
-        <span class="resena-usuario">{{ resena.usuario }}</span>
-      </div>
-      <p class="resena-texto">"{{ resena.comentario }}"</p>
     </div>
-  </ion-card-content>
-</ion-card>
+    
+  </div>
+  
+</ion-content>
 
-
-
-      <!-- Productos relacionados -->
-      <div class="relacionados-section">
-        <h3 class="relacionados-titulo">Productos relacionados</h3>
-        <ion-card 
-          class="producto-relacionado-card" 
-          *ngFor="let relacionado of productosRelacionados"
-          [routerLink]="['/detalle-producto', relacionado.id]">
-          <img [src]="relacionado.imagen" [alt]="relacionado.titulo" />
-          <ion-card-content>
-            <h4 class="relacionado-titulo">{{ relacionado.titulo }}</h4>
-            <p class="relacionado-precio">{{ formatearPrecio(relacionado.precio) }}</p>
-            <p class="relacionado-descripcion">{{ relacionado.descripcionCorta }}</p>
-          </ion-card-content>
-        </ion-card>
-      </div>
-    </div>
+<!-- Pantalla de carga -->
+<ion-content *ngIf="!producto">
+  <div class="cargando">
+    <ion-spinner name="crescent"></ion-spinner>
+    <p>Cargando producto...</p>
   </div>
 </ion-content>

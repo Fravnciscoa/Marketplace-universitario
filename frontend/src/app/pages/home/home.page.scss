@@ -666,3 +666,14 @@ ion-content {
 .main-container {
   padding-bottom: map-get($spacing, xxxl);
 }
+
+// Botón de cerrar sesión
+.btn-logout {
+  --background: #{map-get($colors, danger)};
+  --color: #{map-get($colors, text)};
+  --border-radius: 8px;
+  
+  &:hover {
+    --background: #{darken(#dc3545, 10%)};
+  }
+}

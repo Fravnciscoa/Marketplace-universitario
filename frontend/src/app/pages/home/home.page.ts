@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import {
   IonContent,
   IonHeader,
@@ -19,7 +19,9 @@ import {
   IonCardSubtitle,
   IonLabel,
   IonItem,
-  IonList, IonButtons } from '@ionic/angular/standalone';
+  IonList,
+  IonButtons,
+} from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import {
   searchOutline,
@@ -28,9 +30,13 @@ import {
   heartOutline,
   chevronDownOutline,
   closeOutline,
+  logInOutline,
+  logOutOutline,
+  personOutline,
 } from 'ionicons/icons';
 import { ProductosService } from '../../services/productos.service';
-import { Producto } from '../../services/productos.service';  
+import { AuthService } from '../../services/auth.service';
+import { Producto } from '../../services/productos.service';
 
 interface FiltroRango {
   lower: number;
@@ -42,7 +48,8 @@ interface FiltroRango {
   templateUrl: './home.page.html',
   styleUrls: ['./home.page.scss'],
   standalone: true,
-  imports: [IonButtons, 
+  imports: [
+    IonButtons,
     IonContent,
     IonHeader,
     IonTitle,
@@ -66,38 +73,37 @@ interface FiltroRango {
   ],
 })
 export class HomePage implements OnInit {
+  isLoggedIn = false;
   mostrarFiltros = true;
   terminoBusqueda = '';
-
   tipoServicioFiltros = {
     comprar: false,
     reservar: false,
   };
-
   categoriaFiltros = {
     libros: false,
     electronica: false,
     deportes: false,
   };
-
   rangoPrecio: FiltroRango = {
     lower: 5000,
     upper: 500000,
   };
-
   precioMin = 5000;
   precioMax = 500000;
-
   campusFiltros = {
     isabelBrown: false,
     casaCentral: false,
     curauma: false,
   };
-
   productos: Producto[] = [];
   productosFiltrados: Producto[] = [];
 
-  constructor(private productosService: ProductosService) {
+  constructor(
+    private productosService: ProductosService,
+    private authService: AuthService,
+    private router: Router
+  ) {
     addIcons({
       searchOutline,
       filterOutline,
@@ -105,27 +111,39 @@ export class HomePage implements OnInit {
       heartOutline,
       chevronDownOutline,
       closeOutline,
+      logInOutline,
+      logOutOutline,
+      personOutline,
     });
   }
 
   ngOnInit() {
     this.cargarProductos();
+    
+    // Suscribirse al estado de autenticación
+    this.authService.currentUser$.subscribe(user => {
+      this.isLoggedIn = !!user;
+    });
   }
 
   cargarProductos() {
     console.log('🔥 Cargando productos desde el backend...');
-    
     this.productosService.getProductos().subscribe({
       next: (data) => {
         console.log('✅ Productos recibidos:', data);
-          this.productos = data;
+        this.productos = data;
         this.aplicarFiltros();
         console.log('✅ Productos filtrados:', this.productosFiltrados.length);
       },
       error: (err) => {
         console.error('❌ Error al cargar productos:', err);
-      }
+      },
     });
+  }
+
+  cerrarSesion() {
+    this.authService.logout();
+    this.router.navigate(['/home']);
   }
 
   toggleFiltros() {
@@ -133,20 +151,23 @@ export class HomePage implements OnInit {
   }
 
   aplicarFiltros() {
-    this.productosFiltrados = this.productos.filter(producto => {
-      const coincideBusqueda = this.terminoBusqueda === '' ||
+    this.productosFiltrados = this.productos.filter((producto) => {
+      const coincideBusqueda =
+        this.terminoBusqueda === '' ||
         producto.titulo.toLowerCase().includes(this.terminoBusqueda.toLowerCase()) ||
         producto.descripcion.toLowerCase().includes(this.terminoBusqueda.toLowerCase());
 
-      const categoriaSeleccionada = Object.values(this.categoriaFiltros).some(v => v);
-      const coincideCategoria = !categoriaSeleccionada ||
+      const categoriaSeleccionada = Object.values(this.categoriaFiltros).some((v) => v);
+      const coincideCategoria =
+        !categoriaSeleccionada ||
         this.categoriaFiltros[producto.categoria as keyof typeof this.categoriaFiltros];
 
-      const coincidePrecio = producto.precio >= this.rangoPrecio.lower &&
-        producto.precio <= this.rangoPrecio.upper;
+      const coincidePrecio =
+        producto.precio >= this.rangoPrecio.lower && producto.precio <= this.rangoPrecio.upper;
 
-      const campusSeleccionado = Object.values(this.campusFiltros).some(v => v);
-      const coincideCampus = !campusSeleccionado ||
+      const campusSeleccionado = Object.values(this.campusFiltros).some((v) => v);
+      const coincideCampus =
+        !campusSeleccionado ||
         this.campusFiltros[producto.campus as keyof typeof this.campusFiltros];
 
       return coincideBusqueda && coincideCategoria && coincidePrecio && coincideCampus;
@@ -172,24 +193,20 @@ export class HomePage implements OnInit {
       comprar: false,
       reservar: false,
     };
-
     this.categoriaFiltros = {
       libros: false,
       electronica: false,
       deportes: false,
     };
-
     this.rangoPrecio = {
       lower: this.precioMin,
       upper: this.precioMax,
     };
-
     this.campusFiltros = {
       isabelBrown: false,
       casaCentral: false,
       curauma: false,
     };
-
     this.aplicarFiltros();
   }
 

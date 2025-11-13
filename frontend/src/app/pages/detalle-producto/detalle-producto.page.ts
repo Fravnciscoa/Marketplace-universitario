@@ -2,17 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink, ActivatedRoute } from '@angular/router';
-import {
-  IonContent,
-  IonHeader,
-  IonToolbar,
-  IonButton,
-  IonIcon,
-  IonCard,
-  IonCardContent,
-  IonCardHeader,
-  IonCardTitle,
-} from '@ionic/angular/standalone';
+import { IonContent, IonHeader, IonToolbar, IonButton, IonIcon, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonTitle, IonSpinner } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import {
   cartOutline,
@@ -21,25 +11,11 @@ import {
   mailOutline,
   person,
 } from 'ionicons/icons';
+import { ProductosService, Producto } from '../../services/productos.service';
 
 interface InformacionAdicional {
   label: string;
   valor: string;
-}
-
-interface Producto {
-  id: number;
-  titulo: string;
-  precio: number;
-  descripcion: string;
-  imagen: string;
-  uso: string;
-  campus: string;
-  precioConversable: boolean;
-  vendedor: string;
-  telefono: string;
-  email: string;
-  informacionAdicional: InformacionAdicional[];
 }
 
 interface Resena {
@@ -73,55 +49,24 @@ interface ProductoRelacionado {
     CommonModule,
     FormsModule,
     RouterLink,
-  ],
+    IonTitle,
+    IonSpinner
+],
 })
 export class DetalleProductoPage implements OnInit {
-  producto: Producto = {
-    id: 1,
-    titulo: 'Calculadora Científica usada',
-    precio: 10000,
-    descripcion: 'Calculadora científica en excelente estado, utilizada solo durante un año universitario. Funciona perfectamente, sin rayas en la pantalla y con todas las teclas operativas. Ideal para estudiantes de enseñanza media o universitaria.',
-    imagen: 'assets/calc.jpg', // Imagen actualizada
-    uso: '1 Año',
-    campus: 'Casa Central',
-    precioConversable: true,
-    vendedor: 'Sebastián Castro',
-    telefono: '+56 9 1234 5678',
-    email: 'example@mail.pucv.cl',
-    informacionAdicional: [
-      { label: 'Marca', valor: 'Casio' },
-      { label: 'Modelo', valor: 'fx-570ES Plus' },
-      { label: 'Pantalla', valor: '2 líneas con display natural' },
-      { label: 'Funciones', valor: 'más de 400 operaciones científicas' },
-      { label: 'Energía', valor: 'solar + batería' },
-      { label: 'Estado', valor: 'usado, en perfecto funcionamiento' },
-      { label: 'Incluye', valor: 'tapa protectora' },
-    ],
-  };
+  producto: Producto | null = null;
 
   resenas: Resena[] = [
     { usuario: 'Usuario1', comentario: 'Excelente atención. 100% recomendable.' },
     { usuario: 'Usuario2', comentario: 'Excelente atención. 100% recomendable.' },
   ];
 
-  productosRelacionados: ProductoRelacionado[] = [
-    {
-      id: 2,
-      titulo: 'Libro de Matemáticas',
-      precio: 5000,
-      imagen: 'assets/libro.jpg', // Imagen actualizada
-      descripcionCorta: 'Matemáticas universitarias introductorias',
-    },
-    {
-      id: 3,
-      titulo: 'Kit de útiles escolares',
-      precio: 3000,
-      imagen: 'assets/kit.jpg', // Imagen actualizada
-      descripcionCorta: 'Set completo para universidad',
-    },
-  ];
+  productosRelacionados: ProductoRelacionado[] = [];
 
-  constructor(private route: ActivatedRoute) {
+  constructor(
+    private route: ActivatedRoute,
+    private productosService: ProductosService
+  ) {
     addIcons({
       cartOutline,
       personOutline,
@@ -130,17 +75,50 @@ export class DetalleProductoPage implements OnInit {
       person,
     });
   }
-
+// Método para cargar productos relacionados
+cargarProductosRelacionados() {
+  this.productosRelacionados = [
+    {
+      id: 2,
+      titulo: 'Libro',
+      precio: 5000,
+      imagen: 'assets/libro.jpg',
+      descripcionCorta: 'Body text.'
+    },
+    {
+      id: 3,
+      titulo: 'Pack lápices grafito',
+      precio: 3000,
+      imagen: 'assets/kit.jpg',
+      descripcionCorta: 'Descripción breve del pack.'
+    }
+  ];
+}
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.cargarProducto(Number(id));
+      this.cargarProductosRelacionados(); // ← AGREGAR ESTO
+
     }
   }
 
   cargarProducto(id: number) {
-    // Aquí conectarías con tu servicio para obtener el producto desde el backend
-    console.log('Cargando producto:', id);
+    console.log('🔥 Cargando producto con ID:', id);
+    
+    this.productosService.getProductoById(id).subscribe({
+      next: (response: any) => {
+        console.log('✅ Producto recibido:', response);
+        
+        // Extraer el producto según la estructura de tu respuesta
+        this.producto = response.data || response;
+        
+        console.log('✅ Producto cargado:', this.producto);
+      },
+      error: (err) => {
+        console.error('❌ Error al cargar producto:', err);
+      },
+    });
   }
 
   formatearPrecio(precio: number): string {
