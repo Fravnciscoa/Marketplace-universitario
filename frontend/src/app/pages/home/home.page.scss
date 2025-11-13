@@ -666,3 +666,109 @@ ion-content {
 .main-container {
   padding-bottom: map-get($spacing, xxxl);
 }
+
+// Controles de paginación
+.pagination-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  background: var(--ion-color-light);
+  border-top: 2px solid var(--ion-color-medium);
+  margin-top: 16px;
+  border-radius: 8px 8px 0 0;
+  
+  ion-button {
+    --padding-start: 12px;
+    --padding-end: 12px;
+    
+    &[disabled] {
+      opacity: 0.4;
+    }
+  }
+}
+
+.pagination-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  min-width: 140px;
+  
+  ion-text {
+    line-height: 1.4;
+    
+    strong {
+      font-size: 15px;
+    }
+    
+    small {
+      font-size: 12px;
+    }
+  }
+}
+
+// Overlay de carga
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.loading-container {
+  background: var(--ion-color-light);
+  padding: 24px 32px;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  
+  ion-spinner {
+    width: 40px;
+    height: 40px;
+    margin-bottom: 12px;
+  }
+  
+  p {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 500;
+  }
+}
+
+// Responsive para pantallas pequeñas
+@media (max-width: 576px) {
+  .pagination-controls {
+    padding: 12px;
+    
+    ion-button {
+      font-size: 12px;
+      --padding-start: 8px;
+      --padding-end: 8px;
+      
+      ion-icon {
+        font-size: 16px;
+      }
+    }
+  }
+  
+  .pagination-info {
+    min-width: 100px;
+    
+    ion-text strong {
+      font-size: 13px;
+    }
+    
+    ion-text small {
+      font-size: 11px;
+    }
+  }
+}

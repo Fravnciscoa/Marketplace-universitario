@@ -202,43 +202,89 @@
       <!-- Grid de Productos -->
       <main class="productos-main">
         <!-- PRODUCTOS GRID -->
-      <div class="productos-grid">
-        <div *ngFor="let producto of productosFiltrados" 
-            class="producto-item"
-            [routerLink]="['/detalle-producto', producto.id]"
-            style="cursor: pointer;">
-          
-          <ion-card class="producto-card">
-            <!-- Imagen del producto -->
-            <div class="imagen-container">
-              <img [src]="producto.imagen" [alt]="producto.titulo" class="producto-imagen">
-            </div>
-
-            <!-- Información del producto -->
-            <ion-card-content class="producto-contenido">
-              <!-- Título -->
-              <h3 class="titulo">{{ producto.titulo }}</h3>
-
-              <!-- Precio -->
-              <div class="precio-section">
-                <span class="precio">{{ formatearPrecio(producto.precio) }}</span>
+        <div class="productos-grid">
+          <div *ngFor="let producto of productosFiltrados" 
+              class="producto-item"
+              [routerLink]="['/detalle-producto', producto.id]"
+              style="cursor: pointer;">
+            
+            <ion-card class="producto-card">
+              <!-- Imagen del producto -->
+              <div class="imagen-container">
+                <img [src]="producto.imagen" [alt]="producto.titulo" class="producto-imagen">
               </div>
 
-              <!-- Descripción corta -->
-              <p class="descripcion">{{ producto.descripcion | slice:0:80 }}...</p>
+              <!-- Información del producto -->
+              <ion-card-content class="producto-contenido">
+                <!-- Título -->
+                <h3 class="titulo">{{ producto.titulo }}</h3>
 
-              <!-- Categoría y Campus -->
-              <div class="meta-info">
-                <span class="categoria-badge">{{ producto.categoria }}</span>
-                <span class="campus-badge">{{ producto.campus }}</span>
-              </div>
-            </ion-card-content>
-          </ion-card>
+                <!-- Precio -->
+                <div class="precio-section">
+                  <span class="precio">{{ formatearPrecio(producto.precio) }}</span>
+                </div>
+
+                <!-- Descripción corta -->
+                <p class="descripcion">{{ producto.descripcion | slice:0:80 }}...</p>
+
+                <!-- Categoría y Campus -->
+                <div class="meta-info">
+                  <span class="categoria-badge">{{ producto.categoria }}</span>
+                  <span class="campus-badge">{{ producto.campus }}</span>
+                </div>
+              </ion-card-content>
+            </ion-card>
+            
+          </div>
         </div>
-      </div>
+
+        <!-- ==================== CONTROLES DE PAGINACIÓN ==================== -->
+        <div class="pagination-controls" *ngIf="totalPaginas > 1">
+          <ion-button 
+            size="small" 
+            fill="outline" 
+            [disabled]="!tienePaginaAnterior || cargando"
+            (click)="paginaAnterior()">
+            <ion-icon slot="start" name="chevron-back-outline"></ion-icon>
+            Anterior
+          </ion-button>
+
+          <div class="pagination-info">
+            <ion-text color="primary">
+              <strong>Página {{ paginaActual }} de {{ totalPaginas }}</strong>
+            </ion-text>
+            <br>
+            <ion-text color="medium">
+              <small>{{ totalProductos }} productos totales</small>
+            </ion-text>
+          </div>
+
+          <ion-button 
+            size="small" 
+            fill="outline" 
+            [disabled]="!tieneSiguientePagina || cargando"
+            (click)="siguientePagina()">
+            Siguiente
+            <ion-icon slot="end" name="chevron-forward-outline"></ion-icon>
+          </ion-button>
+        </div>
+        <!-- ================================================================= -->
+
       </main>
 
     </div>
-
+    
   </div>
+
+  <!-- ==================== SPINNER DE CARGA ==================== -->
+  <div class="loading-overlay" *ngIf="cargando">
+    <div class="loading-container">
+      <ion-spinner name="crescent" color="primary"></ion-spinner>
+      <ion-text color="primary">
+        <p>Cargando productos...</p>
+      </ion-text>
+    </div>
+  </div>
+  <!-- ========================================================= -->
+
 </ion-content>
