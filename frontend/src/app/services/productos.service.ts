@@ -5,6 +5,11 @@ import { map } from 'rxjs/operators';
 import { AuthService } from './auth.service';
 
 export interface Producto {
+  ano_compra: string;
+  condicion: string;
+  modelo: string;
+  marca: string;
+vendedor: any;
   id?: number;
   titulo: string;
   precio: number;
