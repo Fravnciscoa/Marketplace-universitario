@@ -1,0 +1,41 @@
+{
+	"info": {
+		"_postman_id": "6e2d49c1-a150-45da-b9da-8fa3bf9b9f08",
+		"name": "Marketplace-universitario",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "50052812",
+		"_collection_link": "https://stebqn-8738219.postman.co/workspace/Esteban-Martinez's-Workspace~15b32f8c-9bd4-4a15-82b2-34d9a7e3b864/collection/50052812-6e2d49c1-a150-45da-b9da-8fa3bf9b9f08?action=share&source=collection_link&creator=50052812"
+	},
+	"item": [
+		{
+			"name": "http://localhost:3000/api/productos?page=1&limit =5",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/productos?page=1&limit =5",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"productos"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "limit ",
+							"value": "5"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
