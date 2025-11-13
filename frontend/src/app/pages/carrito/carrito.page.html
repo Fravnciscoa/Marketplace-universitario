@@ -1,0 +1,32 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-button (click)="goBack()">
+        <ion-icon name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Mi Carrito</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>🚧 En Construcción</ion-card-title>
+      <ion-card-subtitle>Esta funcionalidad estará disponible en EP3</ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content>
+      <p>El carrito de compras incluirá:</p>
+      <ul>
+        <li>Lista de productos agregados</li>
+        <li>Cantidad y total</li>
+        <li>Proceso de pago</li>
+        <li>Resumen de compra</li>
+      </ul>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-button expand="block" (click)="goBack()">
+    Volver al Inicio
+  </ion-button>
+</ion-content>

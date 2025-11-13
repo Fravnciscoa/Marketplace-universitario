@@ -1,0 +1,148 @@
+.producto-header {
+  width: 100%;
+  height: 300px;
+  overflow: hidden;
+  background: #f5f5f5;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.producto-info {
+  border-radius: 20px 20px 0 0;
+  margin-top: -20px;
+  position: relative;
+  z-index: 10;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+
+  ion-card-header {
+    padding-bottom: 5px;
+  }
+
+  .precio {
+    font-size: 32px;
+    font-weight: bold;
+    color: #2563eb;
+    margin: 0;
+  }
+
+  .rating {
+    font-size: 12px;
+    color: #666;
+  }
+
+  .titulo-producto {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 10px 0;
+    color: #333;
+  }
+
+  .label-small {
+    font-size: 12px;
+    color: #999;
+    margin: 0;
+    text-transform: uppercase;
+  }
+
+  .valor-pequeno {
+    font-size: 14px;
+    color: #333;
+    margin: 5px 0 0 0;
+  }
+
+  .descripcion-label {
+    --padding-start: 0;
+  }
+
+  .descripcion-texto {
+    font-size: 14px;
+    color: #555;
+    line-height: 1.5;
+    margin: 5px 0 0 0;
+  }
+
+  .nota-precio {
+    color: #2563eb;
+    font-size: 12px;
+    font-style: italic;
+    margin: 10px 0;
+  }
+
+  .btn-comprar {
+    margin-top: 15px;
+    height: 45px;
+    font-weight: bold;
+  }
+
+  .btn-secundario {
+    margin-top: 10px;
+    height: 45px;
+  }
+}
+
+.info-adicional {
+  margin: 20px;
+  border-radius: 10px;
+
+  ion-card-header {
+    padding-bottom: 10px;
+  }
+
+  ion-item {
+    --padding-start: 0;
+    margin-bottom: 10px;
+  }
+
+  .label-small {
+    font-size: 12px;
+    color: #999;
+    margin: 0;
+    text-transform: uppercase;
+  }
+
+  .valor {
+    font-size: 14px;
+    color: #333;
+    margin: 5px 0 0 0;
+  }
+}
+
+.info-vendedor {
+  margin: 20px;
+  border-radius: 10px;
+
+  ion-card-header {
+    padding-bottom: 10px;
+  }
+
+  .vendedor-nombre {
+    font-weight: bold;
+    margin: 0;
+  }
+
+  .vendedor-rating {
+    font-size: 12px;
+    color: #999;
+    margin: 5px 0 0 0;
+  }
+}
+
+.productos-relacionados {
+  margin: 40px 20px;
+  text-align: center;
+
+  h3 {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+}
+
+ion-item {
+  --inner-padding-end: 0;
+  --padding-start: 0;
+}
