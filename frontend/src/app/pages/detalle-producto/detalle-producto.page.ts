@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink, ActivatedRoute } from '@angular/router';
-import { IonContent, IonHeader, IonToolbar, IonButton, IonIcon, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonTitle, IonSpinner } from '@ionic/angular/standalone';
+import { IonContent, IonHeader, IonToolbar, IonButton, IonIcon, IonCard, IonCardContent, IonCardTitle, IonTitle, IonSpinner, IonButtons, IonBackButton } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import {
   cartOutline,
@@ -10,13 +10,9 @@ import {
   callOutline,
   mailOutline,
   person,
+  addOutline
 } from 'ionicons/icons';
 import { ProductosService, Producto } from '../../services/productos.service';
-
-interface InformacionAdicional {
-  label: string;
-  valor: string;
-}
 
 interface Resena {
   usuario: string;
@@ -44,21 +40,23 @@ interface ProductoRelacionado {
     IonIcon,
     IonCard,
     IonCardContent,
-    IonCardHeader,
+  // IonCardHeader removed (unused)
     IonCardTitle,
     CommonModule,
     FormsModule,
     RouterLink,
     IonTitle,
-    IonSpinner
+    IonSpinner,
+    IonButtons,
+    IonBackButton
 ],
 })
 export class DetalleProductoPage implements OnInit {
   producto: Producto | null = null;
 
   resenas: Resena[] = [
-    { usuario: 'Usuario1', comentario: 'Excelente atención. 100% recomendable.' },
-    { usuario: 'Usuario2', comentario: 'Excelente atención. 100% recomendable.' },
+    { usuario: 'Usuario1', comentario: 'Excelente atención, 100% recomendable.' },
+    { usuario: 'Usuario2', comentario: 'Excelente atención, 100% recomendable.' },
   ];
 
   productosRelacionados: ProductoRelacionado[] = [];
@@ -73,46 +71,27 @@ export class DetalleProductoPage implements OnInit {
       callOutline,
       mailOutline,
       person,
+      addOutline
     });
   }
-// Método para cargar productos relacionados
-cargarProductosRelacionados() {
-  this.productosRelacionados = [
-    {
-      id: 2,
-      titulo: 'Libro',
-      precio: 5000,
-      imagen: 'assets/libro.jpg',
-      descripcionCorta: 'Body text.'
-    },
-    {
-      id: 3,
-      titulo: 'Pack lápices grafito',
-      precio: 3000,
-      imagen: 'assets/kit.jpg',
-      descripcionCorta: 'Descripción breve del pack.'
-    }
-  ];
-}
-  ngOnInit() {
-    const id = this.route.snapshot.paramMap.get('id');
-    if (id) {
-      this.cargarProducto(Number(id));
-      this.cargarProductosRelacionados(); // ← AGREGAR ESTO
 
-    }
+  ngOnInit() {
+    this.route.paramMap.subscribe(params => {
+      const id = params.get('id');
+      if (id) {
+        this.producto = null; // Resetea el producto para mostrar el spinner
+        this.cargarProducto(Number(id));
+        this.cargarProductosRelacionados();
+      }
+    });
   }
 
   cargarProducto(id: number) {
     console.log('🔥 Cargando producto con ID:', id);
-    
     this.productosService.getProductoById(id).subscribe({
       next: (response: any) => {
         console.log('✅ Producto recibido:', response);
-        
-        // Extraer el producto según la estructura de tu respuesta
         this.producto = response.data || response;
-        
         console.log('✅ Producto cargado:', this.producto);
       },
       error: (err) => {
@@ -121,7 +100,28 @@ cargarProductosRelacionados() {
     });
   }
 
+  cargarProductosRelacionados() {
+    // Lógica para cargar productos que no sean el actual
+    this.productosRelacionados = [
+      {
+        id: 2,
+        titulo: 'Libro',
+        precio: 5000,
+        imagen: 'assets/libro.jpg',
+        descripcionCorta: 'Matemáticas Universitarias Introductorias.'
+      },
+      {
+        id: 3,
+        titulo: 'Pack lápices grafito',
+        precio: 3000,
+        imagen: 'assets/kit.jpg',
+        descripcionCorta: 'Set de lápices de grafito para dibujo.'
+      }
+    ];
+  }
+
   formatearPrecio(precio: number): string {
+    if (precio === null || precio === undefined) return '';
     return precio === 0 ? '$0' : `$${precio.toLocaleString('es-CL')}`;
   }
 }
