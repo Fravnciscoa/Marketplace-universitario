@@ -76,26 +76,41 @@ export class CarritoPage implements OnInit {
 
   cargarCarrito() {
     // 🔥 Temporal: productos de ejemplo en el carrito
-    this.carrito = [
-      {
-        id: 1,
-        titulo: 'Cálculo I - Stewart',
-        descripcion: 'Libro universitario clásico',
-        precio: 15000,
-        categoria: 'libros',
-        campus: 'Casa Central',
-        imagen: 'assets/demo/libro.jpg',
-      },
-      {
-        id: 5,
-        titulo: 'Audífonos Bluetooth',
-        descripcion: 'Cancelación de ruido',
-        precio: 18000,
-        categoria: 'electronica',
-        campus: 'Curauma',
-        imagen: 'assets/demo/audifonos.jpg',
-      },
-    ];
+this.carrito = [
+  {
+    id: 1,
+    titulo: 'Cálculo I - Stewart',
+    descripcion: 'Libro universitario clásico',
+    precio: 15000,
+    categoria: 'libros',
+    campus: 'Casa Central',
+    imagen: 'assets/demo/libro.jpg',
+
+    // 🔥 CAMPOS EXTRA QUE EXIGE EL MODELO
+    ano_compra: "2023",
+    condicion: 'Usado',
+    modelo: '7ma edición',
+    marca: 'Stewart',
+    vendedor: 'UsuarioDemo1',
+  },
+  {
+    id: 5,
+    titulo: 'Audífonos Bluetooth',
+    descripcion: 'Cancelación de ruido',
+    precio: 18000,
+    categoria: 'electronica',
+    campus: 'Curauma',
+    imagen: 'assets/demo/audifonos.jpg',
+
+    // 🔥 CAMPOS EXTRA QUE EXIGE EL MODELO
+    ano_compra: "2024",
+    condicion: 'Como nuevo',
+    modelo: 'AirSound X1',
+    marca: 'SoundTech',
+    vendedor: 'UsuarioDemo2',
+  },
+];
+
 
     this.calcularTotal();
   }
