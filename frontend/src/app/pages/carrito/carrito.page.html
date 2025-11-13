@@ -1,32 +1,104 @@
-<ion-header>
-  <ion-toolbar color="primary">
-    <ion-buttons slot="start">
-      <ion-button (click)="goBack()">
-        <ion-icon name="arrow-back"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-    <ion-title>Mi Carrito</ion-title>
+<ion-header class="ion-no-border">
+  <ion-toolbar class="header-toolbar">
+    <div class="header-container">
+      <!-- Logo -->
+      <div class="header-logo">
+        <img
+          src="assets/icon/Escudo_PUCV-2016__Perfil Redes TW_FB.png"
+          alt="PUCV Logo"
+        />
+        <span class="header-logo-text">MarketPlace</span>
+      </div>
+
+      <!-- Navegación -->
+      <nav class="header-nav">
+        <a routerLink="/home" class="nav-link">Inicio</a>
+        <a routerLink="/categorias" class="nav-link">Categorías</a>
+        <a routerLink="/carrito" class="nav-link nav-link--active">
+          <ion-icon name="cart-outline"></ion-icon>
+          Carrito
+        </a>
+      </nav>
+
+      <!-- Acciones -->
+      <div class="header-actions">
+        <ng-container *ngIf="!isLoggedIn">
+          <ion-button routerLink="/auth" fill="clear" class="btn-auth btn-login">
+            <ion-icon slot="start" name="log-in-outline"></ion-icon>
+            Iniciar Sesión
+          </ion-button>
+          <ion-button routerLink="/auth" fill="solid" class="btn-auth btn-register">
+            Registrarse
+          </ion-button>
+        </ng-container>
+
+        <ng-container *ngIf="isLoggedIn">
+          <ion-button routerLink="/perfil" fill="clear" class="btn-auth btn-login">
+            <ion-icon slot="start" name="person-outline"></ion-icon>
+            Perfil
+          </ion-button>
+          <ion-button (click)="cerrarSesion()" fill="solid" class="btn-auth btn-logout">
+            <ion-icon slot="start" name="log-out-outline"></ion-icon>
+            Cerrar Sesión
+          </ion-button>
+        </ng-container>
+      </div>
+    </div>
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">
-  <ion-card>
-    <ion-card-header>
-      <ion-card-title>🚧 En Construcción</ion-card-title>
-      <ion-card-subtitle>Esta funcionalidad estará disponible en EP3</ion-card-subtitle>
-    </ion-card-header>
-    <ion-card-content>
-      <p>El carrito de compras incluirá:</p>
-      <ul>
-        <li>Lista de productos agregados</li>
-        <li>Cantidad y total</li>
-        <li>Proceso de pago</li>
-        <li>Resumen de compra</li>
-      </ul>
-    </ion-card-content>
-  </ion-card>
+<ion-content>
+  <div class="main-container carrito-container">
+    <h1 class="carrito-titulo">Tu carrito</h1>
 
-  <ion-button expand="block" (click)="goBack()">
-    Volver al Inicio
-  </ion-button>
+    <!-- Si está vacío -->
+    <div class="carrito-vacio" *ngIf="carrito.length === 0">
+      <ion-icon name="cart-outline"></ion-icon>
+      <p>Tu carrito está vacío</p>
+      <a routerLink="/categorias" class="btn-ir-categorias">Explorar categorías</a>
+    </div>
+
+    <!-- Lista de productos -->
+    <div class="carrito-lista" *ngIf="carrito.length > 0">
+      <ion-card
+        class="carrito-item"
+        *ngFor="let producto of carrito"
+      >
+        <div class="carrito-item-content">
+          <img
+            [src]="producto.imagen"
+            alt="{{ producto.titulo }}"
+            class="carrito-item-imagen"
+          />
+
+          <div class="carrito-item-info">
+            <h3>{{ producto.titulo }}</h3>
+            <p class="carrito-descripcion">{{ producto.descripcion }}</p>
+            <span class="carrito-precio">{{ formatearPrecio(producto.precio) }}</span>
+          </div>
+        </div>
+
+        <div class="carrito-item-actions">
+          <ion-button
+            fill="clear"
+            class="btn-eliminar"
+            (click)="eliminarProducto(producto.id)"
+          >
+            <ion-icon name="trash-outline"></ion-icon>
+          </ion-button>
+        </div>
+      </ion-card>
+
+      <!-- Resumen -->
+      <div class="carrito-resumen">
+        <p>Total:</p>
+        <span>{{ formatearPrecio(total) }}</span>
+      </div>
+
+      <div class="carrito-acciones">
+        <button class="btn-vaciar" (click)="vaciarCarrito()">Vaciar carrito</button>
+        <button class="btn-comprar">Proceder al pago</button>
+      </div>
+    </div>
+  </div>
 </ion-content>
