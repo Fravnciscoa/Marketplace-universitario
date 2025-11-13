@@ -30,7 +30,7 @@ import {
   closeOutline,
 } from 'ionicons/icons';
 import { ProductosService } from '../../services/productos.service';
-import { Producto } from '../../models/producto.model';
+import { Producto } from '../../services/productos.service';  
 
 interface FiltroRango {
   lower: number;

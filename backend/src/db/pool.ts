@@ -1,14 +1,15 @@
 import { Pool } from 'pg';
+import dotenv from 'dotenv';
 
-console.log('🔥 USANDO POOL HARDCODEADO 🔥');
+dotenv.config();
 
 export const pool = new Pool({
-  host: 'localhost',
-  port: 5432,
-  database: 'IngWeb',     // 🔥 Hardcodeado
-  user: 'postgres',        // 🔥 Hardcodeado
-  password: '1234',        // 🔥 Hardcodeado
+  host: process.env.DB_HOST || 'localhost',
+  port: Number(process.env.DB_PORT) || 5432,
+  database: process.env.DB_DATABASE || 'IngWeb',
+  user: process.env.DB_USER || 'postgres',
+  password: process.env.DB_PASSWORD,
   ssl: false
 });
 
-console.log('Pool configurado para base de datos: IngWeb');
+console.log(`✅ Pool configurado - Base de datos: ${process.env.DB_DATABASE || 'IngWeb'}`);
