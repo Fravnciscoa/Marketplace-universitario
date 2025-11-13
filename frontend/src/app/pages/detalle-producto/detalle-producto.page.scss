@@ -1,148 +1,613 @@
-.producto-header {
+// ============================================
+// Importar variables del home
+// ============================================
+
+// Tipografía
+$font-stack: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+  Ubuntu, "Helvetica Neue", Helvetica, Arial, sans-serif;
+
+// Paleta de colores
+$colors: (
+  primary: #003366,
+  primary-light: #0066cc,
+  primary-dark: #001a33,
+  secondary: #f0f4f8,
+  accent: #ffb400,
+  text: #ffffff,
+  text-dark: #000000,
+  text-muted: #555555,
+  text-light: #666666,
+  bg: #f5f5f5,
+  bg-hero: #3d3d7a,
+  card: #ffffff,
+  border: #e0e0e0,
+  success: #28a745,
+  warning: #ffc107,
+  danger: #dc3545,
+);
+
+// Espaciados
+$spacing: (
+  xs: 4px,
+  sm: 8px,
+  md: 16px,
+  lg: 24px,
+  xl: 32px,
+  xxl: 40px,
+  xxxl: 48px,
+);
+
+// Tamaños de fuente
+$font-sizes: (
+  xs: 12px,
+  sm: 14px,
+  base: 16px,
+  lg: 18px,
+  xl: 20px,
+  xxl: 24px,
+  xxxl: 28px,
+  hero: 36px,
+);
+
+// Breakpoints
+$breakpoints: (
+  mobile: 576px,
+  tablet: 768px,
+  desktop: 992px,
+  wide: 1200px,
+);
+
+// ============================================
+// Mixins
+// ============================================
+
+@mixin mobile {
+  @media (max-width: map-get($breakpoints, mobile)) {
+    @content;
+  }
+}
+
+@mixin tablet {
+  @media (max-width: map-get($breakpoints, tablet)) {
+    @content;
+  }
+}
+
+@mixin desktop {
+  @media (min-width: map-get($breakpoints, desktop)) {
+    @content;
+  }
+}
+
+@mixin card-shadow {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+@mixin transition($property: all) {
+  transition: $property 0.3s ease;
+}
+
+// ============================================
+// Base
+// ============================================
+
+ion-content {
+  --background: #{map-get($colors, bg)};
+}
+
+// ============================================
+// Header (Reutilizado de home)
+// ============================================
+
+.header-toolbar {
+  --background: #{map-get($colors, primary)};
+  --color: #{map-get($colors, text)};
+  --border-width: 0;
+  padding: 0;
+}
+
+.header-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: map-get($spacing, md) map-get($spacing, xxl);
+  max-width: 1400px;
+  margin: 0 auto;
   width: 100%;
-  height: 300px;
-  overflow: hidden;
-  background: #f5f5f5;
+
+  @include tablet {
+    padding: map-get($spacing, md);
+    flex-wrap: wrap;
+  }
+}
+
+.header-logo {
+  display: flex;
+  align-items: center;
+  gap: map-get($spacing, md);
+
+  img {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+
+    @include mobile {
+      width: 40px;
+      height: 40px;
+    }
+  }
+}
+
+.header-logo-text {
+  font-size: map-get($font-sizes, xl);
+  font-weight: 700;
+  color: map-get($colors, text);
+  letter-spacing: -0.5px;
+
+  @include mobile {
+    font-size: map-get($font-sizes, lg);
+  }
+}
+
+.header-nav {
+  display: flex;
+  gap: map-get($spacing, xl);
+  align-items: center;
+
+  @include tablet {
+    width: 100%;
+    order: 3;
+    margin-top: map-get($spacing, md);
+    gap: map-get($spacing, md);
+    overflow-x: auto;
+  }
+}
+
+.nav-link {
+  color: map-get($colors, text);
+  font-size: map-get($font-sizes, base);
+  font-weight: 500;
+  text-decoration: none;
+  padding: map-get($spacing, sm) 0;
+  border-bottom: 2px solid transparent;
+  @include transition(border-color);
+  white-space: nowrap;
+
+  &:hover {
+    border-bottom-color: map-get($colors, accent);
+  }
+
+  @include mobile {
+    font-size: map-get($font-sizes, sm);
+  }
+}
+
+.header-actions {
+  display: flex;
+  gap: map-get($spacing, md);
+  align-items: center;
+
+  @include tablet {
+    margin-left: auto;
+  }
+}
+
+.btn-auth {
+  font-weight: 600;
+  text-transform: none;
+  font-size: map-get($font-sizes, sm);
+  height: 40px;
+  
+  @include mobile {
+    font-size: 12px;
+    height: 36px;
+    --padding-start: 12px;
+    --padding-end: 12px;
+  }
+}
+
+.btn-login {
+  --color: #{map-get($colors, text)};
+  
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
+.btn-register {
+  --background: #{map-get($colors, accent)};
+  --color: #{map-get($colors, text-dark)};
+  --border-radius: 8px;
+  
+  &:hover {
+    --background: #{darken(#ffb400, 10%)};
+  }
+}
+
+// ============================================
+// Layout Principal de Detalle
+// ============================================
+
+.detalle-wrapper {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: map-get($spacing, lg) map-get($spacing, xxl);
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  gap: map-get($spacing, lg);
+
+  @include tablet {
+    grid-template-columns: 1fr;
+    padding: map-get($spacing, lg) map-get($spacing, md);
+  }
+
+  @include mobile {
+    padding: map-get($spacing, md);
+    gap: map-get($spacing, md);
+  }
+}
+
+// ============================================
+// Columna Izquierda: Imagen Principal
+// ============================================
+
+.producto-imagen-section {
+  display: flex;
+  flex-direction: column;
+}
+
+.imagen-card {
+  margin: 0;
+  @include card-shadow;
+  background: map-get($colors, card);
+}
+
+.imagen-principal-container {
+  background: linear-gradient(135deg, #3d3d7a 0%, #2a2a5e 100%);
+  padding: map-get($spacing, xl);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+
+  @include tablet {
+    min-height: 300px;
+    padding: map-get($spacing, lg);
+  }
+
+  @include mobile {
+    min-height: 250px;
+    padding: map-get($spacing, md);
+  }
+
+  img {
+    max-width: 100%;
+    max-height: 500px;
+    object-fit: contain;
+
+    @include mobile {
+      max-height: 300px;
+    }
+  }
+}
+
+// ============================================
+// Columna Central: Información del Producto
+// ============================================
+
+.producto-info-section {
+  display: flex;
+  flex-direction: column;
+  gap: map-get($spacing, md);
+}
+
+.precio-card {
+  margin: 0;
+  @include card-shadow;
+  background: map-get($colors, card);
+
+  ion-card-content {
+    padding: map-get($spacing, lg);
+    text-align: center;
+  }
+}
+
+.producto-precio-principal {
+  font-size: map-get($font-sizes, hero);
+  font-weight: 700;
+  color: map-get($colors, primary);
+  margin: 0;
+
+  @include mobile {
+    font-size: map-get($font-sizes, xxxl);
+  }
+}
+
+.info-card {
+  margin: 0;
+  @include card-shadow;
+  background: map-get($colors, card);
+
+  ion-card-content {
+    padding: map-get($spacing, lg);
+  }
+}
+
+.producto-titulo-principal {
+  font-size: map-get($font-sizes, xxl);
+  font-weight: 700;
+  color: map-get($colors, text-dark);
+  margin: 0 0 map-get($spacing, md);
+
+  @include mobile {
+    font-size: map-get($font-sizes, xl);
+  }
+}
+
+.producto-detalles-rapidos {
+  display: flex;
+  gap: map-get($spacing, lg);
+  margin-bottom: map-get($spacing, md);
+  flex-wrap: wrap;
+
+  .detalle-item {
+    font-size: map-get($font-sizes, sm);
+    color: map-get($colors, text-dark);
+  }
+}
+
+.producto-descripcion-principal {
+  font-size: map-get($font-sizes, base);
+  color: map-get($colors, text-dark);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.precio-conversable {
+  margin-top: map-get($spacing, md);
+  font-size: map-get($font-sizes, sm);
+  color: map-get($colors, primary);
+  font-weight: 600;
+}
+
+.info-titulo {
+  font-size: map-get($font-sizes, lg);
+  font-weight: 700;
+  color: map-get($colors, text-dark);
+}
+
+.info-detalle-grid {
+  display: grid;
+  gap: map-get($spacing, sm);
+}
+
+.info-item {
+  font-size: map-get($font-sizes, sm);
+  color: map-get($colors, text-dark);
+  line-height: 1.5;
+
+  strong {
+    color: map-get($colors, text-dark);
+  }
+}
+
+// Botones de acción
+.acciones-producto {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: map-get($spacing, md);
+
+  @include mobile {
+    grid-template-columns: 1fr;
+  }
+}
+
+.btn-accion {
+  font-weight: 600;
+  text-transform: none;
+  height: 48px;
+  font-size: map-get($font-sizes, base);
+}
+
+.btn-carrito {
+  --background: #{map-get($colors, text-dark)};
+  --border-radius: 8px;
+
+  &:hover {
+    --background: #{lighten(#000000, 20%)};
+  }
+}
+
+.btn-comprar {
+  --background: #{map-get($colors, accent)};
+  --color: #{map-get($colors, text-dark)};
+  --border-radius: 8px;
+
+  &:hover {
+    --background: #{darken(#ffb400, 10%)};
+  }
+}
+
+// ============================================
+// Columna Derecha: Vendedor y Relacionados
+// ============================================
+
+.sidebar-section {
+  display: flex;
+  flex-direction: column;
+  gap: map-get($spacing, md);
+}
+
+// Vendedor
+.vendedor-card {
+  margin: 0;
+  @include card-shadow;
+  background: map-get($colors, card);
+}
+
+.vendedor-perfil {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-bottom: map-get($spacing, lg);
+}
+
+.vendedor-avatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: map-get($colors, primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: map-get($spacing, md);
+
+  ion-icon {
+    font-size: 48px;
+    color: map-get($colors, text);
+  }
+}
+
+.vendedor-nombre {
+  font-size: map-get($font-sizes, sm);
+  font-weight: 600;
+  color: map-get($colors, text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0 0 map-get($spacing, xs);
+}
+
+.vendedor-nombre-real {
+  font-size: map-get($font-sizes, base);
+  font-weight: 700;
+  color: map-get($colors, text-dark);
+  margin: 0;
+}
+
+.vendedor-contacto {
+  display: flex;
+  flex-direction: column;
+  gap: map-get($spacing, md);
+  padding-top: map-get($spacing, md);
+  border-top: 1px solid map-get($colors, border);
+}
+
+.contacto-item {
+  display: flex;
+  align-items: center;
+  gap: map-get($spacing, sm);
+  font-size: map-get($font-sizes, sm);
+  color: map-get($colors, text-dark);
+
+  ion-icon {
+    font-size: 20px;
+    color: map-get($colors, primary);
+  }
+}
+
+// Reseñas
+.reseñas-card {
+  margin: 0;
+  @include card-shadow;
+  background: map-get($colors, card);
+}
+
+.reseñas-titulo {
+  font-size: map-get($font-sizes, base);
+  font-weight: 700;
+  color: map-get($colors, text-dark);
+}
+
+.reseña-item {
+  background: map-get($colors, secondary);
+  padding: map-get($spacing, md);
+  border-radius: 8px;
+  margin-bottom: map-get($spacing, sm);
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.reseña-header {
+  margin-bottom: map-get($spacing, xs);
+}
+
+.reseña-usuario {
+  font-size: map-get($font-sizes, sm);
+  font-weight: 600;
+  color: map-get($colors, text-dark);
+}
+
+.reseña-texto {
+  font-size: map-get($font-sizes, sm);
+  color: map-get($colors, text-dark);
+  margin: 0;
+  font-style: italic;
+}
+
+// Productos relacionados
+.relacionados-section {
+  display: flex;
+  flex-direction: column;
+  gap: map-get($spacing, md);
+}
+
+.relacionados-titulo {
+  font-size: map-get($font-sizes, base);
+  font-weight: 700;
+  color: map-get($colors, text-dark);
+  margin: 0;
+}
+
+.producto-relacionado-card {
+  margin: 0;
+  @include card-shadow;
+  @include transition(transform);
+  cursor: pointer;
+  background: map-get($colors, card);
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+  }
 
   img {
     width: 100%;
-    height: 100%;
+    height: 180px;
     object-fit: cover;
   }
-}
 
-.producto-info {
-  border-radius: 20px 20px 0 0;
-  margin-top: -20px;
-  position: relative;
-  z-index: 10;
-  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
-
-  ion-card-header {
-    padding-bottom: 5px;
-  }
-
-  .precio {
-    font-size: 32px;
-    font-weight: bold;
-    color: #2563eb;
-    margin: 0;
-  }
-
-  .rating {
-    font-size: 12px;
-    color: #666;
-  }
-
-  .titulo-producto {
-    font-size: 18px;
-    font-weight: 600;
-    margin: 10px 0;
-    color: #333;
-  }
-
-  .label-small {
-    font-size: 12px;
-    color: #999;
-    margin: 0;
-    text-transform: uppercase;
-  }
-
-  .valor-pequeno {
-    font-size: 14px;
-    color: #333;
-    margin: 5px 0 0 0;
-  }
-
-  .descripcion-label {
-    --padding-start: 0;
-  }
-
-  .descripcion-texto {
-    font-size: 14px;
-    color: #555;
-    line-height: 1.5;
-    margin: 5px 0 0 0;
-  }
-
-  .nota-precio {
-    color: #2563eb;
-    font-size: 12px;
-    font-style: italic;
-    margin: 10px 0;
-  }
-
-  .btn-comprar {
-    margin-top: 15px;
-    height: 45px;
-    font-weight: bold;
-  }
-
-  .btn-secundario {
-    margin-top: 10px;
-    height: 45px;
+  ion-card-content {
+    padding: map-get($spacing, md);
   }
 }
 
-.info-adicional {
-  margin: 20px;
-  border-radius: 10px;
-
-  ion-card-header {
-    padding-bottom: 10px;
-  }
-
-  ion-item {
-    --padding-start: 0;
-    margin-bottom: 10px;
-  }
-
-  .label-small {
-    font-size: 12px;
-    color: #999;
-    margin: 0;
-    text-transform: uppercase;
-  }
-
-  .valor {
-    font-size: 14px;
-    color: #333;
-    margin: 5px 0 0 0;
-  }
+.relacionado-titulo {
+  font-size: map-get($font-sizes, base);
+  font-weight: 700;
+  color: map-get($colors, text-dark);
+  margin: 0 0 map-get($spacing, xs);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.info-vendedor {
-  margin: 20px;
-  border-radius: 10px;
-
-  ion-card-header {
-    padding-bottom: 10px;
-  }
-
-  .vendedor-nombre {
-    font-weight: bold;
-    margin: 0;
-  }
-
-  .vendedor-rating {
-    font-size: 12px;
-    color: #999;
-    margin: 5px 0 0 0;
-  }
+.relacionado-precio {
+  font-size: map-get($font-sizes, lg);
+  font-weight: 700;
+  color: map-get($colors, primary);
+  margin: 0 0 map-get($spacing, xs);
 }
 
-.productos-relacionados {
-  margin: 40px 20px;
-  text-align: center;
-
-  h3 {
-    font-size: 18px;
-    font-weight: bold;
-    margin-bottom: 10px;
-  }
-}
-
-ion-item {
-  --inner-padding-end: 0;
-  --padding-start: 0;
+.relacionado-descripcion {
+  font-size: map-get($font-sizes, xs);
+  color: map-get($colors, text-light);
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
 }

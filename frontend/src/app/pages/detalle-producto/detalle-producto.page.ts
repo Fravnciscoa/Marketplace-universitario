@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { RouterLink, ActivatedRoute } from '@angular/router';
 import {
   IonContent,
   IonHeader,
-  IonTitle,
   IonToolbar,
   IonButton,
   IonIcon,
@@ -12,27 +12,48 @@ import {
   IonCardContent,
   IonCardHeader,
   IonCardTitle,
-  IonCardSubtitle,
-  IonText,
-  IonSpinner,
-  IonBackButton,
-  ToastController,
-  AlertController,
-  IonItem,
-  IonLabel,
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import {
-  arrowBackOutline,
   cartOutline,
-  heartOutline,
-  shareOutline,
-  personCircleOutline,
-  chatbubbleOutline,
+  personOutline,
+  callOutline,
+  mailOutline,
+  person,
 } from 'ionicons/icons';
-import { ProductosService } from '../../services/productos.service';
-import { Producto } from '../../services/productos.service';
 
+interface InformacionAdicional {
+  label: string;
+  valor: string;
+}
+
+interface Producto {
+  id: number;
+  titulo: string;
+  precio: number;
+  descripcion: string;
+  imagen: string;
+  uso: string;
+  campus: string;
+  precioConversable: boolean;
+  vendedor: string;
+  telefono: string;
+  email: string;
+  informacionAdicional: InformacionAdicional[];
+}
+
+interface Resena {
+  usuario: string;
+  comentario: string;
+}
+
+interface ProductoRelacionado {
+  id: number;
+  titulo: string;
+  precio: number;
+  imagen: string;
+  descripcionCorta: string;
+}
 
 @Component({
   selector: 'app-detalle-producto',
@@ -40,10 +61,8 @@ import { Producto } from '../../services/productos.service';
   styleUrls: ['./detalle-producto.page.scss'],
   standalone: true,
   imports: [
-    CommonModule,
     IonContent,
     IonHeader,
-    IonTitle,
     IonToolbar,
     IonButton,
     IonIcon,
@@ -51,154 +70,80 @@ import { Producto } from '../../services/productos.service';
     IonCardContent,
     IonCardHeader,
     IonCardTitle,
-    IonCardSubtitle,
-    IonText,
-    IonSpinner,
-    IonBackButton,
-    IonItem,
-    IonLabel,
+    CommonModule,
+    FormsModule,
+    RouterLink,
   ],
 })
 export class DetalleProductoPage implements OnInit {
-  producto: Producto | null = null;
-  isLoading = true;
-  isFavorite = false;
+  producto: Producto = {
+    id: 1,
+    titulo: 'Calculadora Científica usada',
+    precio: 10000,
+    descripcion: 'Calculadora científica en excelente estado, utilizada solo durante un año universitario. Funciona perfectamente, sin rayas en la pantalla y con todas las teclas operativas. Ideal para estudiantes de enseñanza media o universitaria.',
+    imagen: 'assets/calc.jpg', // Imagen actualizada
+    uso: '1 Año',
+    campus: 'Casa Central',
+    precioConversable: true,
+    vendedor: 'Sebastián Castro',
+    telefono: '+56 9 1234 5678',
+    email: 'example@mail.pucv.cl',
+    informacionAdicional: [
+      { label: 'Marca', valor: 'Casio' },
+      { label: 'Modelo', valor: 'fx-570ES Plus' },
+      { label: 'Pantalla', valor: '2 líneas con display natural' },
+      { label: 'Funciones', valor: 'más de 400 operaciones científicas' },
+      { label: 'Energía', valor: 'solar + batería' },
+      { label: 'Estado', valor: 'usado, en perfecto funcionamiento' },
+      { label: 'Incluye', valor: 'tapa protectora' },
+    ],
+  };
 
-  constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    private productosService: ProductosService,
-    private toastCtrl: ToastController,
-    private alertCtrl: AlertController
-  ) {
+  resenas: Resena[] = [
+    { usuario: 'Usuario1', comentario: 'Excelente atención. 100% recomendable.' },
+    { usuario: 'Usuario2', comentario: 'Excelente atención. 100% recomendable.' },
+  ];
+
+  productosRelacionados: ProductoRelacionado[] = [
+    {
+      id: 2,
+      titulo: 'Libro de Matemáticas',
+      precio: 5000,
+      imagen: 'assets/libro.jpg', // Imagen actualizada
+      descripcionCorta: 'Matemáticas universitarias introductorias',
+    },
+    {
+      id: 3,
+      titulo: 'Kit de útiles escolares',
+      precio: 3000,
+      imagen: 'assets/kit.jpg', // Imagen actualizada
+      descripcionCorta: 'Set completo para universidad',
+    },
+  ];
+
+  constructor(private route: ActivatedRoute) {
     addIcons({
-      arrowBackOutline,
       cartOutline,
-      heartOutline,
-      shareOutline,
-      personCircleOutline,
-      chatbubbleOutline,
+      personOutline,
+      callOutline,
+      mailOutline,
+      person,
     });
   }
 
   ngOnInit() {
-    console.log('🔥 Inicializando detalle-producto...');
-    this.cargarProducto();
+    const id = this.route.snapshot.paramMap.get('id');
+    if (id) {
+      this.cargarProducto(Number(id));
+    }
   }
 
-    cargarProducto() {
-      this.route.paramMap.subscribe(params => {
-        const rawId = params.get('id');
-        
-        console.log('📦 Raw ID:', rawId);
-
-        // Asegúrate que sea solo un número
-        const productId = parseInt(rawId?.split(':')[0] || '0', 10);
-        
-        console.log('📦 Clean ID:', productId);
-
-        if (!productId || isNaN(productId)) {
-          console.error('❌ ID no válido');
-          this.isLoading = false;
-          this.mostrarError('ID de producto inválido');
-          return;
-        }
-
-        // URL DIRECTA sin usar el servicio (temporal)
-        const apiUrl = `http://localhost:3000/api/productos/${productId}`;
-        
-        this.productosService.getProductoById(productId).subscribe({
-          next: (data) => {
-            console.log('✅ Producto cargado:', data);
-            this.producto = data;
-            this.isLoading = false;
-          },
-          error: (error) => {
-            console.error('❌ Error:', error);
-            this.isLoading = false;
-            this.mostrarError('No se pudo cargar el producto');
-          },
-        });
-      });
-    }
-
+  cargarProducto(id: number) {
+    // Aquí conectarías con tu servicio para obtener el producto desde el backend
+    console.log('Cargando producto:', id);
+  }
 
   formatearPrecio(precio: number): string {
-    return `$${precio.toLocaleString('es-CL')}`;
-  }
-
-  toggleFavorite() {
-    this.isFavorite = !this.isFavorite;
-    const message = this.isFavorite ? '❤️ Agregado a favoritos' : '🤍 Removido de favoritos';
-    this.mostrarToast(message, 'success');
-  }
-
-  async contactarVendedor() {
-    if (!this.producto) return;
-    this.mostrarToast('📞 Abriendo chat con vendedor...', 'info');
-  }
-
-  async comprar() {
-    if (!this.producto) return;
-
-    const alert = await this.alertCtrl.create({
-      header: '🛒 Confirmar Compra',
-      message: `¿Deseas comprar "${this.producto.titulo}" por ${this.formatearPrecio(this.producto.precio)}?`,
-      buttons: [
-        {
-          text: 'Cancelar',
-          role: 'cancel',
-        },
-        {
-          text: 'Comprar',
-          handler: () => {
-            this.mostrarToast('✅ Compra realizada exitosamente', 'success');
-            setTimeout(() => this.router.navigate(['/home']), 2000);
-          },
-        },
-      ],
-    });
-
-    await alert.present();
-  }
-
-  async compartir() {
-    if (navigator.share && this.producto) {
-      try {
-        await navigator.share({
-          title: this.producto.titulo,
-          text: this.producto.descripcion,
-          url: window.location.href,
-        });
-      } catch (err) {
-        console.log('Error al compartir:', err);
-      }
-    } else {
-      this.mostrarToast('Función de compartir no disponible', 'warning');
-    }
-  }
-
-  private async mostrarToast(message: string, color: string) {
-    const toast = await this.toastCtrl.create({
-      message,
-      duration: 2000,
-      position: 'bottom',
-      color,
-    });
-    toast.present();
-  }
-
-  private async mostrarError(message: string) {
-    const alert = await this.alertCtrl.create({
-      header: '❌ Error',
-      message,
-      buttons: [
-        {
-          text: 'Volver',
-          handler: () => this.router.navigate(['/home']),
-        },
-      ],
-    });
-    await alert.present();
+    return precio === 0 ? '$0' : `$${precio.toLocaleString('es-CL')}`;
   }
 }

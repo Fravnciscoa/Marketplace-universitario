@@ -1,125 +1,154 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-back-button defaultHref="/home" slot="start"></ion-back-button>
-    <ion-title>MarketPUCV</ion-title>
-    <ion-icon name="cart-outline" slot="end" style="margin-right: 20px;"></ion-icon>
+  <ion-toolbar class="header-toolbar">
+    <div class="header-container">
+      <div class="header-logo">
+        <a routerLink="/home">
+          <img src="assets/icon/Escudo_PUCV-2016__Perfil Redes TW_FB.png" alt="PUCV Logo" style="height:40px; cursor:pointer;" />
+        </a>
+        <a routerLink="/home" style="text-decoration:none; color:inherit;">
+          <span class="header-logo-text" style="cursor:pointer;">MarketPUCV</span>
+        </a>
+      </div>
+
+      <nav class="header-nav">
+        <a routerLink="/home" class="nav-link">Inicio</a>
+        <a routerLink="/categorias" class="nav-link">Categorías</a>
+        <a routerLink="/mis-publicaciones" class="nav-link">Mis publicaciones</a>
+        <a routerLink="/ayuda" class="nav-link">Ayuda</a>
+      </nav>
+
+      <div class="header-actions">
+        <ion-button class="btn-auth btn-login" fill="clear">
+          Iniciar sesión
+        </ion-button>
+        <ion-button class="btn-auth btn-register" fill="solid">
+          Registrarse
+        </ion-button>
+      </div>
+    </div>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <!-- Loading spinner -->
-  <div *ngIf="isLoading" style="display: flex; justify-content: center; align-items: center; height: 100vh;">
-    <ion-spinner name="crescent" color="primary"></ion-spinner>
-  </div>
 
-  <!-- Contenido del producto -->
-  <div *ngIf="!isLoading && producto">
-    <!-- Imagen -->
-    <div class="producto-header">
-      <img [src]="producto.imagen" [alt]="producto.titulo" class="producto-imagen" />
+<ion-content>
+  <div class="detalle-wrapper">
+    <!-- Columna izquierda: Imagen principal -->
+    <div class="producto-imagen-section">
+      <ion-card class="imagen-card">
+        <div class="imagen-principal-container">
+          <img [src]="producto.imagen" [alt]="producto.titulo" />
+        </div>
+      </ion-card>
     </div>
 
-    <!-- Información principal -->
-    <ion-card class="producto-info">
-      <ion-card-header>
-        <ion-card-title class="precio">{{ formatearPrecio(producto.precio) }}</ion-card-title>
-        <ion-card-subtitle class="rating">(4.5 ⭐)</ion-card-subtitle>
-      </ion-card-header>
+    <!-- Columna central: Información del producto -->
+    <div class="producto-info-section">
+      <!-- Precio destacado -->
+      <ion-card class="precio-card">
+        <ion-card-content>
+          <h1 class="producto-precio-principal">{{ formatearPrecio(producto.precio) }}</h1>
+        </ion-card-content>
+      </ion-card>
 
-      <ion-card-content>
-        <!-- Título -->
-        <h2 class="titulo-producto">{{ producto.titulo }}</h2>
+      <!-- Descripción principal -->
+      <ion-card class="info-card">
+        <ion-card-content>
+          <h2 class="producto-titulo-principal">{{ producto.titulo }}</h2>
+          <div class="producto-detalles-rapidos">
+            <span class="detalle-item"><strong>Uso:</strong> {{ producto.uso }}</span>
+            <span class="detalle-item"><strong>Campus:</strong> {{ producto.campus }}</span>
+          </div>
+          <p class="producto-descripcion-principal">{{ producto.descripcion }}</p>
+          <p class="precio-conversable" *ngIf="producto.precioConversable">
+            <strong>Precio conversable</strong>
+          </p>
+        </ion-card-content>
+      </ion-card>
 
-        <!-- Descripción -->
-        <ion-item lines="none">
-          <ion-label class="descripcion-label">
-            <p class="label-small">Descripción:</p>
-            <p class="descripcion-texto">{{ producto.descripcion }}</p>
-          </ion-label>
-        </ion-item>
+      <!-- Información adicional -->
+      <ion-card class="info-card">
+        <ion-card-header>
+          <ion-card-title class="info-titulo">Información adicional</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <div class="info-detalle-grid">
+            <div class="info-item" *ngFor="let item of producto.informacionAdicional">
+              <strong>{{ item.label }}:</strong> {{ item.valor }}
+            </div>
+          </div>
+        </ion-card-content>
+      </ion-card>
 
-        <!-- Nota de precio -->
-        <p class="nota-precio">Precio conversable.</p>
-
-        <!-- Botones de acción -->
-        <ion-button expand="block" color="primary" (click)="comprar()" class="btn-comprar">
-          COMPRAR AHORA
+      <!-- Botones de acción -->
+      <div class="acciones-producto">
+        <ion-button expand="block" color="dark" class="btn-accion btn-carrito">
+          <ion-icon name="cart-outline" slot="start"></ion-icon>
+          Añadir al carrito
         </ion-button>
-
-        <ion-button
-          expand="block"
-          fill="outline"
-          color="primary"
-          (click)="contactarVendedor()"
-          class="btn-secundario"
-        >
-          <ion-icon name="chatbubble-outline" slot="start"></ion-icon>
-          CONTACTAR VENDEDOR
+        <ion-button expand="block" class="btn-accion btn-comprar">
+          Comprar ahora
         </ion-button>
+      </div>
+    </div>
 
-        <ion-button
-          expand="block"
-          fill="outline"
-          color="primary"
-          (click)="toggleFavorite()"
-          class="btn-secundario"
-        >
-          <ion-icon [name]="isFavorite ? 'heart' : 'heart-outline'" slot="start"></ion-icon>
-          {{ isFavorite ? 'FAVORITO' : 'AGREGAR FAVORITO' }}
-        </ion-button>
-      </ion-card-content>
-    </ion-card>
+    <!-- Columna derecha: Vendedor y productos relacionados -->
+    <div class="sidebar-section">
+      <!-- Info del vendedor -->
+      <ion-card class="vendedor-card">
+        <ion-card-content>
+          <div class="vendedor-perfil">
+            <div class="vendedor-avatar">
+              <ion-icon name="person"></ion-icon>
+            </div>
+            <h3 class="vendedor-nombre">Vendedor</h3>
+            <p class="vendedor-nombre-real">{{ producto.vendedor }}</p>
+          </div>
+          
+          <div class="vendedor-contacto">
+            <div class="contacto-item">
+              <ion-icon name="call-outline"></ion-icon>
+              <span>{{ producto.telefono }}</span>
+            </div>
+            <div class="contacto-item">
+              <ion-icon name="mail-outline"></ion-icon>
+              <span>{{ producto.email }}</span>
+            </div>
+          </div>
+        </ion-card-content>
+      </ion-card>
 
-    <!-- Información adicional -->
-    <ion-card class="info-adicional">
-      <ion-card-header>
-        <ion-card-title>Información adicional</ion-card-title>
-      </ion-card-header>
+     <!-- Reseñas -->
+<ion-card class="resenas-card">
+  <ion-card-header>
+    <ion-card-title class="resenas-titulo">Reseñas</ion-card-title>
+  </ion-card-header>
+  <ion-card-content>
+    <div class="resena-item" *ngFor="let resena of resenas">
+      <div class="resena-header">
+        <span class="resena-usuario">{{ resena.usuario }}</span>
+      </div>
+      <p class="resena-texto">"{{ resena.comentario }}"</p>
+    </div>
+  </ion-card-content>
+</ion-card>
 
-      <ion-card-content>
-        <ion-item lines="none">
-          <ion-label>
-            <p class="label-small">Categoría:</p>
-            <p class="valor">{{ producto.categoria }}</p>
-          </ion-label>
-        </ion-item>
 
-        <ion-item lines="none">
-          <ion-label>
-            <p class="label-small">Campus:</p>
-            <p class="valor">{{ producto.campus }}</p>
-          </ion-label>
-        </ion-item>
 
-        <ion-item lines="none">
-          <ion-label>
-            <p class="label-small">Publicado:</p>
-            <p class="valor">{{ producto.created_at | date: 'short' }}</p>
-          </ion-label>
-        </ion-item>
-      </ion-card-content>
-    </ion-card>
-
-    <!-- Vendedor -->
-    <ion-card class="info-vendedor">
-      <ion-card-header>
-        <ion-card-title>Vendedor</ion-card-title>
-      </ion-card-header>
-
-      <ion-card-content>
-        <ion-item lines="none">
-          <ion-icon name="person-circle-outline" slot="start" style="font-size: 50px; color: #003366;"></ion-icon>
-          <ion-label>
-            <p class="vendedor-nombre">Usuario del Marketplace</p>
-            <p class="vendedor-rating">⭐ 4.8 (45 valoraciones)</p>
-          </ion-label>
-        </ion-item>
-      </ion-card-content>
-    </ion-card>
-  </div>
-
-  <!-- Error -->
-  <div *ngIf="!isLoading && !producto" style="padding: 40px; text-align: center;">
-    <p>No se pudo cargar el producto</p>
+      <!-- Productos relacionados -->
+      <div class="relacionados-section">
+        <h3 class="relacionados-titulo">Productos relacionados</h3>
+        <ion-card 
+          class="producto-relacionado-card" 
+          *ngFor="let relacionado of productosRelacionados"
+          [routerLink]="['/detalle-producto', relacionado.id]">
+          <img [src]="relacionado.imagen" [alt]="relacionado.titulo" />
+          <ion-card-content>
+            <h4 class="relacionado-titulo">{{ relacionado.titulo }}</h4>
+            <p class="relacionado-precio">{{ formatearPrecio(relacionado.precio) }}</p>
+            <p class="relacionado-descripcion">{{ relacionado.descripcionCorta }}</p>
+          </ion-card-content>
+        </ion-card>
+      </div>
+    </div>
   </div>
 </ion-content>
