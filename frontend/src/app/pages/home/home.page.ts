@@ -30,6 +30,7 @@ import {
   cartOutline,
   heartOutline,
   chevronDownOutline,
+  cubeOutline,  // ← AGREGAR este
   closeOutline,
   logInOutline,
   logOutOutline,
@@ -74,6 +75,9 @@ interface FiltroRango {
   ],
 })
 export class HomePage implements OnInit {
+logout() {
+throw new Error('Method not implemented.');
+}
   isLoggedIn = false;
   mostrarFiltros = true;
   terminoBusqueda = '';
@@ -115,6 +119,7 @@ export class HomePage implements OnInit {
       searchOutline,
       filterOutline,
       cartOutline,
+      cubeOutline,  // ← AGREGAR este
       heartOutline,
       chevronDownOutline,
       closeOutline,

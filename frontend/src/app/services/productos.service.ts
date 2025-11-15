@@ -19,6 +19,7 @@ vendedor: any;
   campus: string;
   user_id?: number;
   created_at?: Date;
+  vendedor_nombre?: string;  // ← NUEVO
   updated_at?: Date;
 }
 
@@ -39,6 +40,10 @@ export class ProductosService {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${token}`
     });
+  }
+// ✅ NUEVO: Obtener productos de un usuario
+  getProductosByUser(userId: number): Observable<Producto[]> {
+    return this.http.get<Producto[]>(`${this.apiUrl}/user/${userId}`);
   }
 
   getProductos(): Observable<Producto[]> {
