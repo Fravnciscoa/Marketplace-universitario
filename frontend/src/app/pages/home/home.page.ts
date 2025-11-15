@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ViewWillEnter } from '@ionic/angular'; // ← Agregar este import
 import { Router, RouterLink } from '@angular/router';
 import {
   IonContent,
@@ -33,10 +34,10 @@ import {
   logInOutline,
   logOutOutline,
   personOutline,
+  addOutline,
 } from 'ionicons/icons';
-import { ProductosService } from '../../services/productos.service';
+import { ProductosService, Producto } from '../../services/productos.service';
 import { AuthService } from '../../services/auth.service';
-import { Producto } from '../../services/productos.service';
 
 interface FiltroRango {
   lower: number;
@@ -69,33 +70,39 @@ interface FiltroRango {
     IonList,
     CommonModule,
     FormsModule,
-    RouterLink,
+    RouterLink,   // 👈 SO-LO este RouterLink (de @angular/router)
   ],
 })
 export class HomePage implements OnInit {
   isLoggedIn = false;
   mostrarFiltros = true;
   terminoBusqueda = '';
+
   tipoServicioFiltros = {
     comprar: false,
     reservar: false,
   };
+
   categoriaFiltros = {
     libros: false,
     electronica: false,
     deportes: false,
   };
+
   rangoPrecio: FiltroRango = {
     lower: 5000,
     upper: 500000,
   };
+
   precioMin = 5000;
   precioMax = 500000;
+
   campusFiltros = {
     isabelBrown: false,
     casaCentral: false,
     curauma: false,
   };
+
   productos: Producto[] = [];
   productosFiltrados: Producto[] = [];
 
@@ -114,16 +121,20 @@ export class HomePage implements OnInit {
       logInOutline,
       logOutOutline,
       personOutline,
+      addOutline,
     });
   }
 
   ngOnInit() {
-    this.cargarProductos();
-    
     // Suscribirse al estado de autenticación
-    this.authService.currentUser$.subscribe(user => {
+    this.authService.currentUser$.subscribe((user) => {
       this.isLoggedIn = !!user;
     });
+  }
+
+  // ← NUEVO: Mover la carga de productos aquí
+  ionViewWillEnter() {
+    this.cargarProductos();
   }
 
   cargarProductos() {

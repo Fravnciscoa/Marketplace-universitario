@@ -32,15 +32,20 @@
 
         <!-- Mostrar cuando SÍ está logueado -->
         <ng-container *ngIf="isLoggedIn">
-          <ion-button routerLink="/perfil" fill="clear" class="btn-auth btn-login">
-            <ion-icon slot="start" name="person-outline"></ion-icon>
-            Perfil
-          </ion-button>
-          <ion-button (click)="cerrarSesion()" fill="solid" class="btn-auth btn-logout">
-            <ion-icon slot="start" name="log-out-outline"></ion-icon>
-            Cerrar Sesión
-          </ion-button>
-        </ng-container>
+  <ion-button routerLink="/publicar" fill="solid" class="btn-auth btn-publicar">
+    <ion-icon slot="start" name="add-outline"></ion-icon>
+    Publicar
+  </ion-button>
+  <ion-button routerLink="/perfil" fill="clear" class="btn-auth btn-login">
+    <ion-icon slot="start" name="person-outline"></ion-icon>
+    Perfil
+  </ion-button>
+  <ion-button (click)="cerrarSesion()" fill="solid" class="btn-auth btn-logout">
+    <ion-icon slot="start" name="log-out-outline"></ion-icon>
+    Cerrar Sesión
+  </ion-button>
+</ng-container>
+
       </div>
     </div>
   </ion-toolbar>

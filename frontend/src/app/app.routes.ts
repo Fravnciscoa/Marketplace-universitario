@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './guards/auth.guard';
+
 export const routes: Routes = [
   {
     path: '',
@@ -25,16 +26,29 @@ export const routes: Routes = [
   {
     path: 'perfil',
     loadComponent: () => import('./pages/perfil/perfil.page').then(m => m.PerfilPage),
-    canActivate: [authGuard]  // ← AÑADE ESTO
+    canActivate: [authGuard]
   },
   {
     path: 'carrito',
     loadComponent: () => import('./pages/carrito/carrito.page').then(m => m.CarritoPage)
   },
   {
+    path: 'publicar-producto',
+    loadComponent: () => import('./pages/publicar-producto/publicar-producto.page').then(m => m.PublicarProductoPage),
+    canActivate: [authGuard] // Proteger con autenticación
+  },
+  {
+    path: 'publicar',
+    loadComponent: () => import('./pages/publicar-producto/publicar-producto.page').then(m => m.PublicarProductoPage),
+    canActivate: [authGuard] // Proteger con autenticación
+  },
+  {
+    path: 'editar-producto/:id',
+    loadComponent: () => import('./pages/publicar-producto/publicar-producto.page').then(m => m.PublicarProductoPage),
+    canActivate: [authGuard] // Proteger con autenticación
+  },
+  {
     path: '**',
     redirectTo: 'home'
   }
 ];
-import { Router } from 'express';
-

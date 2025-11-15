@@ -1,0 +1,98 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button routerLink="/home">
+        <ion-icon name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>{{ modoEdicion ? 'Editar Producto' : 'Publicar Producto' }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="form-container">
+    
+    <!-- Área de imagen -->
+    <div class="image-upload-area" (click)="fileInput.click()">
+      <img *ngIf="imagenPreview" [src]="imagenPreview" class="image-preview" />
+      <div *ngIf="!imagenPreview">
+        <ion-icon name="camera"></ion-icon>
+        <p>Selecciona una imagen</p>
+      </div>
+      <input #fileInput type="file" accept="image/*" (change)="onImageSelected($event)" />
+    </div>
+
+    <!-- Formulario -->
+    <ion-item>
+      <ion-label position="stacked">Título *</ion-label>
+      <ion-input [(ngModel)]="form.titulo" placeholder="Ej: Calculadora Casio FX-570"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Precio (CLP) *</ion-label>
+      <ion-input type="number" [(ngModel)]="form.precio" placeholder="0"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Descripción</ion-label>
+      <ion-textarea [(ngModel)]="form.descripcion" rows="4" placeholder="Describe tu producto..."></ion-textarea>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Categoría *</ion-label>
+      <ion-select [(ngModel)]="form.categoria" placeholder="Selecciona">
+        <ion-select-option *ngFor="let cat of categorias" [value]="cat">
+          {{ cat }}
+        </ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Campus *</ion-label>
+      <ion-select [(ngModel)]="form.campus" placeholder="Selecciona">
+        <ion-select-option *ngFor="let camp of campusList" [value]="camp">
+          {{ camp }}
+        </ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Marca</ion-label>
+      <ion-input [(ngModel)]="form.marca" placeholder="Ej: Casio"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Modelo</ion-label>
+      <ion-input [(ngModel)]="form.modelo" placeholder="Ej: FX-570"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Condición</ion-label>
+      <ion-select [(ngModel)]="form.condicion" placeholder="Selecciona">
+        <ion-select-option value="Nuevo">Nuevo</ion-select-option>
+        <ion-select-option value="Usado - Como nuevo">Usado - Como nuevo</ion-select-option>
+        <ion-select-option value="Usado - Buen estado">Usado - Buen estado</ion-select-option>
+        <ion-select-option value="Usado - Aceptable">Usado - Aceptable</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Año de Compra</ion-label>
+      <ion-input [(ngModel)]="form.ano_compra" placeholder="Ej: 2023"></ion-input>
+    </ion-item>
+
+    <!-- Botón publicar -->
+    <ion-button expand="block" class="btn-publicar" (click)="guardar()">
+      <ion-icon name="save-outline"></ion-icon>
+      {{ modoEdicion ? 'ACTUALIZAR' : 'PUBLICAR' }}
+    </ion-button>
+
+  </div>
+</ion-content>
+
+<ion-toast
+  [isOpen]="toastOpen"
+  [message]="toastMsg"
+  [duration]="2000"
+  (didDismiss)="toastOpen = false"
+></ion-toast>
