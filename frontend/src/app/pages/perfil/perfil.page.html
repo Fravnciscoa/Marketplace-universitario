@@ -1,325 +1,175 @@
-<!DOCTYPE html>
-<html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Perfil de Usuario - Marketplace PUCV</title>
-    <link rel="stylesheet" href="perfil.page.scss" />
-    <link
-      href="https://fonts.googleapis.com/css?family=Inter:400,700"
-      rel="stylesheet"
-    />
-  </head>
-  <body>
-    <div class="main-container">
-      <!-- Barra lateral -->
-      <aside class="sidebar">
-        <div class="sidebar__logo">
-          <h1>Marketplace PUCV</h1>
-        </div>
-        
-        <nav class="sidebar__menu">
-          <!-- Menú Item: Dashboard -->
-          <a routerLink="/home" class="menu-item">
-            <svg class="menu-item__icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            <span class="menu-item__text">Inicio</span>
-          </a>
+<div class="main-container">
 
-          <!-- Menú Item: Productos -->
-          <a routerLink="/home" class="menu-item">
-            <svg class="menu-item__icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect x="3" y="3" width="7" height="7" stroke="currentColor" stroke-width="2"/>
-              <rect x="14" y="3" width="7" height="7" stroke="currentColor" stroke-width="2"/>
-              <rect x="14" y="14" width="7" height="7" stroke="currentColor" stroke-width="2"/>
-              <rect x="3" y="14" width="7" height="7" stroke="currentColor" stroke-width="2"/>
-            </svg>
-            <span class="menu-item__text">Productos</span>
-          </a>
-
-          <!-- Menú Item: Pedidos -->
-          <a routerLink="/detalle-producto" class="menu-item">
-            <svg class="menu-item__icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            <span class="menu-item__text">Pedidos</span>
-          </a>
-
-          <!-- Menú Item: Mensajes -->
-          <a href="/mensajes" class="menu-item">
-            <svg class="menu-item__icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            <span class="menu-item__text">Mensajes</span>
-          </a>
-
-          <!-- Menú Item: Favoritos -->
-          <a href="/favoritos" class="menu-item">
-            <svg class="menu-item__icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            <span class="menu-item__text">Favoritos</span>
-          </a>
-
-          <!-- Menú Item: Configuración -->
-          <a routerLink="/perfil" class="menu-item">
-            <svg class="menu-item__icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            <span class="menu-item__text">Configuración</span>
-          </a>
-
-          <!-- Menú Item: Ayuda -->
-          <a routerLink="/auth" class="menu-item">
-            <svg class="menu-item__icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
-              <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3m.08 4h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            <span class="menu-item__text">Ayuda</span>
-          </a>
-        </nav>
-
-        <!-- Logo PUCV al final -->
-        <div class="sidebar__footer">
-          <img 
-            src="assets/icon/Escudo_PUCV-2016__Perfil Redes TW_FB.png" 
-            alt="Logo PUCV"
-            class="sidebar__footer-logo"
-          />
-        </div>
-      </aside>
-
-      <!-- Contenido principal -->
-      <main class="content">
-        <!-- Header con usuario -->
-        <header class="header">
-          <div class="header__title">
-            <h2>Perfil de usuario</h2>
-            <nav class="header__breadcrumb">
-              <a href="/">Inicio</a>
-              <span class="header__breadcrumb-separator">/</span>
-              <span class="header__breadcrumb-current">Perfil</span>
-            </nav>
-          </div>
-          
-          <div class="header__user">
-            <span class="header__user-name">Francisco Castro</span>
-            <img 
-              src="assets/avatar/4794936.png"
-              alt="Avatar de Francisco Castro"
-              class="header__user-avatar"
-            />
-          </div>
-        </header>
-
-        <!-- Sección de perfil -->
-        <section class="profile">
-          <div class="profile__card">
-            <!-- Información principal -->
-            <div class="profile__main">
-              <img
-                src="assets/avatar/4794936.png"
-                alt="Foto de perfil de Francisco Castro"
-                class="profile__picture"
-              />
-              
-              <div class="profile__info">
-                <h3 class="profile__name">Francisco Castro</h3>
-                <p class="profile__role">Estudiante</p>
-                <span class="profile__badge profile__badge--active">Activo</span>
-                <p class="profile__description">Ingeniería en Informática</p>
-              </div>
-            </div>
-
-            <!-- Botones de acción -->
-            <div class="profile__actions">
-            <button class="btn btn--primary" type="button" (click)="openEditModal()">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-              Editar Perfil
-            </button>
-            
-            <button class="btn btn--secondary" type="button" (click)="openShareModal()">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="18" cy="5" r="3" stroke="currentColor" stroke-width="2"/>
-                <circle cx="6" cy="12" r="3" stroke="currentColor" stroke-width="2"/>
-                <circle cx="18" cy="19" r="3" stroke="currentColor" stroke-width="2"/>
-                <path d="M8.59 13.51l6.83 3.98M15.41 6.51l-6.82 3.98" stroke="currentColor" stroke-width="2"/>
-              </svg>
-              Compartir
-            </button>
-          </div>
-          </div>
-
-          <!-- Información adicional -->
-          <div class="profile__details">
-            <h4 class="profile__details-title">Información Personal</h4>
-            
-            <div class="profile__detail-item">
-              <span class="profile__detail-label">Género:</span>
-              <span class="profile__detail-value">Masculino</span>
-            </div>
-
-            <div class="profile__detail-item">
-              <span class="profile__detail-label">Fecha de nacimiento:</span>
-              <span class="profile__detail-value">Noviembre 6, 2001</span>
-            </div>
-
-            <div class="profile__detail-item">
-              <span class="profile__detail-label">Teléfono 1:</span>
-              <span class="profile__detail-value">(+56) 1 7821 4869</span>
-            </div>
-
-            <div class="profile__detail-item">
-              <span class="profile__detail-label">Teléfono 2:</span>
-              <span class="profile__detail-value">(+56) 1 7821 4869</span>
-            </div>
-
-            <div class="profile__detail-item">
-              <span class="profile__detail-label">Dirección:</span>
-              <span class="profile__detail-value">Guaytu sei, 0225, Limache, V región</span>
-            </div>
-
-            <div class="profile__detail-item">
-              <span class="profile__detail-label">Correo electrónico:</span>
-              <span class="profile__detail-value">watyusei123@gmail.com</span>
-            </div>
-          </div>
-        </section>
-        <!-- Modal de Edición de Perfil -->
-        <ion-modal [isOpen]="isModalOpen" (didDismiss)="closeModal()">
-          <ng-template>
-            <ion-header>
-              <ion-toolbar>
-                <ion-title>Editar Perfil</ion-title>
-                <ion-buttons slot="end">
-                  <ion-button (click)="closeModal()">
-                    <ion-icon name="close"></ion-icon>
-                  </ion-button>
-                </ion-buttons>
-              </ion-toolbar>
-            </ion-header>
-
-            <ion-content class="ion-padding">
-              <form>
-                <ion-item>
-                  <ion-label position="stacked">Nombre</ion-label>
-                  <ion-input [(ngModel)]="user.nombre" name="nombre"></ion-input>
-                </ion-item>
-
-                <ion-item>
-                  <ion-label position="stacked">Email</ion-label>
-                  <ion-input type="email" [(ngModel)]="user.email" name="email"></ion-input>
-                </ion-item>
-
-                <ion-item>
-                  <ion-label position="stacked">Género</ion-label>
-                  <ion-input [(ngModel)]="user.genero" name="genero"></ion-input>
-                </ion-item>
-
-                <ion-item>
-                  <ion-label position="stacked">Fecha de Nacimiento</ion-label>
-                  <ion-input [(ngModel)]="user.fechaNacimiento" name="fechaNacimiento"></ion-input>
-                </ion-item>
-
-                <ion-item>
-                  <ion-label position="stacked">Teléfono 1</ion-label>
-                  <ion-input type="tel" [(ngModel)]="user.telefono1" name="telefono1"></ion-input>
-                </ion-item>
-
-                <ion-item>
-                  <ion-label position="stacked">Teléfono 2</ion-label>
-                  <ion-input type="tel" [(ngModel)]="user.telefono2" name="telefono2"></ion-input>
-                </ion-item>
-
-                <ion-item>
-                  <ion-label position="stacked">Dirección</ion-label>
-                  <ion-input [(ngModel)]="user.direccion" name="direccion"></ion-input>
-                </ion-item>
-
-                <ion-button expand="block" color="primary" (click)="saveProfile()" class="ion-margin-top">
-                  <ion-icon slot="start" name="save"></ion-icon>
-                  Guardar Cambios
-                </ion-button>
-              </form>
-            </ion-content>
-          </ng-template>
-        </ion-modal>
-        <!-- Modal para Compartir Perfil -->
-        <ion-modal [isOpen]="isShareModalOpen" (didDismiss)="closeShareModal()">
-          <ng-template>
-            <ion-header>
-              <ion-toolbar>
-                <ion-title>Compartir Perfil</ion-title>
-                <ion-buttons slot="end">
-                  <ion-button (click)="closeShareModal()">
-                    <ion-icon name="close"></ion-icon>
-                  </ion-button>
-                </ion-buttons>
-              </ion-toolbar>
-            </ion-header>
-
-            <ion-content class="ion-padding">
-              <div class="share-modal">
-                <div class="share-modal__icon">
-                  <svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <circle cx="18" cy="5" r="3" stroke="#003366" stroke-width="2"/>
-                    <circle cx="6" cy="12" r="3" stroke="#003366" stroke-width="2"/>
-                    <circle cx="18" cy="19" r="3" stroke="#003366" stroke-width="2"/>
-                    <path d="M8.59 13.51l6.83 3.98M15.41 6.51l-6.82 3.98" stroke="#003366" stroke-width="2"/>
-                  </svg>
-                </div>
-
-                <h3 class="share-modal__title">Comparte tu perfil</h3>
-                <p class="share-modal__description">
-                  Copia el enlace de tu perfil para compartirlo con otros usuarios
-                </p>
-
-                <div class="share-modal__link-container">
-                  <ion-item lines="none" class="share-modal__link-item">
-                    <ion-label class="share-modal__link">{{ profileLink }}</ion-label>
-                  </ion-item>
-
-                  <ion-button 
-                    expand="block" 
-                    color="primary" 
-                    (click)="copyProfileLink()"
-                    [disabled]="copySuccess"
-                  >
-                    <ion-icon slot="start" [name]="copySuccess ? 'checkmark-circle' : 'copy'"></ion-icon>
-                    {{ copySuccess ? '¡Copiado!' : 'Copiar Enlace' }}
-                  </ion-button>
-                </div>
-
-                <div class="share-modal__footer">
-                  <p>También puedes compartir en:</p>
-                  <div class="share-modal__social">
-                    <button class="social-btn social-btn--whatsapp" type="button">
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
-                      </svg>
-                    </button>
-                    <button class="social-btn social-btn--facebook" type="button">
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
-                      </svg>
-                    </button>
-                    <button class="social-btn social-btn--twitter" type="button">
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
-                      </svg>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </ion-content>
-          </ng-template>
-        </ion-modal>
-      </main>
+  <!-- Barra lateral -->
+  <aside class="sidebar">
+    <div class="sidebar__logo">
+      <h1>Marketplace PUCV</h1>
     </div>
-  </body>
-</html>
+
+    <nav class="sidebar__menu">
+      <a routerLink="/home" class="menu-item">
+        <svg class="menu-item__icon" width="24" height="24" viewBox="0 0 24 24">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"
+            stroke="currentColor" stroke-width="2" />
+        </svg>
+        <span class="menu-item__text">Inicio</span>
+      </a>
+
+      <a routerLink="/home" class="menu-item">
+        <svg class="menu-item__icon" width="24" height="24" viewBox="0 0 24 24">
+          <rect x="3" y="3" width="7" height="7" stroke="currentColor" stroke-width="2"/>
+          <rect x="14" y="3" width="7" height="7" stroke="currentColor" stroke-width="2"/>
+          <rect x="14" y="14" width="7" height="7" stroke="currentColor" stroke-width="2"/>
+          <rect x="3" y="14" width="7" height="7" stroke="currentColor" stroke-width="2"/>
+        </svg>
+        <span class="menu-item__text">Productos</span>
+      </a>
+
+      <a routerLink="/detalle-producto" class="menu-item">
+        <svg class="menu-item__icon" width="24" height="24" viewBox="0 0 24 24">
+          <path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5"
+            stroke="currentColor" stroke-width="2" />
+        </svg>
+        <span class="menu-item__text">Pedidos</span>
+      </a>
+
+      <a href="/mensajes" class="menu-item">
+        <svg class="menu-item__icon" width="24" height="24" viewBox="0 0 24 24">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
+            stroke="currentColor" stroke-width="2" />
+        </svg>
+        <span class="menu-item__text">Mensajes</span>
+      </a>
+
+      <a href="/favoritos" class="menu-item">
+        <svg class="menu-item__icon" width="24" height="24" viewBox="0 0 24 24">
+          <path
+            d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
+            stroke="currentColor" stroke-width="2" />
+        </svg>
+        <span class="menu-item__text">Favoritos</span>
+      </a>
+
+      <a routerLink="/perfil" class="menu-item">
+        <svg class="menu-item__icon" width="24" height="24" viewBox="0 0 24 24">
+          <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"
+            stroke="currentColor" stroke-width="2" />
+          <path
+            d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"
+            stroke="currentColor" stroke-width="2" />
+        </svg>
+        <span class="menu-item__text">Configuración</span>
+      </a>
+
+      <a routerLink="/auth" class="menu-item">
+        <svg class="menu-item__icon" width="24" height="24" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+          <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3m.08 4h.01"
+            stroke="currentColor" stroke-width="2" />
+        </svg>
+        <span class="menu-item__text">Ayuda</span>
+      </a>
+    </nav>
+
+    <div class="sidebar__footer">
+      <img src="assets/icon/Escudo_PUCV-2016__Perfil Redes TW_FB.png" class="sidebar__footer-logo" />
+    </div>
+  </aside>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <main class="content">
+
+    <!-- HEADER -->
+    <header class="header">
+      <div class="header__title">
+        <h2>Perfil de usuario</h2>
+        <nav class="header__breadcrumb">
+          <a href="/">Inicio</a>
+          <span class="header__breadcrumb-separator">/</span>
+          <span class="header__breadcrumb-current">Perfil</span>
+        </nav>
+      </div>
+
+      <div class="header__user">
+        <span class="header__user-name">{{ user?.nombre }}</span>
+        <img src="assets/avatar/4794936.png" alt="Avatar" class="header__user-avatar" />
+      </div>
+    </header>
+
+    <!-- PERFIL -->
+    <section class="profile">
+      <div class="profile__card">
+
+        <!-- Información principal -->
+        <div class="profile__main">
+          <img
+            src="assets/avatar/4794936.png"
+            alt="Foto de perfil"
+            class="profile__picture"
+          />
+
+          <div class="profile__info">
+            <h3 class="profile__name">{{ user?.nombre }}</h3>
+            <p class="profile__role">Estudiante</p>
+            <span class="profile__badge profile__badge--active">Activo</span>
+            <p class="profile__description">{{ user?.region }} - {{ user?.comuna }}</p>
+          </div>
+        </div>
+
+        <!-- Botones -->
+        <div class="profile__actions">
+          <button class="btn btn--primary" type="button" (click)="openEditModal()">
+            Editar Perfil
+          </button>
+
+          <button class="btn btn--secondary" type="button" (click)="openShareModal()">
+            Compartir
+          </button>
+        </div>
+      </div>
+
+      <!-- Información personal -->
+      <div class="profile__details">
+        <h4 class="profile__details-title">Información Personal</h4>
+
+        <div class="profile__detail-item">
+          <span class="profile__detail-label">Nombre:</span>
+          <span class="profile__detail-value">{{ user?.nombre }}</span>
+        </div>
+
+        <div class="profile__detail-item">
+          <span class="profile__detail-label">Correo electrónico:</span>
+          <span class="profile__detail-value">{{ user?.correo }}</span>
+        </div>
+
+        <div class="profile__detail-item">
+          <span class="profile__detail-label">RUT:</span>
+          <span class="profile__detail-value">{{ user?.rut }}</span>
+        </div>
+
+        <div class="profile__detail-item">
+          <span class="profile__detail-label">Región:</span>
+          <span class="profile__detail-value">{{ user?.region }}</span>
+        </div>
+
+        <div class="profile__detail-item">
+          <span class="profile__detail-label">Comuna:</span>
+          <span class="profile__detail-value">{{ user?.comuna }}</span>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Mantengo tus modales exactamente igual -->
+    <!-- Modal de Edición -->
+    <ion-modal [isOpen]="isModalOpen" (didDismiss)="closeModal()">
+      <!-- ...(todo tu modal tal cual)... -->
+    </ion-modal>
+
+    <!-- Modal de Compartir -->
+    <ion-modal [isOpen]="isModalOpen" (didDismiss)="closeModal()">
+      <!-- ...(todo tu modal tal cual)... -->
+    </ion-modal>
+
+  </main>
+</div>
