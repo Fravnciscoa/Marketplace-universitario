@@ -1,175 +1,94 @@
-<div class="main-container">
+<ion-content>
 
-  <!-- Barra lateral -->
-  <aside class="sidebar">
-    <div class="sidebar__logo">
-      <h1>Marketplace PUCV</h1>
-    </div>
+  <div class="main-container">
 
-    <nav class="sidebar__menu">
-      <a routerLink="/home" class="menu-item">
-        <svg class="menu-item__icon" width="24" height="24" viewBox="0 0 24 24">
-          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"
-            stroke="currentColor" stroke-width="2" />
-        </svg>
-        <span class="menu-item__text">Inicio</span>
-      </a>
-
-      <a routerLink="/home" class="menu-item">
-        <svg class="menu-item__icon" width="24" height="24" viewBox="0 0 24 24">
-          <rect x="3" y="3" width="7" height="7" stroke="currentColor" stroke-width="2"/>
-          <rect x="14" y="3" width="7" height="7" stroke="currentColor" stroke-width="2"/>
-          <rect x="14" y="14" width="7" height="7" stroke="currentColor" stroke-width="2"/>
-          <rect x="3" y="14" width="7" height="7" stroke="currentColor" stroke-width="2"/>
-        </svg>
-        <span class="menu-item__text">Productos</span>
-      </a>
-
-      <a routerLink="/detalle-producto" class="menu-item">
-        <svg class="menu-item__icon" width="24" height="24" viewBox="0 0 24 24">
-          <path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5"
-            stroke="currentColor" stroke-width="2" />
-        </svg>
-        <span class="menu-item__text">Pedidos</span>
-      </a>
-
-      <a href="/mensajes" class="menu-item">
-        <svg class="menu-item__icon" width="24" height="24" viewBox="0 0 24 24">
-          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
-            stroke="currentColor" stroke-width="2" />
-        </svg>
-        <span class="menu-item__text">Mensajes</span>
-      </a>
-
-      <a href="/favoritos" class="menu-item">
-        <svg class="menu-item__icon" width="24" height="24" viewBox="0 0 24 24">
-          <path
-            d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
-            stroke="currentColor" stroke-width="2" />
-        </svg>
-        <span class="menu-item__text">Favoritos</span>
-      </a>
-
-      <a routerLink="/perfil" class="menu-item">
-        <svg class="menu-item__icon" width="24" height="24" viewBox="0 0 24 24">
-          <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"
-            stroke="currentColor" stroke-width="2" />
-          <path
-            d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"
-            stroke="currentColor" stroke-width="2" />
-        </svg>
-        <span class="menu-item__text">Configuración</span>
-      </a>
-
-      <a routerLink="/auth" class="menu-item">
-        <svg class="menu-item__icon" width="24" height="24" viewBox="0 0 24 24">
-          <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
-          <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3m.08 4h.01"
-            stroke="currentColor" stroke-width="2" />
-        </svg>
-        <span class="menu-item__text">Ayuda</span>
-      </a>
-    </nav>
-
-    <div class="sidebar__footer">
-      <img src="assets/icon/Escudo_PUCV-2016__Perfil Redes TW_FB.png" class="sidebar__footer-logo" />
-    </div>
-  </aside>
-
-  <!-- CONTENIDO PRINCIPAL -->
-  <main class="content">
-
-    <!-- HEADER -->
-    <header class="header">
-      <div class="header__title">
-        <h2>Perfil de usuario</h2>
-        <nav class="header__breadcrumb">
-          <a href="/">Inicio</a>
-          <span class="header__breadcrumb-separator">/</span>
-          <span class="header__breadcrumb-current">Perfil</span>
-        </nav>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar__logo">
+        <h1>Marketplace PUCV</h1>
       </div>
 
-      <div class="header__user">
-        <span class="header__user-name">{{ user?.nombre }}</span>
-        <img src="assets/avatar/4794936.png" alt="Avatar" class="header__user-avatar" />
+      <nav class="sidebar__menu">
+        <a routerLink="/home" class="menu-item">Inicio</a>
+        <a routerLink="/productos" class="menu-item">Productos</a>
+        <a routerLink="/perfil" class="menu-item active">Perfil</a>
+        <a routerLink="/auth" class="menu-item">Cerrar Sesión</a>
+      </nav>
+
+      <div class="sidebar__footer">
+        <img src="assets/icon/Escudo_PUCV-2016__Perfil Redes TW_FB.png" alt="PUCV Logo" />
       </div>
-    </header>
+    </aside>
 
-    <!-- PERFIL -->
-    <section class="profile">
-      <div class="profile__card">
+    <!-- Main Content -->
+    <main class="content">
 
-        <!-- Información principal -->
-        <div class="profile__main">
-          <img
-            src="assets/avatar/4794936.png"
-            alt="Foto de perfil"
-            class="profile__picture"
-          />
+      <header class="header">
+        <div>
+          <h2>Perfil de Usuario</h2>
+          <p>Inicio / Perfil</p>
+        </div>
 
-          <div class="profile__info">
-            <h3 class="profile__name">{{ user?.nombre }}</h3>
-            <p class="profile__role">Estudiante</p>
-            <span class="profile__badge profile__badge--active">Activo</span>
-            <p class="profile__description">{{ user?.region }} - {{ user?.comuna }}</p>
+        <div class="header__user">
+          <span class="header__user-name">{{ user.nombre }}</span>
+          <img src="assets/avatar/4794936.png" class="header__user-avatar" />
+        </div>
+      </header>
+
+      <!-- Profile -->
+      <section class="profile">
+
+        <div class="profile__card">
+
+          <div class="profile__main">
+            <img src="assets/avatar/4794936.png" class="profile__picture" />
+
+            <div class="profile__info">
+              <h3 class="profile__name">{{ user.nombre }}</h3>
+              <p class="profile__role">Estudiante</p>
+              <span class="profile__badge profile__badge--active">Activo</span>
+              <p class="profile__description">
+                Ingeniería en Informática
+              </p>
+            </div>
           </div>
         </div>
 
-        <!-- Botones -->
-        <div class="profile__actions">
-          <button class="btn btn--primary" type="button" (click)="openEditModal()">
-            Editar Perfil
-          </button>
+        <!-- Data -->
+        <div class="profile__details">
+          <h4>Información Personal</h4>
 
-          <button class="btn btn--secondary" type="button" (click)="openShareModal()">
-            Compartir
-          </button>
-        </div>
-      </div>
+          <div class="profile__detail-item">
+            <span class="profile__detail-label">Correo:</span>
+            <span class="profile__detail-value">{{ user.correo }}</span>
+          </div>
 
-      <!-- Información personal -->
-      <div class="profile__details">
-        <h4 class="profile__details-title">Información Personal</h4>
+          <div class="profile__detail-item">
+            <span class="profile__detail-label">Usuario:</span>
+            <span class="profile__detail-value">{{ user.usuario }}</span>
+          </div>
 
-        <div class="profile__detail-item">
-          <span class="profile__detail-label">Nombre:</span>
-          <span class="profile__detail-value">{{ user?.nombre }}</span>
-        </div>
+          <div class="profile__detail-item" *ngIf="user.rut">
+            <span class="profile__detail-label">RUT:</span>
+            <span class="profile__detail-value">{{ user.rut }}</span>
+          </div>
 
-        <div class="profile__detail-item">
-          <span class="profile__detail-label">Correo electrónico:</span>
-          <span class="profile__detail-value">{{ user?.correo }}</span>
-        </div>
+          <div class="profile__detail-item" *ngIf="user.region">
+            <span class="profile__detail-label">Región:</span>
+            <span class="profile__detail-value">{{ user.region }}</span>
+          </div>
 
-        <div class="profile__detail-item">
-          <span class="profile__detail-label">RUT:</span>
-          <span class="profile__detail-value">{{ user?.rut }}</span>
-        </div>
+          <div class="profile__detail-item" *ngIf="user.comuna">
+            <span class="profile__detail-label">Comuna:</span>
+            <span class="profile__detail-value">{{ user.comuna }}</span>
+          </div>
 
-        <div class="profile__detail-item">
-          <span class="profile__detail-label">Región:</span>
-          <span class="profile__detail-value">{{ user?.region }}</span>
         </div>
 
-        <div class="profile__detail-item">
-          <span class="profile__detail-label">Comuna:</span>
-          <span class="profile__detail-value">{{ user?.comuna }}</span>
-        </div>
+      </section>
 
-      </div>
-    </section>
+    </main>
 
-    <!-- Mantengo tus modales exactamente igual -->
-    <!-- Modal de Edición -->
-    <ion-modal [isOpen]="isModalOpen" (didDismiss)="closeModal()">
-      <!-- ...(todo tu modal tal cual)... -->
-    </ion-modal>
+  </div>
 
-    <!-- Modal de Compartir -->
-    <ion-modal [isOpen]="isModalOpen" (didDismiss)="closeModal()">
-      <!-- ...(todo tu modal tal cual)... -->
-    </ion-modal>
-
-  </main>
-</div>
+</ion-content>

@@ -1,23 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
+import { IonContent } from '@ionic/angular/standalone';
 import { AuthService } from '../../services/auth.service';
-import {
-  IonContent,
-  IonHeader,
-  IonTitle,
-  IonToolbar,
-  IonButtons,
-  IonButton,
-  IonModal,
-  IonInput,
-  IonItem,
-  IonLabel,
-  IonIcon,
-} from '@ionic/angular/standalone';
-import { addIcons } from 'ionicons';
-import { close, save, copy, shareOutline, checkmarkCircle } from 'ionicons/icons';
 
 @Component({
   selector: 'app-perfil',
@@ -25,43 +10,45 @@ import { close, save, copy, shareOutline, checkmarkCircle } from 'ionicons/icons
   styleUrls: ['./perfil.page.scss'],
   standalone: true,
   imports: [
-    IonButtons,
     IonContent,
-    IonHeader,
-    IonTitle,
-    IonToolbar,
-    IonButton,
-    IonModal,
-    IonInput,
-    IonItem,
-    IonLabel,
-    IonIcon,
     CommonModule,
-    FormsModule,
-    RouterLink,
+    RouterLink
   ],
 })
 export class PerfilPage implements OnInit {
-openShareModal() {
-throw new Error('Method not implemented.');
-}
-openEditModal() {
-throw new Error('Method not implemented.');
-}
-isModalOpen: any;
-closeModal() {
-throw new Error('Method not implemented.');
-}
 
-  user: any = null;
+  user: any = {
+    nombre: '',
+    correo: '',
+    usuario: '',
+    rut: '',
+    region: '',
+    comuna: '',
+    genero: '',
+    fecha_nacimiento: '',
+    telefono1: '',
+    telefono2: '',
+    direccion: ''
+  };
 
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService
+  ) {}
 
   ngOnInit() {
-    this.loadUser();
+    this.loadProfile();
   }
 
-  loadUser() {
-    this.user = this.authService.getCurrentUser();
+  loadProfile() {
+    this.authService.getProfile().subscribe({
+      next: (res: any) => {
+        if (res && res.success) {
+          this.user = res.data;
+        }
+      },
+      error: (err) => {
+        console.error("Error cargando perfil:", err);
+      }
+    });
   }
 }

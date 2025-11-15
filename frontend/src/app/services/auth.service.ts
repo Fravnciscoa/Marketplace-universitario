@@ -87,6 +87,11 @@ export class AuthService {
     // Verificar que no esté expirado
     return !this.isTokenExpired(token);
   }
+  getProfile() {
+  return this.http.get(`${this.apiUrl}/profile`);
+  }
+
+
 
   // Verificar si el token está expirado
   private isTokenExpired(token: string): boolean {
