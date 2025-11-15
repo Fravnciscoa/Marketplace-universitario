@@ -1,45 +1,103 @@
-.img-container {
+// ============================================
+// Navbar (idéntico al home)
+// ============================================
+
+.navbar {
+  --background: #003366;
+  --color: #ffffff;
+  --padding-top: 8px;
+  --padding-bottom: 8px;
+  --min-height: 60px;
+}
+
+.navbar-brand {
   display: flex;
-  justify-content: center;
-  margin: 10px 0;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
 
-  .preview-img {
-    width: 100%;
-    max-height: 260px;
-    object-fit: cover;
-    border-radius: 16px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+  .logo {
+    height: 40px;
+    width: auto;
   }
 
-  .img-placeholder {
-    width: 100%;
-    height: 220px;
-    background: #f6f6f6;
-    border-radius: 16px;
+  .brand-text {
+    font-size: 20px;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: 0.5px;
+  }
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-left: 40px;
+
+  .nav-link {
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 15px;
     display: flex;
-    flex-direction: column;
-    justify-content: center;
     align-items: center;
-    color: #777;
-    gap: 10px;
+    gap: 6px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    ion-icon {
+      font-size: 20px;
+    }
   }
 }
 
-input[type="file"] {
-  margin-bottom: 15px;
+.user-actions {
+  display: flex;
+  gap: 8px;
 }
 
-.btn-guardar {
-  margin-top: 20px;
-  height: 48px;
-  border-radius: 12px;
+.btn-auth {
+  --border-radius: 6px;
+  --padding-start: 16px;
+  --padding-end: 16px;
   font-weight: 600;
+  font-size: 14px;
+  text-transform: none;
+  height: 36px;
+
+  ion-icon {
+    font-size: 18px;
+  }
 }
+
+.btn-perfil {
+  --background: transparent;
+  --color: #ffffff;
+  --background-hover: rgba(255, 255, 255, 0.1);
+}
+
+.btn-logout {
+  --background: #FF5757;
+  --background-hover: #e04545;
+  --color: #ffffff;
+}
+
+.btn-login {
+  --background: #4A90E2;
+  --background-hover: #3a7bc8;
+  --color: #ffffff;
+}
+
 // ============================================
-// Página Publicar Producto - Estilo Home
+// Variables
 // ============================================
 
-// Variables (coinciden con home)
 $color-primary: #003366;
 $color-primary-light: #4A90E2;
 $color-bg: #f5f5f5;
@@ -48,30 +106,24 @@ $color-text: #2c3e50;
 $color-text-muted: #666666;
 $color-border: #e0e0e0;
 
-// Contenedor principal
+// ============================================
+// Contenido Principal
+// ============================================
+
 ion-content {
-  --background: #{$color-bg}; // ✅ Fondo claro como home
+  --background: #{$color-bg};
 }
 
-// Header
-ion-toolbar {
-  --background: #{$color-primary}; // ✅ Azul oscuro PUCV
-  --color: #ffffff;
-}
-
-ion-title {
-  font-weight: 600;
-  font-size: 18px;
-}
-
-// Contenedor del formulario
 .form-container {
   max-width: 800px;
   margin: 0 auto;
-  padding: 24px 16px;
+  padding: 32px 16px;
 }
 
-// Área de imagen
+// ============================================
+// Área de Imagen
+// ============================================
+
 .image-upload-area {
   background: $color-card;
   border-radius: 12px;
@@ -81,57 +133,69 @@ ion-title {
   border: 2px dashed $color-border;
   cursor: pointer;
   transition: all 0.3s ease;
+  position: relative;
+  min-height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   &:hover {
     border-color: $color-primary-light;
     background: #fafafa;
   }
 
+  input[type="file"] {
+    display: none;
+  }
+}
+
+.upload-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+
   ion-icon {
     font-size: 64px;
     color: $color-text-muted;
-    margin-bottom: 12px;
   }
 
   p {
     color: $color-text-muted;
-    font-size: 14px;
+    font-size: 15px;
     margin: 0;
+    font-weight: 500;
   }
 }
 
-// Preview de imagen
 .image-preview {
   width: 100%;
-  max-width: 400px;
-  height: 300px;
-  object-fit: cover;
+  max-width: 500px;
+  max-height: 400px;
+  object-fit: contain;
   border-radius: 12px;
-  margin: 20px auto;
-  display: block;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-// Input file oculto
-input[type="file"] {
-  display: none;
-}
+// ============================================
+// Formulario
+// ============================================
 
-// Items del formulario
 ion-item {
   --background: #{$color-card};
   --border-color: #{$color-border};
   --padding-start: 16px;
   --padding-end: 16px;
   --inner-padding-end: 0;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
   border-radius: 8px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
 
   ion-label {
     color: $color-text;
-    font-weight: 500;
+    font-weight: 600;
     margin-bottom: 8px;
+    font-size: 14px;
   }
 
   ion-input,
@@ -139,19 +203,32 @@ ion-item {
   ion-select {
     --color: #{$color-text};
     --placeholder-color: #{$color-text-muted};
+    --placeholder-opacity: 0.7;
+    font-size: 15px;
+  }
+
+  ion-textarea {
+    --padding-top: 12px;
+    --padding-bottom: 12px;
   }
 }
 
-// Select personalizado
 ion-select {
   width: 100%;
   
   &::part(text) {
     color: $color-text;
   }
+
+  &::part(icon) {
+    color: $color-primary;
+  }
 }
 
-// Botón publicar (azul como en home)
+// ============================================
+// Botón Publicar
+// ============================================
+
 .btn-publicar {
   --background: #{$color-primary-light};
   --background-hover: #{$color-primary};
@@ -159,41 +236,102 @@ ion-select {
   --border-radius: 8px;
   --padding-top: 16px;
   --padding-bottom: 16px;
+  --box-shadow: 0 2px 8px rgba(74, 144, 226, 0.3);
   
-  margin: 24px 0;
+  margin: 32px 0;
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 1px;
+  height: 50px;
   
   ion-icon {
     margin-right: 8px;
+    font-size: 20px;
   }
 
   &:hover {
+    --background: #{$color-primary};
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
+    --box-shadow: 0 4px 12px rgba(74, 144, 226, 0.4);
+  }
+
+  &:active {
+    transform: translateY(0);
   }
 }
 
-// Toast personalizado
+// ============================================
+// Toast
+// ============================================
+
 ion-toast {
   --background: #{$color-primary};
   --color: #ffffff;
   --border-radius: 8px;
+  --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
+// ============================================
 // Responsive
+// ============================================
+
 @media (max-width: 768px) {
+  .nav-links {
+    display: none;
+  }
+
+  .navbar-brand {
+    .brand-text {
+      font-size: 16px;
+    }
+
+    .logo {
+      height: 32px;
+    }
+  }
+
   .form-container {
-    padding: 16px 12px;
+    padding: 20px 12px;
   }
 
   .image-upload-area {
     padding: 30px 16px;
+    min-height: 250px;
 
-    ion-icon {
+    .upload-placeholder ion-icon {
       font-size: 48px;
+    }
+  }
+
+  .image-preview {
+    max-height: 300px;
+  }
+
+  ion-item {
+    margin-bottom: 12px;
+  }
+
+  .btn-publicar {
+    height: 48px;
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .form-container {
+    padding: 16px 8px;
+  }
+
+  .user-actions {
+    flex-direction: column;
+    gap: 4px;
+
+    .btn-auth {
+      font-size: 12px;
+      height: 32px;
+      --padding-start: 12px;
+      --padding-end: 12px;
     }
   }
 }
