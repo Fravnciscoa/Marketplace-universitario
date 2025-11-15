@@ -19,7 +19,7 @@ vendedor: any;
   campus: string;
   user_id?: number;
   created_at?: Date;
-  vendedor_nombre?: string;  // ← NUEVO
+  vendedor_nombre?: string;
   updated_at?: Date;
 }
 

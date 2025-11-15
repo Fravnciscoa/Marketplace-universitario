@@ -62,19 +62,51 @@
     <div class="carrito-lista" *ngIf="carrito.length > 0">
       <ion-card
         class="carrito-item"
-        *ngFor="let producto of carrito"
+        *ngFor="let item of carrito"
       >
         <div class="carrito-item-content">
           <img
-            [src]="producto.imagen"
-            alt="{{ producto.titulo }}"
+            [src]="item.producto.imagen"
+            alt="{{ item.producto.titulo }}"
             class="carrito-item-imagen"
           />
 
           <div class="carrito-item-info">
-            <h3>{{ producto.titulo }}</h3>
-            <p class="carrito-descripcion">{{ producto.descripcion }}</p>
-            <span class="carrito-precio">{{ formatearPrecio(producto.precio) }}</span>
+            <h3>{{ item.producto.titulo }}</h3>
+            <p class="carrito-descripcion">{{ item.producto.descripcion }}</p>
+
+            <div class="carrito-precios">
+              <span class="carrito-precio-unitario">
+                Precio: {{ formatearPrecio(item.producto.precio) }}
+              </span>
+              <span class="carrito-subtotal">
+                Subtotal:
+                {{ formatearPrecio(item.producto.precio * item.cantidad) }}
+              </span>
+            </div>
+
+            <div class="carrito-cantidad">
+              <span>Cantidad:</span>
+              <div class="carrito-cantidad-controles">
+                <ion-button
+                  fill="outline"
+                  size="small"
+                  (click)="disminuir(item)"
+                >
+                  -
+                </ion-button>
+
+                <span class="carrito-cantidad-valor">{{ item.cantidad }}</span>
+
+                <ion-button
+                  fill="outline"
+                  size="small"
+                  (click)="aumentar(item)"
+                >
+                  +
+                </ion-button>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -82,7 +114,7 @@
           <ion-button
             fill="clear"
             class="btn-eliminar"
-            (click)="eliminarProducto(producto.id)"
+            (click)="eliminarProducto(item.producto.id)"
           >
             <ion-icon name="trash-outline"></ion-icon>
           </ion-button>

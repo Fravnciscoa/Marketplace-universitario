@@ -1,58 +1,55 @@
-<ion-header>
-  <!-- Navbar principal -->
-  <ion-toolbar class="navbar">
-    <!-- Logo + Título -->
-    <div class="navbar-brand" slot="start" routerLink="/home">
-      <img src="assets/icon/Escudo_PUCV-2016__Perfil Redes TW_FB.png" alt="Logo PUCV" class="logo" />
-      <span class="brand-text">MarketPlace</span>
+<ion-header class="ion-no-border">
+  <ion-toolbar class="header-toolbar">
+    <div class="header-container">
+      <!-- Logo -->
+      <div class="header-logo">
+        <img src="assets/icon/Escudo_PUCV-2016__Perfil Redes TW_FB.png" alt="PUCV Logo" />
+        <span class="header-logo-text">MarketPlace</span>
+      </div>
+
+      <!-- Navegación -->
+      <nav class="header-nav">
+        <a routerLink="/home" class="nav-link nav-link--active">Inicio</a>
+        <a routerLink="/categorias" class="nav-link">Categorías</a>
+        <a routerLink="/carrito" class="nav-link">
+          <ion-icon name="cart-outline"></ion-icon>
+          Carrito
+        </a>
+      </nav>
+
+      <!-- Botones de autenticación dinámicos -->
+      <div class="header-actions">
+        <!-- Mostrar cuando NO está logueado -->
+        <ng-container *ngIf="!isLoggedIn">
+          <ion-button routerLink="/auth" fill="clear" class="btn-auth btn-login">
+            <ion-icon slot="start" name="log-in-outline"></ion-icon>
+            Iniciar Sesión
+          </ion-button>
+          <ion-button routerLink="/auth" fill="solid" class="btn-auth btn-register">
+            Registrarse
+          </ion-button>
+        </ng-container>
+
+        <!-- Mostrar cuando SÍ está logueado -->
+        <ng-container *ngIf="isLoggedIn">
+          <ion-button routerLink="/publicar" fill="solid" class="btn-auth btn-publicar">
+            <ion-icon slot="start" name="add-outline"></ion-icon>
+            Publicar
+          </ion-button>
+          
+          <ion-button routerLink="/perfil" fill="clear" class="btn-auth btn-login">
+            <ion-icon slot="start" name="person-outline"></ion-icon>
+            Perfil
+          </ion-button>
+          <ion-button (click)="cerrarSesion()" fill="solid" class="btn-auth btn-logout">
+            <ion-icon slot="start" name="log-out-outline"></ion-icon>
+            Cerrar Sesión
+          </ion-button>
+      </ng-container>
+
+      </div>
     </div>
-
-    <!-- Links de navegación (centro) -->
-    <div class="nav-links" slot="">
-      <a routerLink="/home" class="nav-link">Inicio</a>
-      <a routerLink="/categorias" class="nav-link">Categorías</a>
-      <a routerLink="/carrito" class="nav-link">
-        <ion-icon name="cart-outline"></ion-icon>
-        Carrito
-      </a>
-    </div>
-
-    <!-- Botones de usuario (derecha) -->
-    <ion-buttons slot="end" class="user-actions">
-      
-      <!-- ✅ NUEVO: Botón Mis Productos (solo si está logueado) -->
-      <ion-button *ngIf="isLoggedIn" routerLink="/mis-productos" class="btn-auth btn-mis-productos">
-        <ion-icon name="cube-outline" slot="start"></ion-icon>
-        Mis Productos
-      </ion-button>
-
-      <!-- Botón Publicar (solo si está logueado) -->
-      <ion-button *ngIf="isLoggedIn" routerLink="/publicar" fill="solid" class="btn-auth btn-publicar">
-        <ion-icon name="add-outline" slot="start"></ion-icon>
-        Publicar
-      </ion-button>
-
-      <!-- Botón Perfil (solo si está logueado) -->
-      <ion-button *ngIf="isLoggedIn" routerLink="/perfil" class="btn-auth btn-perfil">
-        <ion-icon name="person-outline" slot="start"></ion-icon>
-        Perfil
-      </ion-button>
-
-      <!-- Botón Cerrar Sesión (solo si está logueado) -->
-      <ion-button *ngIf="isLoggedIn" (click)="logout()" class="btn-auth btn-logout">
-        <ion-icon name="log-out-outline" slot="start"></ion-icon>
-        Cerrar Sesión
-      </ion-button>
-
-      <!-- Botón Iniciar Sesión (solo si NO está logueado) -->
-      <ion-button *ngIf="!isLoggedIn" routerLink="/auth" class="btn-auth btn-login">
-        <ion-icon name="log-in-outline" slot="start"></ion-icon>
-        Iniciar Sesión
-      </ion-button>
-    </ion-buttons>
   </ion-toolbar>
-
-  <!-- ... resto del HTML del home (hero, filtros, productos) ... -->
 </ion-header>
 
 <ion-content>

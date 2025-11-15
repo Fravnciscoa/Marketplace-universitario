@@ -26,6 +26,8 @@ import {
 
 import { AuthService } from '../../services/auth.service';
 import { Producto } from '../../services/productos.service';
+import { CarritoService } from '../../services/carrito.service';
+import { CartItem } from '../../models/cart-item.model';
 
 @Component({
   selector: 'app-carrito',
@@ -50,12 +52,14 @@ import { Producto } from '../../services/productos.service';
 export class CarritoPage implements OnInit {
   isLoggedIn = false;
 
-  carrito: Producto[] = [];
+  // Antes: Producto[] = []
+  carrito: CartItem[] = [];
   total = 0;
 
   constructor(
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private carritoService: CarritoService  // 👈 nuevo
   ) {
     addIcons({
       cartOutline,
@@ -74,64 +78,33 @@ export class CarritoPage implements OnInit {
     this.cargarCarrito();
   }
 
+  ionViewWillEnter() {
+    // por si entras/sales de la página, que se actualice
+    this.cargarCarrito();
+  }
+
   cargarCarrito() {
-    // 🔥 Temporal: productos de ejemplo en el carrito
-this.carrito = [
-  {
-    id: 1,
-    titulo: 'Cálculo I - Stewart',
-    descripcion: 'Libro universitario clásico',
-    precio: 15000,
-    categoria: 'libros',
-    campus: 'Casa Central',
-    imagen: 'assets/demo/libro.jpg',
-
-    // 🔥 CAMPOS EXTRA QUE EXIGE EL MODELO
-    ano_compra: "2023",
-    condicion: 'Usado',
-    modelo: '7ma edición',
-    marca: 'Stewart',
-    vendedor: 'UsuarioDemo1',
-  },
-  {
-    id: 5,
-    titulo: 'Audífonos Bluetooth',
-    descripcion: 'Cancelación de ruido',
-    precio: 18000,
-    categoria: 'electronica',
-    campus: 'Curauma',
-    imagen: 'assets/demo/audifonos.jpg',
-
-    // 🔥 CAMPOS EXTRA QUE EXIGE EL MODELO
-    ano_compra: "2024",
-    condicion: 'Como nuevo',
-    modelo: 'AirSound X1',
-    marca: 'SoundTech',
-    vendedor: 'UsuarioDemo2',
-  },
-];
-
-
+    this.carrito = this.carritoService.getItems();
     this.calcularTotal();
   }
 
   calcularTotal() {
-    this.total = this.carrito.reduce((acc, p) => acc + (p.precio || 0), 0);
+    this.total = this.carrito.reduce(
+      (acc, item) => acc + (item.producto.precio || 0) * item.cantidad,
+      0
+    );
   }
 
-  // 👇 acepta number | undefined, así no se enoja TS
   eliminarProducto(id?: number) {
-    if (id == null) return;
-    this.carrito = this.carrito.filter((p) => p.id !== id);
-    this.calcularTotal();
+    this.carritoService.removeItem(id);
+    this.cargarCarrito();
   }
 
   vaciarCarrito() {
-    this.carrito = [];
-    this.total = 0;
+    this.carritoService.clear();
+    this.cargarCarrito();
   }
 
-  // 👇 mismo patrón que en Home
   cerrarSesion() {
     this.authService.logout();
     this.router.navigate(['/auth']);
@@ -139,5 +112,16 @@ this.carrito = [
 
   formatearPrecio(valor: number): string {
     return `$${valor.toLocaleString('es-CL')}`;
+  }
+
+  // opcional: métodos para sumar/restar cantidad
+  aumentar(item: CartItem) {
+    this.carritoService.updateCantidad(item.producto.id, item.cantidad + 1);
+    this.cargarCarrito();
+  }
+
+  disminuir(item: CartItem) {
+    this.carritoService.updateCantidad(item.producto.id, item.cantidad - 1);
+    this.cargarCarrito();
   }
 }

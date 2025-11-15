@@ -70,12 +70,15 @@
         </div>
       </div>
       <div class="botones-accion">
-        <ion-button class="btn-secondary">
-          <ion-icon slot="start" name="add-outline"></ion-icon>
+        <ion-button class="btn-secondary" (click)="agregarAlCarrito()">
+        <ion-icon slot="start" name="add-outline"></ion-icon>
           Añadir al carrito
         </ion-button>
-        <ion-button class="btn-primary">Comprar ahora</ion-button>
-      </div>
+      <ion-button class="btn-primary">
+      Comprar ahora
+      </ion-button>
+</div>
+
     </div>
 
     <!-- COLUMNA DERECHA: Productos relacionados -->
