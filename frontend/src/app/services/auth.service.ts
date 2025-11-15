@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { tap } from 'rxjs/operators';
+import { jwtDecode } from 'jwt-decode'; // Importar jwt-decode
 
 interface User {
   id: number;
@@ -17,6 +18,14 @@ interface AuthResponse {
   message: string;
   token: string;
   user: User;
+}
+
+interface JwtPayload {
+  id: number;
+  correo: string;
+  usuario: string;
+  exp: number; // Timestamp de expiración
+  iat: number;
 }
 
 @Injectable({
@@ -49,7 +58,15 @@ export class AuthService {
 
   private loadStoredUser(): void {
     const user = localStorage.getItem('user');
-    if (user) this.currentUserSubject.next(JSON.parse(user));
+    const token = this.getToken();
+    
+    // Verificar que el token no esté expirado al cargar
+    if (user && token && !this.isTokenExpired(token)) {
+      this.currentUserSubject.next(JSON.parse(user));
+    } else if (token && this.isTokenExpired(token)) {
+      // Si el token expiró, hacer logout automático
+      this.logout();
+    }
   }
 
   logout(): void {
@@ -62,9 +79,30 @@ export class AuthService {
     return localStorage.getItem('token');
   }
 
-  // Método (NO getter) para que funcione con tu código
+  // Verificar si hay token válido
   isLoggedIn(): boolean {
-    return !!this.getToken();
+    const token = this.getToken();
+    if (!token) return false;
+    
+    // Verificar que no esté expirado
+    return !this.isTokenExpired(token);
+  }
+  getProfile() {
+  return this.http.get(`${this.apiUrl}/profile`);
+  }
+
+
+
+  // Verificar si el token está expirado
+  private isTokenExpired(token: string): boolean {
+    try {
+      const decoded = jwtDecode<JwtPayload>(token);
+      const currentTime = Date.now() / 1000; // Convertir a segundos
+      return decoded.exp < currentTime;
+    } catch (error) {
+      console.error('Error al decodificar token:', error);
+      return true; // Si hay error, considerar como expirado
+    }
   }
 
   getCurrentUser(): User | null {

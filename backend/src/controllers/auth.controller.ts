@@ -164,3 +164,24 @@ export const verifyUser = async (req: Request, res: Response) => {
     res.status(500).json({ error: 'Error al verificar usuario' });
   }
 };
+
+// GET /auth/profile
+export const getProfile = async (req: Request & { userId?: number }, res: Response) => {
+  try {
+    const user = await pool.query(
+      'SELECT id, nombre, correo, usuario, rut, region, comuna FROM usuarios WHERE id = $1',
+      [req.userId]
+    );
+
+    if (user.rows.length === 0) {
+      return res.status(404).json({ success: false, message: "Usuario no encontrado" });
+    }
+
+    return res.json({ success: true, data: user.rows[0] });
+
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ success: false, message: "Error interno" });
+  }
+};
+

@@ -1,38 +1,31 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import {
-  IonContent,
-  IonHeader,
-  IonTitle,
-  IonToolbar,
-  IonButton,
-  IonIcon,
-  IonCard,
-  IonCardContent,
-  IonCardHeader,
-  IonCardTitle,
-  IonCardSubtitle,
-  IonText,
-  IonSpinner,
-  IonBackButton,
-  ToastController,
-  AlertController,
-  IonItem,
-  IonLabel,
-} from '@ionic/angular/standalone';
+import { FormsModule } from '@angular/forms';
+import { RouterLink, ActivatedRoute } from '@angular/router';
+import { IonContent, IonHeader, IonToolbar, IonButton, IonIcon, IonCard, IonCardContent, IonCardTitle, IonTitle, IonSpinner, IonButtons, IonBackButton } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import {
-  arrowBackOutline,
   cartOutline,
-  heartOutline,
-  shareOutline,
-  personCircleOutline,
-  chatbubbleOutline,
+  personOutline,
+  callOutline,
+  mailOutline,
+  person,
+  addOutline
 } from 'ionicons/icons';
-import { ProductosService } from '../../services/productos.service';
-import { Producto } from '../../services/productos.service';
+import { ProductosService, Producto } from '../../services/productos.service';
 
+interface Resena {
+  usuario: string;
+  comentario: string;
+}
+
+interface ProductoRelacionado {
+  id: number;
+  titulo: string;
+  precio: number;
+  imagen: string;
+  descripcionCorta: string;
+}
 
 @Component({
   selector: 'app-detalle-producto',
@@ -40,165 +33,95 @@ import { Producto } from '../../services/productos.service';
   styleUrls: ['./detalle-producto.page.scss'],
   standalone: true,
   imports: [
-    CommonModule,
     IonContent,
     IonHeader,
-    IonTitle,
     IonToolbar,
     IonButton,
     IonIcon,
     IonCard,
     IonCardContent,
-    IonCardHeader,
+  // IonCardHeader removed (unused)
     IonCardTitle,
-    IonCardSubtitle,
-    IonText,
+    CommonModule,
+    FormsModule,
+    RouterLink,
+    IonTitle,
     IonSpinner,
-    IonBackButton,
-    IonItem,
-    IonLabel,
-  ],
+    IonButtons,
+    IonBackButton
+],
 })
 export class DetalleProductoPage implements OnInit {
   producto: Producto | null = null;
-  isLoading = true;
-  isFavorite = false;
+
+  resenas: Resena[] = [
+    { usuario: 'Usuario1', comentario: 'Excelente atención, 100% recomendable.' },
+    { usuario: 'Usuario2', comentario: 'Excelente atención, 100% recomendable.' },
+  ];
+
+  productosRelacionados: ProductoRelacionado[] = [];
 
   constructor(
     private route: ActivatedRoute,
-    private router: Router,
-    private productosService: ProductosService,
-    private toastCtrl: ToastController,
-    private alertCtrl: AlertController
+    private productosService: ProductosService
   ) {
     addIcons({
-      arrowBackOutline,
       cartOutline,
-      heartOutline,
-      shareOutline,
-      personCircleOutline,
-      chatbubbleOutline,
+      personOutline,
+      callOutline,
+      mailOutline,
+      person,
+      addOutline
     });
   }
 
   ngOnInit() {
-    console.log('🔥 Inicializando detalle-producto...');
-    this.cargarProducto();
+    this.route.paramMap.subscribe(params => {
+      const id = params.get('id');
+      if (id) {
+        this.producto = null; // Resetea el producto para mostrar el spinner
+        this.cargarProducto(Number(id));
+        this.cargarProductosRelacionados();
+      }
+    });
   }
 
-    cargarProducto() {
-      this.route.paramMap.subscribe(params => {
-        const rawId = params.get('id');
-        
-        console.log('📦 Raw ID:', rawId);
+  cargarProducto(id: number) {
+    console.log('🔥 Cargando producto con ID:', id);
+    this.productosService.getProductoById(id).subscribe({
+      next: (response: any) => {
+        console.log('✅ Producto recibido:', response);
+        this.producto = response.data || response;
+        console.log('✅ Producto cargado:', this.producto);
+      },
+      error: (err) => {
+        console.error('❌ Error al cargar producto:', err);
+      },
+    });
+  }
 
-        // Asegúrate que sea solo un número
-        const productId = parseInt(rawId?.split(':')[0] || '0', 10);
-        
-        console.log('📦 Clean ID:', productId);
-
-        if (!productId || isNaN(productId)) {
-          console.error('❌ ID no válido');
-          this.isLoading = false;
-          this.mostrarError('ID de producto inválido');
-          return;
-        }
-
-        // URL DIRECTA sin usar el servicio (temporal)
-        const apiUrl = `http://localhost:3000/api/productos/${productId}`;
-        
-        this.productosService.getProductoById(productId).subscribe({
-          next: (data) => {
-            console.log('✅ Producto cargado:', data);
-            this.producto = data;
-            this.isLoading = false;
-          },
-          error: (error) => {
-            console.error('❌ Error:', error);
-            this.isLoading = false;
-            this.mostrarError('No se pudo cargar el producto');
-          },
-        });
-      });
-    }
-
+  cargarProductosRelacionados() {
+    // Lógica para cargar productos que no sean el actual
+    this.productosRelacionados = [
+      {
+        id: 2,
+        titulo: 'Libro',
+        precio: 5000,
+        imagen: 'assets/libro.jpg',
+        descripcionCorta: 'Matemáticas Universitarias Introductorias.'
+      },
+      {
+        id: 3,
+        titulo: 'Pack lápices grafito',
+        precio: 3000,
+        imagen: 'assets/kit.jpg',
+        descripcionCorta: 'Set de lápices de grafito para dibujo.'
+      }
+    ];
+  }
 
   formatearPrecio(precio: number): string {
-    return `$${precio.toLocaleString('es-CL')}`;
-  }
-
-  toggleFavorite() {
-    this.isFavorite = !this.isFavorite;
-    const message = this.isFavorite ? '❤️ Agregado a favoritos' : '🤍 Removido de favoritos';
-    this.mostrarToast(message, 'success');
-  }
-
-  async contactarVendedor() {
-    if (!this.producto) return;
-    this.mostrarToast('📞 Abriendo chat con vendedor...', 'info');
-  }
-
-  async comprar() {
-    if (!this.producto) return;
-
-    const alert = await this.alertCtrl.create({
-      header: '🛒 Confirmar Compra',
-      message: `¿Deseas comprar "${this.producto.titulo}" por ${this.formatearPrecio(this.producto.precio)}?`,
-      buttons: [
-        {
-          text: 'Cancelar',
-          role: 'cancel',
-        },
-        {
-          text: 'Comprar',
-          handler: () => {
-            this.mostrarToast('✅ Compra realizada exitosamente', 'success');
-            setTimeout(() => this.router.navigate(['/home']), 2000);
-          },
-        },
-      ],
-    });
-
-    await alert.present();
-  }
-
-  async compartir() {
-    if (navigator.share && this.producto) {
-      try {
-        await navigator.share({
-          title: this.producto.titulo,
-          text: this.producto.descripcion,
-          url: window.location.href,
-        });
-      } catch (err) {
-        console.log('Error al compartir:', err);
-      }
-    } else {
-      this.mostrarToast('Función de compartir no disponible', 'warning');
-    }
-  }
-
-  private async mostrarToast(message: string, color: string) {
-    const toast = await this.toastCtrl.create({
-      message,
-      duration: 2000,
-      position: 'bottom',
-      color,
-    });
-    toast.present();
-  }
-
-  private async mostrarError(message: string) {
-    const alert = await this.alertCtrl.create({
-      header: '❌ Error',
-      message,
-      buttons: [
-        {
-          text: 'Volver',
-          handler: () => this.router.navigate(['/home']),
-        },
-      ],
-    });
-    await alert.present();
+    if (precio === null || precio === undefined) return '';
+    return precio === 0 ? '$0' : `$${precio.toLocaleString('es-CL')}`;
   }
 }

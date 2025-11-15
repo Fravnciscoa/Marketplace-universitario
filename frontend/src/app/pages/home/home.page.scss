@@ -563,6 +563,9 @@ ion-content {
   @include transition(transform);
   cursor: pointer;
   background: map-get($colors, card);
+  display: flex;
+  flex-direction: column;
+  height: 100%; // ← NUEVO: Altura consistente
 
   &:hover {
     transform: translateY(-2px);
@@ -572,10 +575,11 @@ ion-content {
 
 .producto-imagen-container {
   width: 100%;
-  height: 200px;
+  height: 200px; // ← MANTENER: Altura fija
   overflow: hidden;
   background: map-get($colors, secondary);
   position: relative;
+  flex-shrink: 0; // ← NUEVO: No se comprime
 
   @include mobile {
     height: 180px;
@@ -585,7 +589,8 @@ ion-content {
 .producto-imagen {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: cover; // ← MANTENER: Recorta sin deformar
+  object-position: center; // ← NUEVO: Centra la imagen
   @include transition(transform);
 
   .producto-card:hover & {
@@ -596,6 +601,7 @@ ion-content {
 .producto-header {
   padding: map-get($spacing, md);
   padding-bottom: map-get($spacing, xs);
+  flex-shrink: 0; // ← NUEVO: No se comprime
 }
 
 .producto-titulo {
@@ -617,6 +623,9 @@ ion-content {
 
 .producto-content {
   padding: 0 map-get($spacing, md) map-get($spacing, md);
+  flex-grow: 1; // ← NUEVO: Crece para llenar espacio
+  display: flex;
+  flex-direction: column;
 }
 
 .producto-descripcion {
@@ -629,7 +638,9 @@ ion-content {
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   line-height: 1.4;
+  flex-grow: 1; // ← NUEVO: Crece para llenar espacio
 }
+
 
 // ============================================
 // Sin Resultados
@@ -667,108 +678,13 @@ ion-content {
   padding-bottom: map-get($spacing, xxxl);
 }
 
-// Controles de paginación
-.pagination-controls {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px;
-  background: var(--ion-color-light);
-  border-top: 2px solid var(--ion-color-medium);
-  margin-top: 16px;
-  border-radius: 8px 8px 0 0;
+// Botón de cerrar sesión
+.btn-logout {
+  --background: #{map-get($colors, danger)};
+  --color: #{map-get($colors, text)};
+  --border-radius: 8px;
   
-  ion-button {
-    --padding-start: 12px;
-    --padding-end: 12px;
-    
-    &[disabled] {
-      opacity: 0.4;
-    }
-  }
-}
-
-.pagination-info {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  min-width: 140px;
-  
-  ion-text {
-    line-height: 1.4;
-    
-    strong {
-      font-size: 15px;
-    }
-    
-    small {
-      font-size: 12px;
-    }
-  }
-}
-
-// Overlay de carga
-.loading-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;
-}
-
-.loading-container {
-  background: var(--ion-color-light);
-  padding: 24px 32px;
-  border-radius: 12px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
-  
-  ion-spinner {
-    width: 40px;
-    height: 40px;
-    margin-bottom: 12px;
-  }
-  
-  p {
-    margin: 0;
-    font-size: 14px;
-    font-weight: 500;
-  }
-}
-
-// Responsive para pantallas pequeñas
-@media (max-width: 576px) {
-  .pagination-controls {
-    padding: 12px;
-    
-    ion-button {
-      font-size: 12px;
-      --padding-start: 8px;
-      --padding-end: 8px;
-      
-      ion-icon {
-        font-size: 16px;
-      }
-    }
-  }
-  
-  .pagination-info {
-    min-width: 100px;
-    
-    ion-text strong {
-      font-size: 13px;
-    }
-    
-    ion-text small {
-      font-size: 11px;
-    }
+  &:hover {
+    --background: #{darken(#dc3545, 10%)};
   }
 }

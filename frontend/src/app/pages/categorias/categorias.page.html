@@ -1,13 +1,145 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>categorias</ion-title>
+<ion-header class="ion-no-border">
+  <ion-toolbar class="header-toolbar">
+    <div class="header-container">
+      <!-- Logo -->
+      <div class="header-logo">
+        <img
+          src="assets/icon/Escudo_PUCV-2016__Perfil Redes TW_FB.png"
+          alt="PUCV Logo"
+        />
+        <span class="header-logo-text">MarketPlace</span>
+      </div>
+
+      <!-- Navegación -->
+      <nav class="header-nav">
+        <a routerLink="/home" class="nav-link">Inicio</a>
+        <a routerLink="/categorias" class="nav-link nav-link--active">
+          Categorías
+        </a>
+        <a routerLink="/carrito" class="nav-link">
+          <ion-icon name="cart-outline"></ion-icon>
+          Carrito
+        </a>
+      </nav>
+
+      <!-- Botones de autenticación dinámicos -->
+      <div class="header-actions">
+        <!-- Mostrar cuando NO está logueado -->
+        <ng-container *ngIf="!isLoggedIn">
+          <ion-button
+            routerLink="/auth"
+            fill="clear"
+            class="btn-auth btn-login"
+          >
+            <ion-icon slot="start" name="log-in-outline"></ion-icon>
+            Iniciar Sesión
+          </ion-button>
+          <ion-button
+            routerLink="/auth"
+            fill="solid"
+            class="btn-auth btn-register"
+          >
+            Registrarse
+          </ion-button>
+        </ng-container>
+
+        <!-- Mostrar cuando SÍ está logueado -->
+        <ng-container *ngIf="isLoggedIn">
+          <ion-button
+            routerLink="/perfil"
+            fill="clear"
+            class="btn-auth btn-login"
+          >
+            <ion-icon slot="start" name="person-outline"></ion-icon>
+            Perfil
+          </ion-button>
+          <ion-button
+            (click)="cerrarSesion()"
+            fill="solid"
+            class="btn-auth btn-logout"
+          >
+            <ion-icon slot="start" name="log-out-outline"></ion-icon>
+            Cerrar Sesión
+          </ion-button>
+        </ng-container>
+      </div>
+    </div>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">categorias</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content>
+  <div class="main-container categorias-main">
+    <!-- Encabezado de página -->
+    <section class="categorias-header">
+      <h1>Categorías principales</h1>
+      <p>
+        Explora rápidamente algunas publicaciones destacadas por cada categoría.
+      </p>
+    </section>
+
+    <!-- Tarjetas de categorías -->
+    <section class="categorias-grid">
+      <article
+        class="categoria-card"
+        *ngFor="let categoria of categorias"
+      >
+        <div class="categoria-header">
+          <div class="categoria-icon-wrapper">
+            <ion-icon [name]="categoria.icono"></ion-icon>
+          </div>
+          <div class="categoria-text">
+            <h2>{{ categoria.nombre }}</h2>
+            <p class="categoria-descripcion">
+              {{ categoria.descripcion }}
+            </p>
+          </div>
+        </div>
+
+        <ion-list class="categoria-productos-list">
+          <ng-container
+            *ngIf="
+              productosPorCategoria[categoria.id] &&
+              productosPorCategoria[categoria.id].length > 0;
+              else sinProductos
+            "
+          >
+            <ion-item
+              *ngFor="
+                let producto of productosPorCategoria[categoria.id]
+              "
+              lines="none"
+              class="categoria-producto-item"
+            >
+              <ion-label>
+                <h3 class="producto-nombre">{{ producto.titulo }}</h3>
+                <p class="producto-descripcion">
+                  {{ producto.descripcion | slice : 0 : 80 }}{{ producto.descripcion.length > 80 ? '...' : '' }}
+                </p>
+              </ion-label>
+              <div class="producto-precio-wrapper">
+                <span class="producto-precio">
+                  {{ formatearPrecio(producto.precio) }}
+                </span>
+                <span class="producto-campus">{{ producto.campus }}</span>
+              </div>
+            </ion-item>
+          </ng-container>
+
+          <ng-template #sinProductos>
+            <div class="categoria-sin-productos">
+              <span>No hay productos publicados aún en esta categoría.</span>
+            </div>
+          </ng-template>
+        </ion-list>
+
+        <button
+          type="button"
+          class="categoria-ver-mas-btn"
+          (click)="verCategoriaCompleta(categoria.id)"
+        >
+          Ver todos en {{ categoria.nombre }}
+        </button>
+      </article>
+    </section>
+  </div>
 </ion-content>

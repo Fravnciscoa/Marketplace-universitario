@@ -1,148 +1,163 @@
-.producto-header {
-  width: 100%;
-  height: 300px;
-  overflow: hidden;
-  background: #f5f5f5;
+:host {
+  // --- NUEVA PALETA DE COLORES ---
+  --color-primary: #2C2A4A; // Azul oscuro del header
+  --color-secondary: #fbc904; // Amarillo del botón
+  --color-background: #f4f5f8; // Gris claro de fondo
+  --color-card: #ffffff; // Blanco para las tarjetas
+  --text-primary: #333333; // Texto principal oscuro
+  --text-secondary: #666666; // Texto secundario gris
+  --border-color: #e0e0e0; // Color para bordes sutiles
 
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+  --ion-background-color: var(--color-background);
+  --ion-text-color: var(--text-primary);
+}
+
+// --- Header ---
+.main-toolbar {
+  --background: var(--color-primary);
+  --color: #ffffff;
+}
+
+// --- Layout General ---
+.detalle-container {
+  display: grid;
+  grid-template-columns: 280px 1fr 280px;
+  gap: 24px;
+  padding: 24px;
+  max-width: 1600px;
+  margin: 0 auto;
+
+  @media (max-width: 1200px) {
+    grid-template-columns: 1fr 2.5fr;
+    .columna-relacionados { display: none; }
+  }
+
+  @media (max-width: 820px) {
+    grid-template-columns: 1fr;
+    .columna-vendedor { display: none; }
   }
 }
 
-.producto-info {
-  border-radius: 20px 20px 0 0;
-  margin-top: -20px;
-  position: relative;
-  z-index: 10;
-  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+// --- Tarjetas y Sombras ---
+ion-card {
+  margin: 0;
+  background: var(--color-card);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+}
 
-  ion-card-header {
-    padding-bottom: 5px;
+// --- Columna Vendedor (Izquierda) ---
+.columna-vendedor {
+  .vendedor-avatar img {
+    border: 3px solid var(--color-primary);
+    padding: 4px;
+    background: #fff;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
   }
-
-  .precio {
-    font-size: 32px;
-    font-weight: bold;
-    color: #2563eb;
-    margin: 0;
-  }
-
-  .rating {
-    font-size: 12px;
-    color: #666;
-  }
-
-  .titulo-producto {
-    font-size: 18px;
+  h3.vendedor-nombre {
     font-weight: 600;
-    margin: 10px 0;
-    color: #333;
+    text-align: center;
+    margin-bottom: 24px;
   }
-
-  .label-small {
-    font-size: 12px;
-    color: #999;
-    margin: 0;
-    text-transform: uppercase;
+  .resenas-section {
+    padding: 0 16px; margin-bottom: 24px;
+    h4 { font-size: 0.9rem; font-weight: 600; margin-bottom: 12px; }
+    .resena-item {
+      background: var(--color-background);
+      border: 1px solid var(--border-color);
+      border-radius: 8px; margin-bottom: 10px; padding: 10px;
+      .resena-usuario { font-weight: 600; font-size: 0.85rem; margin-bottom: 4px; }
+      .resena-texto { font-size: 0.8rem; color: var(--text-secondary); font-style: italic; margin: 0; }
+    }
   }
-
-  .valor-pequeno {
-    font-size: 14px;
-    color: #333;
-    margin: 5px 0 0 0;
-  }
-
-  .descripcion-label {
-    --padding-start: 0;
-  }
-
-  .descripcion-texto {
-    font-size: 14px;
-    color: #555;
-    line-height: 1.5;
-    margin: 5px 0 0 0;
-  }
-
-  .nota-precio {
-    color: #2563eb;
-    font-size: 12px;
-    font-style: italic;
-    margin: 10px 0;
-  }
-
-  .btn-comprar {
-    margin-top: 15px;
-    height: 45px;
-    font-weight: bold;
-  }
-
-  .btn-secundario {
-    margin-top: 10px;
-    height: 45px;
+  .contacto-info {
+    padding: 0 16px 16px;
+    .contacto-item {
+      display: flex; align-items: center; gap: 12px; margin-bottom: 12px; font-size: 0.85rem;
+      ion-icon { color: var(--color-primary); }
+    }
   }
 }
 
-.info-adicional {
-  margin: 20px;
-  border-radius: 10px;
-
-  ion-card-header {
-    padding-bottom: 10px;
+// --- Columna Producto (Central) ---
+.columna-producto {
+  .producto-imagen {
+    background: var(--color-card);
+    padding: 24px; margin-bottom: 20px; text-align: center;
+    img { max-height: 400px; object-fit: contain; }
   }
-
-  ion-item {
-    --padding-start: 0;
-    margin-bottom: 10px;
+  .producto-precio h1 {
+    font-size: 2.8rem; font-weight: 700; color: var(--text-primary);
   }
-
-  .label-small {
-    font-size: 12px;
-    color: #999;
-    margin: 0;
-    text-transform: uppercase;
+  .descripcion-card {
+    background: #f8f9fa;
+    border-color: #dee2e6;
+    margin-bottom: 24px;
+    ion-card-content {
+      h2 { font-size: 1.4rem; font-weight: 700; margin-bottom: 12px; }
+      p { line-height: 1.7; font-size: 1rem; color: var(--text-secondary); }
+      .conversable { font-style: italic; margin-top: 12px; }
+    }
   }
-
-  .valor {
-    font-size: 14px;
-    color: #333;
-    margin: 5px 0 0 0;
+  .info-adicional {
+    background: var(--color-card); padding: 24px; margin-bottom: 24px;
+    h3 { font-size: 1.2rem; font-weight: 600; margin-bottom: 16px; }
+    .info-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 12px;
+      .info-item {
+        font-size: 0.95rem;
+        strong { display: inline-block; width: 100px; color: var(--text-secondary); }
+        span { color: var(--text-primary); font-weight: 500; }
+      }
+    }
   }
-}
-
-.info-vendedor {
-  margin: 20px;
-  border-radius: 10px;
-
-  ion-card-header {
-    padding-bottom: 10px;
-  }
-
-  .vendedor-nombre {
-    font-weight: bold;
-    margin: 0;
-  }
-
-  .vendedor-rating {
-    font-size: 12px;
-    color: #999;
-    margin: 5px 0 0 0;
-  }
-}
-
-.productos-relacionados {
-  margin: 40px 20px;
-  text-align: center;
-
-  h3 {
-    font-size: 18px;
-    font-weight: bold;
-    margin-bottom: 10px;
+  .botones-accion {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+    .btn-primary {
+      --background: var(--color-secondary);
+      --color: var(--color-primary);
+      --box-shadow: none;
+      font-weight: 600;
+      height: 48px;
+    }
+    .btn-secondary {
+      --color: var(--color-primary);
+      --border-color: var(--color-primary);
+      --background: transparent;
+      --background-hover: rgba(44, 42, 74, 0.05);
+      font-weight: 600;
+      height: 48px;
+    }
   }
 }
 
-ion-item {
-  --inner-padding-end: 0;
-  --padding-start: 0;
+// --- Columna Relacionados (Derecha) ---
+.columna-relacionados {
+  display: flex; flex-direction: column; gap: 16px;
+  ion-card {
+    transition: transform 0.3s, box-shadow 0.3s;
+    &:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+    }
+    img { height: 180px; object-fit: cover; }
+    ion-card-content {
+      .precio-relacionado { font-size: 1.1rem; font-weight: 700; color: var(--color-primary); margin-top: 8px; }
+      .descripcion-relacionado { font-size: 0.85rem; color: var(--text-secondary); height: 40px; overflow: hidden; }
+    }
+  }
+}
+
+// --- Pantalla de Carga ---
+.cargando {
+  display: flex; flex-direction: column; justify-content: center; align-items: center;
+  height: 100%; gap: 16px;
+  ion-spinner {
+    width: 50px; height: 50px;
+    --color: var(--color-primary);
+  }
+  p { font-size: 1rem; color: var(--text-secondary); }
 }

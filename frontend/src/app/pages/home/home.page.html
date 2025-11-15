@@ -1,28 +1,51 @@
-<ion-header>
+<ion-header class="ion-no-border">
   <ion-toolbar class="header-toolbar">
     <div class="header-container">
       <!-- Logo -->
       <div class="header-logo">
-        <img src="assets/icon/Escudo_PUCV-2016__Perfil Redes TW_FB.png" alt="Logo PUCV">
-        <span class="header-logo-text">MarketPUCV</span>
+        <img src="assets/icon/Escudo_PUCV-2016__Perfil Redes TW_FB.png" alt="PUCV Logo" />
+        <span class="header-logo-text">MarketPlace</span>
       </div>
 
       <!-- Navegación -->
       <nav class="header-nav">
         <a routerLink="/home" class="nav-link nav-link--active">Inicio</a>
         <a routerLink="/categorias" class="nav-link">Categorías</a>
-        <a routerLink="/publicaciones" class="nav-link">Mis publicaciones</a>
-        <a routerLink="/ayuda" class="nav-link">Ayuda</a>
+        <a routerLink="/carrito" class="nav-link">
+          <ion-icon name="cart-outline"></ion-icon>
+          Carrito
+        </a>
       </nav>
 
-      <!-- Botones de autenticación -->
+      <!-- Botones de autenticación dinámicos -->
       <div class="header-actions">
-        <ion-button routerLink="/auth" fill="clear" class="btn-auth btn-login">
-          Iniciar sesión
-        </ion-button>
-        <ion-button routerLink="/auth" class="btn-auth btn-register">
-          Registrarse
-        </ion-button>
+        <!-- Mostrar cuando NO está logueado -->
+        <ng-container *ngIf="!isLoggedIn">
+          <ion-button routerLink="/auth" fill="clear" class="btn-auth btn-login">
+            <ion-icon slot="start" name="log-in-outline"></ion-icon>
+            Iniciar Sesión
+          </ion-button>
+          <ion-button routerLink="/auth" fill="solid" class="btn-auth btn-register">
+            Registrarse
+          </ion-button>
+        </ng-container>
+
+        <!-- Mostrar cuando SÍ está logueado -->
+        <ng-container *ngIf="isLoggedIn">
+  <ion-button routerLink="/publicar" fill="solid" class="btn-auth btn-publicar">
+    <ion-icon slot="start" name="add-outline"></ion-icon>
+    Publicar
+  </ion-button>
+  <ion-button routerLink="/perfil" fill="clear" class="btn-auth btn-login">
+    <ion-icon slot="start" name="person-outline"></ion-icon>
+    Perfil
+  </ion-button>
+  <ion-button (click)="cerrarSesion()" fill="solid" class="btn-auth btn-logout">
+    <ion-icon slot="start" name="log-out-outline"></ion-icon>
+    Cerrar Sesión
+  </ion-button>
+</ng-container>
+
       </div>
     </div>
   </ion-toolbar>
@@ -200,91 +223,47 @@
       </aside>
 
       <!-- Grid de Productos -->
-      <main class="productos-main">
-        <!-- PRODUCTOS GRID -->
-        <div class="productos-grid">
-          <div *ngFor="let producto of productosFiltrados" 
-              class="producto-item"
-              [routerLink]="['/detalle-producto', producto.id]"
-              style="cursor: pointer;">
-            
-            <ion-card class="producto-card">
-              <!-- Imagen del producto -->
-              <div class="imagen-container">
-                <img [src]="producto.imagen" [alt]="producto.titulo" class="producto-imagen">
-              </div>
-
-              <!-- Información del producto -->
-              <ion-card-content class="producto-contenido">
-                <!-- Título -->
-                <h3 class="titulo">{{ producto.titulo }}</h3>
-
-                <!-- Precio -->
-                <div class="precio-section">
-                  <span class="precio">{{ formatearPrecio(producto.precio) }}</span>
-                </div>
-
-                <!-- Descripción corta -->
-                <p class="descripcion">{{ producto.descripcion | slice:0:80 }}...</p>
-
-                <!-- Categoría y Campus -->
-                <div class="meta-info">
-                  <span class="categoria-badge">{{ producto.categoria }}</span>
-                  <span class="campus-badge">{{ producto.campus }}</span>
-                </div>
-              </ion-card-content>
-            </ion-card>
-            
-          </div>
+      <!-- Grid de Productos -->
+<main class="productos-main">
+  <!-- PRODUCTOS GRID -->
+  <div class="productos-grid">
+    <div *ngFor="let producto of productosFiltrados" 
+         class="producto-item" 
+         [routerLink]="['/detalle-producto', producto.id]" 
+         style="cursor: pointer">
+      
+      <ion-card class="producto-card">
+        <!-- Imagen del producto -->
+        <div class="imagen-container">
+          <img [src]="producto.imagen" [alt]="producto.titulo" class="producto-imagen" />
         </div>
 
-        <!-- ==================== CONTROLES DE PAGINACIÓN ==================== -->
-        <div class="pagination-controls" *ngIf="totalPaginas > 1">
-          <ion-button 
-            size="small" 
-            fill="outline" 
-            [disabled]="!tienePaginaAnterior || cargando"
-            (click)="paginaAnterior()">
-            <ion-icon slot="start" name="chevron-back-outline"></ion-icon>
-            Anterior
-          </ion-button>
+        <!-- Información del producto -->
+        <ion-card-content class="producto-contenido">
+          <!-- Título -->
+          <h3 class="titulo">{{ producto.titulo }}</h3>
 
-          <div class="pagination-info">
-            <ion-text color="primary">
-              <strong>Página {{ paginaActual }} de {{ totalPaginas }}</strong>
-            </ion-text>
-            <br>
-            <ion-text color="medium">
-              <small>{{ totalProductos }} productos totales</small>
-            </ion-text>
+          <!-- Precio -->
+          <div class="precio-section">
+            <span class="precio">{{ formatearPrecio(producto.precio) }}</span>
           </div>
 
-          <ion-button 
-            size="small" 
-            fill="outline" 
-            [disabled]="!tieneSiguientePagina || cargando"
-            (click)="siguientePagina()">
-            Siguiente
-            <ion-icon slot="end" name="chevron-forward-outline"></ion-icon>
-          </ion-button>
-        </div>
-        <!-- ================================================================= -->
+          <!-- Descripción corta -->
+          <p class="descripcion">{{ producto.descripcion | slice:0:80 }}...</p>
 
-      </main>
-
-    </div>
-    
-  </div>
-
-  <!-- ==================== SPINNER DE CARGA ==================== -->
-  <div class="loading-overlay" *ngIf="cargando">
-    <div class="loading-container">
-      <ion-spinner name="crescent" color="primary"></ion-spinner>
-      <ion-text color="primary">
-        <p>Cargando productos...</p>
-      </ion-text>
+          <!-- Categoría y Campus -->
+          <div class="meta-info">
+            <span class="categoria-badge">{{ producto.categoria }}</span>
+            <span class="campus-badge">{{ producto.campus }}</span>
+          </div>
+        </ion-card-content>
+      </ion-card>
     </div>
   </div>
-  <!-- ========================================================= -->
+</main>
 
+
+    </div>
+
+  </div>
 </ion-content>

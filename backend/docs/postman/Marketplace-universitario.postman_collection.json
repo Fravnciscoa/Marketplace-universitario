@@ -36,6 +36,14 @@
 				}
 			},
 			"response": []
+<<<<<<< HEAD
+=======
+		},
+		{
+			"data": {
+				"productos": "this.productos = data.data;"
+			}
+>>>>>>> origin/feat/Francisco3
 		}
 	]
 }
