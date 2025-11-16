@@ -46,9 +46,10 @@ export class ProductosService {
     return this.http.get<Producto[]>(`${this.apiUrl}/user/${userId}`);
   }
 
-  getProductos() {
-  return this.http.get('http://localhost:3000/api/productos');
+ getProductos(): Observable<Producto[]> {
+  return this.http.get<Producto[]>(this.apiUrl);
 }
+
 
 
   getProductoById(id: number): Observable<Producto> {

@@ -90,8 +90,8 @@ app.use(cors({
 }));
 
 // Middlewares básicos
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: '20mb' }));
+app.use(express.urlencoded({ extended: true, limit: '20mb' }));
 
 // Health Check
 app.get('/health', (req, res) => {

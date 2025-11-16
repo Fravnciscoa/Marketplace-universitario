@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ProductosService } from '../../services/productos.service';
+import { Producto } from '../../models/producto.model';
+
 import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import {
   IonHeader,
@@ -27,7 +30,6 @@ import {
   logOutOutline,
   logInOutline
 } from 'ionicons/icons';
-import { ProductosService, Producto } from '../../services/productos.service';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
@@ -89,6 +91,7 @@ export class PublicarProductoPage implements OnInit {
   // Estado
   modoEdicion = false;
   productoId: number | null = null;
+  imagenSeleccionada: File | null = null;
   imagenPreview: string | null = null;
   showToast = false;
   toastMessage = '';
@@ -152,6 +155,22 @@ export class PublicarProductoPage implements OnInit {
       reader.readAsDataURL(file);
     }
   }
+  onFileSelected(event: any) {
+  const file = event.target.files[0];
+  if (file) {
+    this.imagenSeleccionada = file;
+    
+    // Preview
+    const reader = new FileReader();
+    reader.onload = (e: any) => {
+      this.imagenPreview = e.target.result;
+    };
+    reader.readAsDataURL(file);
+    }
+  }
+
+  
+
 
   guardar() {
     // Validaciones básicas
@@ -211,4 +230,5 @@ export class PublicarProductoPage implements OnInit {
     this.toastMessage = mensaje;
     this.showToast = true;
   }
+  
 }
