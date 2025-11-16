@@ -236,3 +236,36 @@ export const deleteProducto = async (req: Request, res: Response) => {
     res.status(500).json({ error: 'Error al eliminar producto' });
   }
 };
+// NUEVO: Subir imagen a Cloudinary (EF5)
+export const uploadImagen = async (req: Request, res: Response) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'No se proporcionó ninguna imagen' 
+      });
+    }
+
+    // Multer + Cloudinary ya subieron el archivo
+    // req.file contiene la información
+    const imageUrl = (req.file as any).path; // URL de Cloudinary
+    const publicId = (req.file as any).filename; // ID público en Cloudinary
+
+    res.json({
+      success: true,
+      message: 'Imagen subida exitosamente',
+      data: {
+        url: imageUrl,
+        publicId: publicId,
+        cloudinary: true
+      }
+    });
+  } catch (error: any) {
+    console.error('Error al subir imagen:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: 'Error al subir la imagen',
+      details: error.message 
+    });
+  }
+};
