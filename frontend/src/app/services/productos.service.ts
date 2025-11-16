@@ -46,13 +46,10 @@ export class ProductosService {
     return this.http.get<Producto[]>(`${this.apiUrl}/user/${userId}`);
   }
 
-  getProductos(): Observable<Producto[]> {
-    return this.http.get<{ success: boolean; data: Producto[]; pagination?: any }>(this.apiUrl)
-      .pipe(
-        // Extrae solo el array de productos de la respuesta
-        map((res: { success: boolean; data: Producto[]; pagination?: any }) => res.data)
-      );
-  }
+  getProductos() {
+  return this.http.get('http://localhost:3000/api/productos');
+}
+
 
   getProductoById(id: number): Observable<Producto> {
     return this.http.get<Producto>(`${this.apiUrl}/${id}`);

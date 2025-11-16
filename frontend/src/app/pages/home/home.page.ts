@@ -30,7 +30,6 @@ import {
   cartOutline,
   heartOutline,
   chevronDownOutline,
-  cubeOutline,  // ← AGREGAR este
   closeOutline,
   logInOutline,
   logOutOutline,
@@ -75,9 +74,6 @@ interface FiltroRango {
   ],
 })
 export class HomePage implements OnInit {
-logout() {
-throw new Error('Method not implemented.');
-}
   isLoggedIn = false;
   mostrarFiltros = true;
   terminoBusqueda = '';
@@ -119,7 +115,6 @@ throw new Error('Method not implemented.');
       searchOutline,
       filterOutline,
       cartOutline,
-      cubeOutline,  // ← AGREGAR este
       heartOutline,
       chevronDownOutline,
       closeOutline,
@@ -143,19 +138,23 @@ throw new Error('Method not implemented.');
   }
 
   cargarProductos() {
-    console.log('🔥 Cargando productos desde el backend...');
-    this.productosService.getProductos().subscribe({
-      next: (data) => {
-        console.log('✅ Productos recibidos:', data);
-        this.productos = data;
-        this.aplicarFiltros();
-        console.log('✅ Productos filtrados:', this.productosFiltrados.length);
-      },
-      error: (err) => {
-        console.error('❌ Error al cargar productos:', err);
-      },
-    });
-  }
+  console.log('🔥 Cargando productos desde el backend...');
+  this.productosService.getProductos().subscribe({
+    next: (res: any) => {
+      console.log('📦 Respuesta completa del backend:', res);
+
+      // Extraemos productos correctamente
+      this.productos = res.data;
+
+      this.aplicarFiltros();
+      console.log('🎯 Productos luego del filtro:', this.productosFiltrados.length);
+    },
+    error: (err) => {
+      console.error('❌ Error al cargar productos:', err);
+    },
+  });
+}
+
 
   cerrarSesion() {
     this.authService.logout();
