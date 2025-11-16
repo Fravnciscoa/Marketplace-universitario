@@ -1,0 +1,10 @@
+node_modules
+npm-debug.log
+.angular
+dist
+www
+.vscode
+.idea
+*.log
+.DS_Store
+.git
