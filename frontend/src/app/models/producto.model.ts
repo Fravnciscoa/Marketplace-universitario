@@ -1,5 +1,10 @@
 export interface Producto {
-  id: number;
+  ano_compra: string;
+  condicion: string;
+  modelo: string;
+  marca: string;
+vendedor: any;
+  id?: number;
   titulo: string;
   precio: number;
   imagen: string;
@@ -7,6 +12,8 @@ export interface Producto {
   categoria: string;
   campus: string;
   user_id?: number;
-  created_at?: string;
-  updated_at?: string;
+  created_at?: Date;
+  vendedor_nombre?: string;
+  updated_at?: Date;
 }
+

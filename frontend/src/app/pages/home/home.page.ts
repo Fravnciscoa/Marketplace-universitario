@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ViewWillEnter } from '@ionic/angular'; // ← Agregar este import
-import { Router, RouterLink } from '@angular/router';
+import { ViewWillEnter } from '@ionic/angular';
+import { Router, RouterLink, ActivatedRoute } from '@angular/router'; // 👈 ACTIVATEDROUTE AÑADIDO
 import {
   IonContent,
   IonHeader,
@@ -30,6 +30,7 @@ import {
   cartOutline,
   heartOutline,
   chevronDownOutline,
+  cubeOutline,
   closeOutline,
   logInOutline,
   logOutOutline,
@@ -70,10 +71,14 @@ interface FiltroRango {
     IonList,
     CommonModule,
     FormsModule,
-    RouterLink,   // 👈 SO-LO este RouterLink (de @angular/router)
+    RouterLink,
   ],
 })
 export class HomePage implements OnInit {
+  logout() {
+    throw new Error('Method not implemented.');
+  }
+
   isLoggedIn = false;
   mostrarFiltros = true;
   terminoBusqueda = '';
@@ -106,15 +111,20 @@ export class HomePage implements OnInit {
   productos: Producto[] = [];
   productosFiltrados: Producto[] = [];
 
+  // 👇 NUEVO: para guardar la categoría que viene desde /categorias?categoria=...
+  categoriaSeleccionada: string | null = null;
+
   constructor(
     private productosService: ProductosService,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute // 👈 NUEVO
   ) {
     addIcons({
       searchOutline,
       filterOutline,
       cartOutline,
+      cubeOutline,
       heartOutline,
       chevronDownOutline,
       closeOutline,
@@ -130,31 +140,49 @@ export class HomePage implements OnInit {
     this.authService.currentUser$.subscribe((user) => {
       this.isLoggedIn = !!user;
     });
+
+    // 👇 NUEVO: escuchar la categoría que viene desde /categorias
+    this.route.queryParamMap.subscribe((params) => {
+      const cat = params.get('categoria');
+      this.categoriaSeleccionada = cat;
+
+      if (cat) {
+        // Reseteamos filtros de categoría y marcamos solo la que viene
+        this.categoriaFiltros = {
+          libros: false,
+          electronica: false,
+          deportes: false,
+        };
+
+        if (cat === 'libros' || cat === 'electronica' || cat === 'deportes') {
+          this.categoriaFiltros[cat] = true;
+        }
+      }
+
+      // Si ya tenemos productos cargados, aplica filtro de inmediato
+      this.aplicarFiltros();
+    });
   }
 
-  // ← NUEVO: Mover la carga de productos aquí
+  // ← ya la tenías: ahora solo se encarga de cargar productos
   ionViewWillEnter() {
     this.cargarProductos();
   }
 
   cargarProductos() {
-  console.log('🔥 Cargando productos desde el backend...');
-  this.productosService.getProductos().subscribe({
-    next: (res: any) => {
-      console.log('📦 Respuesta completa del backend:', res);
-
-      // Extraemos productos correctamente
-      this.productos = res.data;
-
-      this.aplicarFiltros();
-      console.log('🎯 Productos luego del filtro:', this.productosFiltrados.length);
-    },
-    error: (err) => {
-      console.error('❌ Error al cargar productos:', err);
-    },
-  });
-}
-
+    console.log('🔥 Cargando productos desde el backend...');
+    this.productosService.getProductos().subscribe({
+      next: (data) => {
+        console.log('✅ Productos recibidos:', data);
+        this.productos = data;
+        this.aplicarFiltros();
+        console.log('✅ Productos filtrados:', this.productosFiltrados.length);
+      },
+      error: (err) => {
+        console.error('❌ Error al cargar productos:', err);
+      },
+    });
+  }
 
   cerrarSesion() {
     this.authService.logout();
@@ -222,6 +250,11 @@ export class HomePage implements OnInit {
       casaCentral: false,
       curauma: false,
     };
+
+    // 👇 opcional: quitar la categoría del queryParam cuando limpias filtros
+    this.categoriaSeleccionada = null;
+    this.router.navigate(['/home']);
+
     this.aplicarFiltros();
   }
 

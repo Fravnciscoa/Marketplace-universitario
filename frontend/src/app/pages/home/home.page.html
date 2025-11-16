@@ -224,51 +224,43 @@
       </aside>
 
       <!-- Grid de Productos -->
+      <!-- Grid de Productos -->
 <main class="productos-main">
-  <main class="productos-main">
+  <!-- PRODUCTOS GRID -->
   <div class="productos-grid">
-
-    <ion-card 
-      *ngFor="let p of productosFiltrados" 
-      class="producto-card producto-item"
-      [routerLink]="['/detalle-producto', p.id]"
-      style="cursor: pointer"
-    >
-      <!-- Imagen -->
-      <div class="imagen-container">
-        <img [src]="p.imagen" [alt]="p.titulo" class="producto-imagen" />
-      </div>
-
-      <!-- Contenido -->
-      <ion-card-content class="producto-contenido">
-        
-        <!-- Título -->
-        <ion-card-title class="titulo">
-          {{ p.titulo }}
-        </ion-card-title>
-
-        <!-- Precio -->
-        <div class="precio-section">
-          <p class="precio">{{ formatearPrecio(p.precio) }}</p>
+    <div *ngFor="let producto of productosFiltrados" 
+         class="producto-item" 
+         [routerLink]="['/detalle-producto', producto.id]" 
+         style="cursor: pointer">
+      
+      <ion-card class="producto-card">
+        <!-- Imagen del producto -->
+        <div class="imagen-container">
+          <img [src]="producto.imagen" [alt]="producto.titulo" class="producto-imagen" />
         </div>
 
-        <!-- Descripción -->
-        <p class="descripcion">
-          {{ p.descripcion | slice:0:80 }}...
-        </p>
+        <!-- Información del producto -->
+        <ion-card-content class="producto-contenido">
+          <!-- Título -->
+          <h3 class="titulo">{{ producto.titulo }}</h3>
 
-        <!-- Categoría + Campus -->
-        <div class="meta-info">
-          <span class="categoria-badge">{{ p.categoria }}</span>
-          <span class="campus-badge">{{ p.campus }}</span>
-        </div>
+          <!-- Precio -->
+          <div class="precio-section">
+            <span class="precio">{{ formatearPrecio(producto.precio) }}</span>
+          </div>
 
-      </ion-card-content>
-    </ion-card>
+          <!-- Descripción corta -->
+          <p class="descripcion">{{ producto.descripcion | slice:0:80 }}...</p>
 
+          <!-- Categoría y Campus -->
+          <div class="meta-info">
+            <span class="categoria-badge">{{ producto.categoria }}</span>
+            <span class="campus-badge">{{ producto.campus }}</span>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </div>
   </div>
-</main>
-
 </main>
 
 

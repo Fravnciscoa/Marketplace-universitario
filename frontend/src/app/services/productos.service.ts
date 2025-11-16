@@ -19,7 +19,7 @@ vendedor: any;
   campus: string;
   user_id?: number;
   created_at?: Date;
-  vendedor_nombre?: string;  // ← NUEVO
+  vendedor_nombre?: string;
   updated_at?: Date;
 }
 
@@ -46,11 +46,13 @@ export class ProductosService {
     return this.http.get<Producto[]>(`${this.apiUrl}/user/${userId}`);
   }
 
- getProductos(): Observable<Producto[]> {
-  return this.http.get<Producto[]>(this.apiUrl);
-}
-
-
+  getProductos(): Observable<Producto[]> {
+    return this.http.get<{ success: boolean; data: Producto[]; pagination?: any }>(this.apiUrl)
+      .pipe(
+        // Extrae solo el array de productos de la respuesta
+        map((res: { success: boolean; data: Producto[]; pagination?: any }) => res.data)
+      );
+  }
 
   getProductoById(id: number): Observable<Producto> {
     return this.http.get<Producto>(`${this.apiUrl}/${id}`);
