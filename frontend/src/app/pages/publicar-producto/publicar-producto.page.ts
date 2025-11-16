@@ -60,19 +60,20 @@ export class PublicarProductoPage implements OnInit {
   isLoggedIn = false;
 
   // Listas para selects
-  categorias = [
-    'Libros',
-    'Electrónica',
-    'Deportes'
-  ];
+categorias = [
+  { value: 'libros',      label: 'Libros' },
+  { value: 'electronica', label: 'Electrónica' },
+  { value: 'deportes',    label: 'Deportes' }
+];
 
-  campusList = [
-    'Isabel Brown Caces',
-    'Casa Central',
-    'Curauma'
-  ];
+campusList = [
+  { value: 'isabelBrown', label: 'Isabel Brown Caces' },
+  { value: 'casaCentral', label: 'Casa Central' },
+  { value: 'curauma',     label: 'Curauma' }
+];
 
-  // Formulario
+
+  
   form: any = {
     titulo: '',
     precio: 0,
@@ -86,7 +87,7 @@ export class PublicarProductoPage implements OnInit {
     imagen: ''
   };
 
-  // Estado
+  
   modoEdicion = false;
   productoId: number | null = null;
   imagenPreview: string | null = null;

@@ -85,8 +85,8 @@ export class DetalleProductoPage implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private productosService: ProductosService,
-    private carritoService: CarritoService,      // 👈 nuevo
-    private toastController: ToastController     // 👈 nuevo
+    private carritoService: CarritoService,      
+    private toastController: ToastController     
   ) {
     addIcons({
       cartOutline,
@@ -102,7 +102,7 @@ export class DetalleProductoPage implements OnInit {
     this.route.paramMap.subscribe((params) => {
       const id = params.get('id');
       if (id) {
-        this.producto = null; // Resetea el producto para mostrar el spinner
+        this.producto = null; 
         this.cargarProducto(Number(id));
         this.cargarProductosRelacionados();
       }
@@ -126,20 +126,6 @@ export class DetalleProductoPage implements OnInit {
   cargarProductosRelacionados() {
     // Lógica para cargar productos que no sean el actual
     this.productosRelacionados = [
-      {
-        id: 2,
-        titulo: 'Libro',
-        precio: 5000,
-        imagen: 'assets/libro.jpg',
-        descripcionCorta: 'Matemáticas Universitarias Introductorias.',
-      },
-      {
-        id: 3,
-        titulo: 'Pack lápices grafito',
-        precio: 3000,
-        imagen: 'assets/kit.jpg',
-        descripcionCorta: 'Set de lápices de grafito para dibujo.',
-      },
     ];
   }
 
@@ -148,7 +134,7 @@ export class DetalleProductoPage implements OnInit {
     return precio === 0 ? '$0' : `$${precio.toLocaleString('es-CL')}`;
   }
 
-  // 🚀 NUEVO: añadir al carrito
+  
   async agregarAlCarrito() {
     if (!this.producto) return;
 
