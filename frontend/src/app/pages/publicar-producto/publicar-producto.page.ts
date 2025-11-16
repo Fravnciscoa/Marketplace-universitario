@@ -58,6 +58,7 @@ import { AuthService } from '../../services/auth.service';
 export class PublicarProductoPage implements OnInit {
   // Estado de autenticación
   isLoggedIn = false;
+  currentUser: any = null;
 
   // Listas para selects
 categorias = [
@@ -114,6 +115,7 @@ campusList = [
     // Verificar autenticación
     this.authService.currentUser$.subscribe((user) => {
       this.isLoggedIn = !!user;
+      this.currentUser = user;
     });
 
     // Verificar si estamos en modo edición
@@ -155,53 +157,54 @@ campusList = [
   }
 
   guardar() {
-    // Validaciones básicas
-    if (!this.form.titulo || !this.form.precio || !this.form.categoria || !this.form.campus) {
-      this.mostrarToast('Por favor completa todos los campos obligatorios (*)');
-      return;
-    }
+  // Validaciones básicas
+  if (!this.form.titulo || !this.form.precio || !this.form.categoria || !this.form.campus) {
+    this.mostrarToast('Por favor completa todos los campos obligatorios (*)');
+    return;
+  }
 
-    if (!this.form.imagen) {
-      this.mostrarToast('Por favor selecciona una imagen');
-      return;
-    }
+  if (!this.form.imagen) {
+    this.mostrarToast('Por favor selecciona una imagen');
+    return;
+  }
 
-    // Asignar user_id del usuario autenticado
-    this.authService.currentUser$.subscribe((user) => {
-      if (user) {
-        this.form.user_id = user.id;
+  // Verificar que haya usuario logueado
+  if (!this.currentUser) {
+    this.mostrarToast('Debes iniciar sesión para publicar');
+    this.router.navigate(['/auth']);
+    return;
+  }
 
-        if (this.modoEdicion && this.productoId) {
-          // Actualizar producto existente
-          this.productosService.updateProducto(this.productoId, this.form).subscribe({
-            next: () => {
-              this.mostrarToast('Producto actualizado exitosamente');
-              setTimeout(() => this.router.navigate(['/home']), 1500);
-            },
-            error: (err) => {
-              console.error('Error al actualizar:', err);
-              this.mostrarToast('Error al actualizar el producto');
-            }
-          });
-        } else {
-          // Crear nuevo producto
-          this.productosService.createProducto(this.form).subscribe({
-            next: () => {
-              this.mostrarToast('Producto publicado exitosamente');
-              setTimeout(() => this.router.navigate(['/home']), 1500);
-            },
-            error: (err) => {
-              console.error('Error al publicar:', err);
-              this.mostrarToast('Error al publicar el producto');
-            }
-          });
-        }
-      } else {
-        this.mostrarToast('Debes iniciar sesión para publicar');
-        this.router.navigate(['/auth']);
+  // Asignar user_id del usuario autenticado
+  this.form.user_id = this.currentUser.id;
+
+  if (this.modoEdicion && this.productoId) {
+    // Actualizar producto existente
+    this.productosService.updateProducto(this.productoId, this.form).subscribe({
+      next: () => {
+        this.mostrarToast('Producto actualizado exitosamente');
+        setTimeout(() => this.router.navigate(['/home']), 1500);
+      },
+      error: (err) => {
+        console.error('Error al actualizar:', err);
+        this.mostrarToast('Error al actualizar el producto');
+      }
+    });
+  } else {
+    // Crear nuevo producto
+    this.productosService.createProducto(this.form).subscribe({
+      next: () => {
+        this.mostrarToast('Producto publicado exitosamente');
+        setTimeout(() => this.router.navigate(['/home']), 1500);
+      },
+      error: (err) => {
+        console.error('Error al publicar:', err);
+        this.mostrarToast('Error al publicar el producto');
       }
     });
   }
+}
+
 
   logout() {
     this.authService.logout();
