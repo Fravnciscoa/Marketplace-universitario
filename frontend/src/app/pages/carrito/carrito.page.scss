@@ -1,9 +1,6 @@
 // ============================================
-// Variables Globales (mismas que en home)
+// Variables y Configuración
 // ============================================
-
-$font-stack: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-  Ubuntu, 'Helvetica Neue', Helvetica, Arial, sans-serif;
 
 $colors: (
   primary: #003366,
@@ -24,16 +21,6 @@ $colors: (
   danger: #dc3545,
 );
 
-$spacing: (
-  xs: 4px,
-  sm: 8px,
-  md: 16px,
-  lg: 24px,
-  xl: 32px,
-  xxl: 40px,
-  xxxl: 48px,
-);
-
 $font-sizes: (
   xs: 12px,
   sm: 14px,
@@ -43,6 +30,16 @@ $font-sizes: (
   xxl: 24px,
   xxxl: 28px,
   hero: 36px,
+);
+
+$spacing: (
+  xs: 4px,
+  sm: 8px,
+  md: 16px,
+  lg: 24px,
+  xl: 32px,
+  xxl: 40px,
+  xxxl: 48px,
 );
 
 $breakpoints: (
@@ -78,178 +75,236 @@ $breakpoints: (
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-@mixin transition($property: all) {
-  transition: $property 0.3s ease;
-}
-
 // ============================================
-// Base
+// Estilos Base
 // ============================================
-
-* {
-  box-sizing: border-box;
-}
 
 ion-content {
-  --background: #{map-get($colors, bg)};
-  font-family: $font-stack;
+  --background: #ffffff;
+}
+
+body {
+  background: #fff !important;
 }
 
 // ============================================
-// Header (igual que home/categorías)
+// HEADER STYLES
 // ============================================
 
+ion-header {
+  &.ion-no-border {
+    --border-width: 0;
+    box-shadow: none;
+  }
+}
+
 .header-toolbar {
-  --background: #{map-get($colors, primary)};
-  --color: #{map-get($colors, text)};
+  --background: #003366;  // Azul PUCV
+  --color: #ffffff;
+  --min-height: 70px;
+  --padding-top: 0;
+  --padding-bottom: 0;
   --border-width: 0;
-  padding: 0;
 }
 
 .header-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: map-get($spacing, md) map-get($spacing, xxl);
-  max-width: 1400px;
-  margin: 0 auto;
-  width: 100%;
-
+  height: 70px;
+  
   @include tablet {
-    padding: map-get($spacing, md);
-    flex-wrap: wrap;
+    padding: 0 16px;
   }
 }
 
 .header-logo {
   display: flex;
   align-items: center;
-  gap: map-get($spacing, md);
-
+  gap: 12px;
+  cursor: pointer;
+  
   img {
-    width: 48px;
-    height: 48px;
+    width: 45px;
+    height: 45px;
     object-fit: contain;
-
-    @include mobile {
-      width: 40px;
-      height: 40px;
-    }
   }
 }
 
 .header-logo-text {
-  font-size: map-get($font-sizes, xl);
-  font-weight: 700;
   color: map-get($colors, text);
-  letter-spacing: -0.5px;
-
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  
   @include mobile {
-    font-size: map-get($font-sizes, lg);
+    font-size: 16px;
   }
 }
 
 .header-nav {
   display: flex;
-  gap: map-get($spacing, xl);
+  gap: 32px;
   align-items: center;
-
+  
   @include tablet {
-    width: 100%;
-    order: 3;
-    margin-top: map-get($spacing, md);
-    gap: map-get($spacing, md);
-    overflow-x: auto;
+    display: none;
   }
 }
 
 .nav-link {
   color: map-get($colors, text);
-  font-size: map-get($font-sizes, base);
-  font-weight: 500;
   text-decoration: none;
-  padding: map-get($spacing, sm) 0;
-  border-bottom: 2px solid transparent;
-  @include transition(border-color);
-  white-space: nowrap;
-
+  font-size: 16px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 0;
+  border-bottom: 3px solid transparent;
+  transition: all 0.3s ease;
+  
+  ion-icon {
+    font-size: 20px;
+  }
+  
   &:hover {
     border-bottom-color: map-get($colors, accent);
+    opacity: 0.9;
   }
-
+  
   &--active {
     border-bottom-color: map-get($colors, accent);
     font-weight: 600;
-  }
-
-  @include mobile {
-    font-size: map-get($font-sizes, sm);
   }
 }
 
 .header-actions {
   display: flex;
-  gap: map-get($spacing, md);
+  gap: 12px;
   align-items: center;
-
-  @include tablet {
-    margin-left: auto;
+  
+  @include mobile {
+    gap: 8px;
   }
 }
 
 .btn-auth {
+  --padding-start: 20px;
+  --padding-end: 20px;
+  --padding-top: 10px;
+  --padding-bottom: 10px;
   font-weight: 600;
   text-transform: none;
-  font-size: map-get($font-sizes, sm);
-  height: 40px;
+  font-size: 14px;
+  height: 42px;
+  letter-spacing: 0.3px;
 
-  @include mobile {
-    font-size: 12px;
-    height: 36px;
-    --padding-start: 12px;
-    --padding-end: 12px;
+@include mobile {
+  --padding-start: 14px;
+  --padding-end: 14px;
+  font-size: 13px;
+  height: 38px;
+}
+
+ ion-icon {
+    font-size: 18px;
+    margin-right: 6px;
   }
 }
 
 .btn-login {
-  --color: #{map-get($colors, text)};
-
+  --color: #ffffff;
+  --background: transparent;
+  --border-width: 2px;
+  --border-style: solid;
+  --border-color: #ffffff;
+  --border-radius: 8px;
+  
   &:hover {
-    opacity: 0.8;
+    --background: rgba(255, 255, 255, 0.1);
+    --border-color: #ffb400;
+    --color: #ffb400;
   }
 }
 
 .btn-register {
-  --background: #{map-get($colors, accent)};
-  --color: #{map-get($colors, text-dark)};
+  --background: #ffb400;
+  --color: #003366;
   --border-radius: 8px;
-
+  font-weight: 700;
+  
   &:hover {
-    --background: #{darken(#ffb400, 10%)};
+    --background: #ffc107;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(255, 180, 0, 0.3);
+  }
+}
+
+.btn-publicar {
+  --background: #ffb400;
+  --color: #003366;
+  --border-radius: 8px;
+  font-weight: 700;
+  
+  &:hover {
+    --background: #ffc107;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(255, 180, 0, 0.3);
   }
 }
 
 .btn-logout {
-  --background: #{map-get($colors, danger)};
-  --color: #{map-get($colors, text)};
+  --background: #dc3545;
+  --color: #ffffff;
   --border-radius: 8px;
-
+  font-weight: 700;
+  
   &:hover {
-    --background: #{darken(#dc3545, 10%)};
+    --background: #c82333;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
   }
+}
+// ============================================
+// Hero Section
+// ============================================
+
+.carrito-hero {
+  background: linear-gradient(90deg, #3f3d99, #5a4fbf);
+  padding: 24px 0;
+}
+
+.carrito-hero-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 32px;
+  display: flex;
+  align-items: center;
+}
+
+.carrito-hero-title {
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 18px;
 }
 
 // ============================================
-// Contenido Carrito
+// Layout Principal
 // ============================================
 
-.carrito-container {
-  max-width: 900px;
+.carrito-page {
+  max-width: 1100px;
   margin: map-get($spacing, lg) auto map-get($spacing, xxxl);
   padding: 0 map-get($spacing, xxl);
+  display: flex;
+  gap: map-get($spacing, xl);
 
   @include tablet {
-    padding: 0 map-get($spacing, lg);
+    flex-direction: column;
   }
 
   @include mobile {
@@ -257,20 +312,38 @@ ion-content {
   }
 }
 
-.carrito-titulo {
-  font-size: map-get($font-sizes, xxxl);
-  font-weight: 700;
-  color: map-get($colors, primary-dark);
-  margin-bottom: map-get($spacing, lg);
+// ============================================
+// Columna Izquierda - Lista de Productos
+// ============================================
+
+.carrito-main {
+  flex: 2;
+  background: map-get($colors, card);
+  border-radius: 12px;
+  padding: map-get($spacing, xl);
+  @include card-shadow;
 }
 
-// ------------------------
-// Carrito vacío
-// ------------------------
+.carrito-titulo {
+  font-size: map-get($font-sizes, xl);
+  font-weight: 700;
+  color: map-get($colors, primary-dark);
+  margin: 0 0 map-get($spacing, xs);
+}
+
+.carrito-subtitulo {
+  margin: 0 0 map-get($spacing, xl);
+  font-size: map-get($font-sizes, sm);
+  color: map-get($colors, text-light);
+}
+
+// ============================================
+// Carrito Vacío
+// ============================================
 
 .carrito-vacio {
   text-align: center;
-  margin-top: 80px;
+  padding: map-get($spacing, xl) 0;
   color: map-get($colors, text-muted);
 
   ion-icon {
@@ -278,168 +351,163 @@ ion-content {
     opacity: 0.6;
   }
 
-  p {
-    font-size: map-get($font-sizes, lg);
+  h2 {
     margin: map-get($spacing, md) 0;
-  }
-
-  .btn-ir-categorias {
-    background: map-get($colors, primary-light);
-    color: map-get($colors, text);
-    padding: 10px 18px;
-    border-radius: 8px;
-    font-weight: 600;
-    display: inline-block;
-    text-decoration: none;
-
-    &:hover {
-      background: darken(map-get($colors, primary-light), 8%);
-    }
+    font-size: map-get($font-sizes, lg);
   }
 }
 
-// ------------------------
-// Items del carrito
-// ------------------------
+// ============================================
+// Items del Carrito
+// ============================================
 
-.carrito-lista {
-  margin-bottom: map-get($spacing, xxxl);
+.carrito-item-card {
+  border-radius: 10px;
+  border: 1px solid map-get($colors, border);
+  background: #f9fafb;
+  margin-bottom: map-get($spacing, md);
 }
 
 .carrito-item {
-  border-radius: 12px;
-  border: 1px solid map-get($colors, border);
-  padding: 12px 16px;
-  margin-bottom: 16px;
-  background: #111827; // gris muy oscuro
-  color: #f9fafb;
   display: flex;
-  justify-content: space-between;
   align-items: stretch;
+  gap: map-get($spacing, md);
+  padding: map-get($spacing, md);
 
   @include mobile {
     flex-direction: column;
   }
 }
 
-.carrito-item-content {
-  display: flex;
-  gap: 16px;
-  flex: 1;
-
-  @include mobile {
-    margin-bottom: 8px;
-  }
+.carrito-item-imagen-wrapper {
+  width: 96px;
+  height: 96px;
+  border-radius: 8px;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: #e5e7eb;
 }
 
 .carrito-item-imagen {
-  width: 98px;
-  height: 98px;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
-  border-radius: 8px;
-  background: #e5e7eb;
 }
 
 .carrito-item-info {
   flex: 1;
-
-  h3 {
-    margin: 0;
-    font-size: 18px;
-    font-weight: 600;
-    color: #f9fafb;
-  }
-
-  .carrito-descripcion {
-    margin: 4px 0 6px;
-    font-size: 14px;
-    color: #d1d5db;
-  }
-
-  .carrito-precio {
-    font-size: 16px;
-    font-weight: 700;
-    color: #facc15; // amarillo fuerte
-  }
-}
-
-.carrito-item-actions {
   display: flex;
-  align-items: center;
-  justify-content: flex-end;
-
-  .btn-eliminar {
-    --color: #f87171; // rojo claro
-  }
+  flex-direction: column;
 }
 
-// ------------------------
-// Resumen Total
-// ------------------------
-
-.carrito-resumen {
-  margin: 24px 0 14px;
-  padding: 12px 16px;
-  border-radius: 8px;
-  background: #ffffff;
-  border: 1px solid map-get($colors, border);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  p {
-    margin: 0;
-    font-size: 16px;
-    font-weight: 600;
-    color: #4b5563;
-  }
-
-  span {
-    font-size: 18px;
-    font-weight: 700;
-    color: #111827;
-  }
-}
-
-// ------------------------
-// Botones de acciones
-// ------------------------
-
-.carrito-acciones {
-  display: flex;
-  justify-content: flex-end;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.btn-vaciar {
-  background: #ffffff;
-  color: #374151;
-  padding: 10px 16px;
-  border-radius: 8px;
-  border: 1px solid #d1d5db;
+.carrito-item-titulo {
+  margin: 0;
+  font-size: 16px;
   font-weight: 600;
-  cursor: pointer;
-  font-size: 14px;
+  color: #111827;
+}
 
-  &:hover {
-    background: #e5e7eb;
+.carrito-item-precio {
+  margin: 4px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #10b981;
+}
+
+.carrito-item-cantidad {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 4px 0;
+
+  .cantidad {
+    min-width: 32px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 15px;
+    color: #000000; 
+    background: transparent;
+    padding: 4px 8px;
   }
 }
 
-.btn-comprar {
-  background: map-get($colors, accent);
-  color: #111827;
-  padding: 10px 24px;
-  border-radius: 8px;
-  border: none;
-  font-weight: 700;
-  cursor: pointer;
-  font-size: 14px;
-  min-width: 220px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+.carrito-item-subtotal {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: #4b5563;
+}
 
-  &:hover {
-    background: darken(map-get($colors, accent), 6%);
+.carrito-item-eliminar {
+  align-self: center;
+}
+
+// ============================================
+// Columna Derecha - Resumen
+// ============================================
+
+.carrito-summary {
+  flex: 1;
+  display: flex;
+  justify-content: flex-start;
+
+  @include tablet {
+    justify-content: center;
   }
+}
+
+.summary-card {
+  background: map-get($colors, card);
+  border-radius: 12px;
+  padding: map-get($spacing, xl);
+  @include card-shadow;
+  min-width: 260px;
+  text-align: center;
+}
+
+.summary-title {
+  margin: 0 0 map-get($spacing, lg);
+  font-size: map-get($font-sizes, lg);
+  font-weight: 700;
+  color: #111827;
+}
+
+.summary-total-label {
+  margin: 0;
+  font-size: 24px;
+  line-height: 1;
+  color: #111827;
+  font-weight: 700;
+  margin-right: 4px;
+  margin-top: 4px;
+}
+.summary-total-amount {
+  margin: 0;
+  font-size: 36px;
+  font-weight: 800;
+  color: #111827;
+  line-height: 1;
+}
+
+.summary-items {
+  list-style: disc;
+  text-align: left;
+  padding-left: map-get($spacing, lg);
+  margin: map-get($spacing, xl) 0 map-get($spacing, xl);
+  font-size: 14px;
+  color: #4b5563;
+}
+
+.summary-item + .summary-item {
+  margin-top: 4px;
+}
+
+.summary-card ion-button {
+  margin-top: map-get($spacing, sm);
+}
+
+.summary-total-wrapper {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  margin: map-get($spacing, lg) 0;
 }

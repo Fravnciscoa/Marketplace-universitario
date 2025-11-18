@@ -10,11 +10,12 @@ import {
   IonIcon,
   IonCard,
   IonCardContent,
+  IonCardHeader,
   IonItem,
   IonLabel,
   IonList,
-  AlertController,      // ⬅️ AGREGAR
-  ToastController  
+  AlertController,
+  ToastController
 } from '@ionic/angular/standalone';
 
 import { addIcons } from 'ionicons';
@@ -25,14 +26,16 @@ import {
   personOutline,
   cardOutline,
   trashOutline,
-  arrowBackOutline
+  arrowBackOutline,
+  addOutline,
+  removeOutline
 } from 'ionicons/icons';
 
 import { AuthService } from '../../services/auth.service';
 import { Producto } from '../../services/productos.service';
 import { CarritoService } from '../../services/carrito.service';
 import { CartItem } from '../../models/cart-item.model';
-import { PedidosService } from '../../services/pedidos.service'; // ⬅️ AGREGAR
+import { PedidosService } from '../../services/pedidos.service';
 
 @Component({
   selector: 'app-carrito',
@@ -40,6 +43,7 @@ import { PedidosService } from '../../services/pedidos.service'; // ⬅️ AGREG
   styleUrls: ['./carrito.page.scss'],
   standalone: true,
   imports: [
+    IonCardHeader,
     IonContent,
     IonHeader,
     IonToolbar,
@@ -56,18 +60,16 @@ import { PedidosService } from '../../services/pedidos.service'; // ⬅️ AGREG
 })
 export class CarritoPage implements OnInit {
   isLoggedIn = false;
-
-  // Antes: Producto[] = []
   carrito: CartItem[] = [];
   total = 0;
 
   constructor(
     private authService: AuthService,
-    private pedidosService: PedidosService,    // ⬅️ AGREGAR
-    private alertController: AlertController,  // ⬅️ AGREGAR
-    private toastController: ToastController,  // ⬅️ AGREGAR
+    private pedidosService: PedidosService,
+    private alertController: AlertController,
+    private toastController: ToastController,
     private router: Router,
-    private carritoService: CarritoService  // 👈 nuevo
+    private carritoService: CarritoService
   ) {
     addIcons({
       cartOutline,
@@ -77,6 +79,8 @@ export class CarritoPage implements OnInit {
       cardOutline,
       arrowBackOutline,
       trashOutline,
+      addOutline,
+      removeOutline
     });
   }
 
@@ -89,7 +93,6 @@ export class CarritoPage implements OnInit {
   }
 
   ionViewWillEnter() {
-    // por si entras/sales de la página, que se actualice
     this.cargarCarrito();
   }
 
@@ -106,16 +109,15 @@ export class CarritoPage implements OnInit {
   }
 
   eliminarProducto(index: number) {
-  const producto = this.carrito[index];
-  this.carritoService.removeItem(producto.producto.id); // ⬅️ Pasar ID del producto
-  this.cargarCarrito();
-}
+    const producto = this.carrito[index];
+    this.carritoService.removeItem(producto.producto.id);
+    this.cargarCarrito();
+  }
 
-  // ✅ DESPUÉS:
   vaciarCarrito() {
-  this.carritoService.clear();
-  this.cargarCarrito();
-}
+    this.carritoService.clear();
+    this.cargarCarrito();
+  }
 
   cerrarSesion() {
     this.authService.logout();
@@ -126,22 +128,20 @@ export class CarritoPage implements OnInit {
     return `$${valor.toLocaleString('es-CL')}`;
   }
 
-  // opcional: métodos para sumar/restar cantidad
   aumentar(index: number) {
-  const producto = this.carrito[index];
-  this.carritoService.updateCantidad(producto.producto.id, producto.cantidad + 1);
-  this.cargarCarrito();
-}
-
-  disminuir(index: number) {
-  const producto = this.carrito[index];
-  if (producto.cantidad > 1) {
-    this.carritoService.updateCantidad(producto.producto.id, producto.cantidad - 1);
+    const producto = this.carrito[index];
+    this.carritoService.updateCantidad(producto.producto.id, producto.cantidad + 1);
     this.cargarCarrito();
   }
-}
 
-  // ⬅️ NUEVO MÉTODO: Abrir modal de checkout
+  disminuir(index: number) {
+    const producto = this.carrito[index];
+    if (producto.cantidad > 1) {
+      this.carritoService.updateCantidad(producto.producto.id, producto.cantidad - 1);
+      this.cargarCarrito();
+    }
+  }
+
   async abrirModalCheckout() {
     // Verificar si está logueado
     if (!this.authService.isLoggedIn()) {
@@ -209,7 +209,6 @@ export class CarritoPage implements OnInit {
     await alert.present();
   }
 
-  // ⬅️ NUEVO MÉTODO: Solicitar dirección de entrega
   async solicitarDireccionEntrega(metodo_pago: string) {
     const alert = await this.alertController.create({
       header: 'Dirección de Entrega',
@@ -242,7 +241,6 @@ export class CarritoPage implements OnInit {
     await alert.present();
   }
 
-  // ⬅️ NUEVO MÉTODO: Confirmar y crear pedido
   async confirmarPedido(metodo_pago: string, direccion: string, notas: string) {
     // Preparar datos del pedido
     const items = this.carrito.map(item => ({
@@ -282,7 +280,7 @@ export class CarritoPage implements OnInit {
             {
               text: 'Ver Mis Pedidos',
               handler: () => {
-                this.router.navigate(['/perfil']); // O crear página de pedidos
+                this.router.navigate(['/perfil']);
               }
             },
             {
@@ -294,7 +292,7 @@ export class CarritoPage implements OnInit {
         await alert.present();
 
         // Vaciar carrito
-     this.carritoService.clear();
+        this.carritoService.clear();
         this.cargarCarrito();
       },
       error: async (error) => {

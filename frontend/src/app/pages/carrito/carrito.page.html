@@ -3,10 +3,7 @@
     <div class="header-container">
       <!-- Logo -->
       <div class="header-logo">
-        <img
-          src="assets/icon/Escudo_PUCV-2016__Perfil Redes TW_FB.png"
-          alt="PUCV Logo"
-        />
+        <img src="assets/icon/Escudo_PUCV-2016__Perfil Redes TW_FB.png" alt="PUCV Logo" />
         <span class="header-logo-text">MarketPlace</span>
       </div>
 
@@ -20,7 +17,7 @@
         </a>
       </nav>
 
-      <!-- Acciones -->
+      <!-- Botones de autenticación dinámicos -->
       <div class="header-actions">
         <ng-container *ngIf="!isLoggedIn">
           <ion-button routerLink="/auth" fill="clear" class="btn-auth btn-login">
@@ -31,8 +28,11 @@
             Registrarse
           </ion-button>
         </ng-container>
-
         <ng-container *ngIf="isLoggedIn">
+          <ion-button routerLink="/publicar" fill="solid" class="btn-auth btn-publicar">
+            <ion-icon slot="start" name="add-outline"></ion-icon>
+            Publicar
+          </ion-button>
           <ion-button routerLink="/perfil" fill="clear" class="btn-auth btn-login">
             <ion-icon slot="start" name="person-outline"></ion-icon>
             Perfil
@@ -48,132 +48,81 @@
 </ion-header>
 
 <ion-content>
-  <div class="main-container carrito-container">
-    <h1 class="carrito-titulo">Tu carrito</h1>
-
-    <!-- Si está vacío -->
-    <ion-content class="ion-padding">
-  <!-- Si no hay productos -->
-  <div *ngIf="carrito.length === 0" class="carrito-vacio">
-    <ion-icon name="cart-outline" size="large"></ion-icon>
-    <h2>Tu carrito está vacío</h2>
-    <ion-button routerLink="/home" color="primary">
-      Ver Productos
-    </ion-button>
-  </div>
-
-    <!-- Lista de productos -->
-    
-  <!-- Lista de productos en el carrito -->
-  <div *ngIf="carrito.length > 0">
-    <!-- ⬅️ AGREGAR: let i = index -->
-    <ion-card *ngFor="let item of carrito; let i = index">
-      <ion-card-content>
-        <div class="carrito-item">
-          <!-- Imagen del producto -->
-          <img [src]="item.producto.imagen || 'assets/default-product.png'" 
-               [alt]="item.producto.titulo"
-               class="producto-imagen">
-
-          <!-- Información del producto -->
-          <div class="producto-info">
-            <h3>{{ item.producto.titulo }}</h3>
-            <p class="precio">${{ item.producto.precio | number }}</p>
-            
-            <!-- Controles de cantidad -->
-            <div class="cantidad-controls">
-              <ion-button 
-                size="small" 
-                fill="outline" 
-                (click)="disminuir(i)">  <!-- ⬅️ CAMBIAR: usar i -->
-                <ion-icon name="remove-outline"></ion-icon>
-              </ion-button>
-              
-              <span class="cantidad">{{ item.cantidad }}</span>
-              
-              <ion-button 
-                size="small" 
-                fill="outline" 
-                (click)="aumentar(i)">  <!-- ⬅️ CAMBIAR: usar i -->
-                <ion-icon name="add-outline"></ion-icon>
-              </ion-button>
-            </div>
-
-            <!-- Subtotal -->
-            <p class="subtotal">
-              Subtotal: ${{ (item.producto.precio * item.cantidad) | number }}
-            </p>
-          </div>
-
-          <!-- Botón eliminar -->
-          <ion-button 
-            fill="clear" 
-            color="danger" 
-            (click)="eliminarProducto(i)">  <!-- ⬅️ CAMBIAR: usar i -->
-            <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
-          </ion-button>
-        </div>
-      </ion-card-content>
-    </ion-card>
-
-    <!-- Total y botones de acción -->
-    <div class="total-container">
-      <h2>Total: ${{ total | number }}</h2>
-      
-      <!-- Botón para vaciar carrito -->
-      <ion-button 
-        expand="block" 
-        fill="outline" 
-        color="danger"
-        (click)="vaciarCarrito()">
-        <ion-icon slot="start" name="trash-outline"></ion-icon>
-        Vaciar Carrito
-      </ion-button>
-
-      <!-- Botón para finalizar compra -->
-      <ion-button 
-        expand="block" 
-        color="success" 
-        size="large"
-        (click)="abrirModalCheckout()">
-        <ion-icon slot="start" name="card-outline"></ion-icon>
-        Finalizar Compra
-      </ion-button>
-
-      <!-- Botón para seguir comprando -->
-      <ion-button 
-        expand="block" 
-        fill="outline" 
-        color="primary"
-        routerLink="/home">
-        <ion-icon slot="start" name="arrow-back-outline"></ion-icon>
-        Seguir Comprando
-      </ion-button>
+  <!-- Franja morada -->
+  <div class="carrito-hero">
+    <div class="carrito-hero-inner">
+      <span class="carrito-hero-title">Marketplace Universitario</span>
     </div>
   </div>
-</ion-content>
-<!-- Al final del archivo, después de mostrar el total -->
-<div class="total-container">
-  <h2>Total: ${{ total | number }}</h2>
-  
-  <!-- Botón para finalizar compra -->
-  <ion-button 
-    expand="block" 
-    color="success" 
-    size="large"
-    (click)="abrirModalCheckout()"
-    [disabled]="carrito.length === 0">
-    <ion-icon slot="start" name="card-outline"></ion-icon>
-    Finalizar Compra
-  </ion-button>
 
-  <!-- Botón para seguir comprando -->
-  <ion-button 
-    expand="block" 
-    fill="outline" 
-    color="primary"
-    routerLink="/home">
-    <ion-icon slot="start" name="arrow-back-outline"></ion-icon>
-    Seguir Comprando
-  </ion-button>
-</div>
+  <!-- Layout en dos columnas -->
+  <div class="carrito-page">
+    <!-- Columna izquierda: lista de productos -->
+    <section class="carrito-main">
+      <h1 class="carrito-titulo">Carro</h1>
+      <p class="carrito-subtitulo">
+        Cantidad de productos ({{ carrito.length }})
+      </p>
+      
+      <!-- Carrito vacío -->
+      <div *ngIf="carrito.length === 0" class="carrito-vacio">
+        <ion-icon name="cart-outline" size="large"></ion-icon>
+        <h2>Tu carrito está vacío</h2>
+        <ion-button routerLink="/home" color="primary">Ver productos</ion-button>
+      </div>
+      
+      <!-- Lista de productos -->
+      <ng-container *ngIf="carrito.length > 0">
+        <article class="carrito-item-card" *ngFor="let item of carrito; let i = index">
+          <div class="carrito-item">
+            <div class="carrito-item-imagen-wrapper">
+              <img [src]="item.producto.imagen || 'assets/default-product.png'"
+                   [alt]="item.producto.titulo"
+                   class="carrito-item-imagen" />
+            </div>
+            <div class="carrito-item-info">
+              <h3 class="carrito-item-titulo">{{ item.producto.titulo }}</h3>
+              <p class="carrito-item-precio">{{ formatearPrecio(item.producto.precio || 0) }}</p>
+              <div class="carrito-item-cantidad">
+                <ion-button size="small" fill="outline" (click)="disminuir(i)">
+                  <ion-icon name="remove-outline"></ion-icon>
+                </ion-button>
+                <span class="cantidad">{{ item.cantidad }}</span>
+                <ion-button size="small" fill="outline" (click)="aumentar(i)">
+                  <ion-icon name="add-outline"></ion-icon>
+                </ion-button>
+              </div>
+              <p class="carrito-item-subtotal">
+                Subtotal: {{ formatearPrecio((item.producto.precio || 0) * item.cantidad) }}
+              </p>
+            </div>
+            <ion-button fill="clear" color="danger" (click)="eliminarProducto(i)" class="carrito-item-eliminar">
+              <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+            </ion-button>
+          </div>
+        </article>
+      </ng-container>
+    </section>
+    
+    <!-- Columna derecha: resumen -->
+    <aside class="carrito-summary" *ngIf="carrito.length > 0">
+      <div class="summary-card">
+       <!-- DESPUÉS -->
+        <h2 class="summary-title">Resumen de la compra</h2>
+        <div class="summary-total-wrapper">
+          <span class="summary-total-label">$</span>
+          <span class="summary-total-amount">{{ total | number: '1.0-0' }}</span>
+        </div>
+        <ul class="summary-items">
+          <li class="summary-item" *ngFor="let item of carrito">{{ item.producto.titulo }}</li>
+        </ul>
+        <ion-button expand="block" color="success" size="large" (click)="abrirModalCheckout()">
+          CONTINUAR COMPRA
+        </ion-button>
+        <ion-button expand="block" fill="outline" color="medium" (click)="vaciarCarrito()">
+          VACIAR CARRITO
+        </ion-button>
+      </div>
+    </aside>
+  </div>
+</ion-content>
