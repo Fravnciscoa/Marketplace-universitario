@@ -3,25 +3,26 @@ import {
   obtenerConversaciones,
   obtenerOCrearConversacion,
   obtenerMensajes,
-  enviarMensaje
+  enviarMensaje,
+  obtenerMensajesPaginados,
+  buscarConversaciones,
+  eliminarConversacion
 } from '../controllers/chat.controller';
+import { verificarToken } from '../middlewares/auth.middleware';
 
 const router = Router();
 
-// ⬇️ MOCK TEMPORAL - Simula usuario ID 1 autenticado
-router.use((req, res, next) => {
-  req.user = {
-    id: 1,  // Usuario Test 1
-    correo: 'test1@mail.pucv.cl',
-    usuario: 'testuser1'
-  };
-  next();
-});
+router.use(verificarToken);
 
-// Rutas
+// Rutas de conversaciones
 router.get('/conversaciones', obtenerConversaciones);
+router.get('/conversaciones/buscar', buscarConversaciones); // ← NUEVO
 router.post('/conversaciones', obtenerOCrearConversacion);
+router.delete('/:conversacionId', eliminarConversacion); // ← NUEVO
+
+// Rutas de mensajes
 router.get('/:conversacionId/mensajes', obtenerMensajes);
+router.get('/:conversacionId/mensajes/paginados', obtenerMensajesPaginados);
 router.post('/:conversacionId/mensajes', enviarMensaje);
 
 export default router;
