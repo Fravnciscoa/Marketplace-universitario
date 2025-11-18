@@ -44,6 +44,33 @@ CREATE TABLE reportes (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+-- ============================================
+-- TABLA DE PEDIDOS
+-- ============================================
+CREATE TABLE pedidos (
+    id SERIAL PRIMARY KEY,
+    usuario_id INTEGER REFERENCES usuarios(id) ON DELETE SET NULL,
+    total INTEGER NOT NULL,
+    estado VARCHAR(50) DEFAULT 'pendiente', -- pendiente, confirmado, enviado, completado, cancelado
+    metodo_pago VARCHAR(50), -- efectivo, transferencia, tarjeta
+    direccion_entrega TEXT,
+    notas TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- ============================================
+-- TABLA DE ITEMS DE PEDIDOS (detalle)
+-- ============================================
+CREATE TABLE pedido_items (
+    id SERIAL PRIMARY KEY,
+    pedido_id INTEGER REFERENCES pedidos(id) ON DELETE CASCADE,
+    producto_id INTEGER REFERENCES productos(id) ON DELETE SET NULL,
+    cantidad INTEGER NOT NULL DEFAULT 1,
+    precio_unitario INTEGER NOT NULL, -- Precio al momento de la compra
+    subtotal INTEGER NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 -- Crear índices para búsquedas rápidas
 CREATE INDEX idx_productos_user_id ON productos(user_id);
 CREATE INDEX idx_productos_categoria ON productos(categoria);
@@ -61,3 +88,10 @@ CREATE INDEX idx_productos_categoria_campus ON productos(categoria, campus);
 -- Índice para consultas rápidas
 CREATE INDEX idx_reportes_producto_id ON reportes(producto_id);
 CREATE INDEX idx_reportes_estado ON reportes(estado);
+
+
+-- Índices para mejor rendimiento
+CREATE INDEX idx_pedidos_usuario_id ON pedidos(usuario_id);
+CREATE INDEX idx_pedidos_estado ON pedidos(estado);
+CREATE INDEX idx_pedido_items_pedido_id ON pedido_items(pedido_id);
+CREATE INDEX idx_pedido_items_producto_id ON pedido_items(producto_id);

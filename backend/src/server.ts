@@ -3,10 +3,12 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
-import compression from 'compression'; // ⬅️ NUEVO
+import compression from 'compression'; 
 import reportesRoutes from './routes/reportes.routes';
 import authRoutes from './routes/auth.routes';
 import productosRoutes from './routes/producto.routes';
+import pedidosRoutes from './routes/pedidos.routes'; 
+
 
 dotenv.config();
 
@@ -106,6 +108,8 @@ app.get('/health', (req, res) => {
 app.use('/api/auth', authLimiter, authRoutes);
 app.use('/api/productos', productosRoutes);
 app.use('/api/reportes', reportesRoutes); 
+app.use('/api/pedidos', pedidosRoutes); // ⬅️ AGREGAR ESTA LÍNEA
+
 // 404 Handler
 app.use((req, res) => {
   res.status(404).json({ error: 'Ruta no encontrada' });
