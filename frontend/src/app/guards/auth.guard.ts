@@ -6,12 +6,14 @@ export const authGuard = () => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
-  const user = authService.getCurrentUser();
+  const token = authService.getToken();
 
-  if (user && user.rol === 'admin') {
-    return true;
+  // Verificar si hay token y si NO está expirado
+  if (token && authService.isLoggedIn()) {
+    return true; // ✅ usuario autenticado, puede pasar
   } else {
-    router.navigate(['/home']); 
+    // ❌ No autenticado → mandar a login
+    router.navigate(['/auth']);
     return false;
   }
 };
