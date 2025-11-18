@@ -6,12 +6,19 @@ dotenv.config();
 const { Pool } = pkg;
 
 export const pool = new Pool({
-  host: process.env.DB_HOST || "marketplace-universitario.postgres.database.azure.com",
-  user: process.env.DB_USER || "postgres",
-  password: process.env.DB_PASSWORD || "Panxo85808134",
-  database: process.env.DB_DATABASE || "marketplace",
-  port: Number(process.env.DB_PORT) || 5432,
-  ssl: process.env.DB_HOST?.includes('azure') 
-    ? { rejectUnauthorized: false } 
-    : false
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false
+  }
 });
+
+// Test de conexión
+pool.on('connect', () => {
+  console.log('✅ Conectado a Azure PostgreSQL');
+});
+
+pool.on('error', (err) => {
+  console.error('❌ Error en la conexión a PostgreSQL:', err);
+});
+
+export default pool;

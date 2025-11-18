@@ -3,10 +3,11 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
-import compression from 'compression'; // ⬅️ NUEVO
+import compression from 'compression';
 import reportesRoutes from './routes/reportes.routes';
 import authRoutes from './routes/auth.routes';
 import productosRoutes from './routes/producto.routes';
+import chatRoutes from './routes/chat.routes';  // ← NUEVO
 
 dotenv.config();
 
@@ -53,14 +54,11 @@ const authLimiter = rateLimit({
 
 app.use(limiter);
 
-// ===== OPTIMIZACIÓN DE RENDIMIENTO (EF 4) ===== ⬅️ NUEVO
+// ===== OPTIMIZACIÓN DE RENDIMIENTO (EF 4) =====
 // Compresión gzip/deflate para todas las respuestas
 app.use(compression({
-  // Comprimir respuestas mayores a 1kb
   threshold: 1024,
-  // Nivel de compresión (0-9, default: 6)
   level: 6,
-  // Solo comprimir estos tipos de contenido
   filter: (req, res) => {
     if (req.headers['x-no-compression']) {
       return false;
@@ -105,7 +103,9 @@ app.get('/health', (req, res) => {
 // Rutas
 app.use('/api/auth', authLimiter, authRoutes);
 app.use('/api/productos', productosRoutes);
-app.use('/api/reportes', reportesRoutes); 
+app.use('/api/reportes', reportesRoutes);
+app.use('/api/chat', chatRoutes);  // ← NUEVO
+
 // 404 Handler
 app.use((req, res) => {
   res.status(404).json({ error: 'Ruta no encontrada' });
@@ -120,5 +120,6 @@ app.use((err: any, req: any, res: any, next: any) => {
 app.listen(PORT, () => {
   console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
   console.log(`🔒 Seguridad: Helmet, CORS, Rate Limiting activados`);
-  console.log(`⚡ Optimización: Compresión gzip activada`); // ⬅️ NUEVO
+  console.log(`⚡ Optimización: Compresión gzip activada`);
+  console.log(`💬 Chat: Rutas de mensajería disponibles`);  // ← NUEVO
 });

@@ -14,7 +14,12 @@ export const handleValidationErrors = (req: Request, res: Response, next: NextFu
 };
 
 // Sanitización XSS
-const sanitizeString = (value: string) => {
+const sanitizeString = (value: any) => {
+  // Validar que value sea string y no undefined/null
+  if (typeof value !== 'string' || !value) {
+    return value;
+  }
+  
   return value
     .trim()
     .replace(/[<>]/g, '')
