@@ -50,9 +50,15 @@ export const routes: Routes = [
   {
     path: '**',
     redirectTo: 'home'
-  },  {
+  },
+  {
     path: 'mis-productos',
     loadComponent: () => import('./pages/mis-productos/mis-productos.page').then( m => m.MisProductosPage)
+  },
+  {
+    path: 'admin-portal',
+    loadComponent: () => import('./pages/admin-portal/admin-portal.page').then( m => m.AdminPortalPage),
+    canActivate: [authGuard]
   }
 
 ];

@@ -6,7 +6,7 @@ dotenv.config();
 const { Pool } = pkg;
 
 export const pool = new Pool({
-  host: process.env.DB_HOST || "marketplace-universitario.postgres.database.azure.com",
+  host: process.env.DB_HOST || "IngWeb",
   user: process.env.DB_USER || "postgres",
   password: process.env.DB_PASSWORD || "Panxo85808134",
   database: process.env.DB_DATABASE || "marketplace",
