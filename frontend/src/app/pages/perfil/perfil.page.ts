@@ -21,8 +21,12 @@ import {
   IonTextarea,
   IonSelect,
   IonSelectOption,
-  IonBadge,       // ⬅️ AGREGAR
-  IonText,        // ⬅️ AGREGAR
+  IonBadge,
+  IonText,
+  IonSegment,
+  IonSegmentButton,
+  IonList,
+  IonSpinner,
   ToastController
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
@@ -31,11 +35,18 @@ import {
   createOutline,
   checkmarkOutline,
   closeOutline,
-  arrowBackOutline,         // ⬅️ AGREGAR
-  checkmarkCircleOutline,   // ⬅️ AGREGAR
-  closeCircleOutline        // ⬅️ AGREGAR
+  arrowBackOutline,
+  checkmarkCircleOutline,
+  closeCircleOutline,
+  receiptOutline,
+  timeOutline,
+  cardOutline,
+  cartOutline,
+  locationOutline,
+  cubeOutline
 } from 'ionicons/icons';
 import { AuthService } from '../../services/auth.service';
+import { PedidosService } from '../../services/pedidos.service';
 
 @Component({
   selector: 'app-perfil',
@@ -61,8 +72,12 @@ import { AuthService } from '../../services/auth.service';
     IonTextarea,
     IonSelect,
     IonSelectOption,
-    IonBadge,        // ⬅️ AGREGAR
-    IonText,         // ⬅️ AGREGAR
+    IonBadge,
+    IonText,
+    IonSegment,
+    IonSegmentButton,
+    IonList,
+    IonSpinner,
     CommonModule,
     RouterLink,
     FormsModule
@@ -81,14 +96,20 @@ export class PerfilPage implements OnInit {
     telefono1: '',
     telefono2: '',
     direccion: '',
-    carrera: 'Ingeniería en Informática'  // ⬅️ Campo adicional
+    carrera: 'Ingeniería en Informática'
   };
 
-  userBackup: any = {}; // Para cancelar edición
+  userBackup: any = {};
   editMode = false;
+  
+  // Variables para pedidos
+  selectedSegment = 'info';
+  pedidos: any[] = [];
+  loadingPedidos = false;
 
   constructor(
-    private authService: AuthService,
+    public authService: AuthService,
+    private pedidosService: PedidosService,
     private toastController: ToastController
   ) {
     addIcons({
@@ -98,20 +119,26 @@ export class PerfilPage implements OnInit {
       closeOutline,
       arrowBackOutline,
       checkmarkCircleOutline,
-      closeCircleOutline
+      closeCircleOutline,
+      receiptOutline,
+      timeOutline,
+      cardOutline,
+      cartOutline,
+      locationOutline,
+      cubeOutline
     });
   }
 
   ngOnInit() {
     this.loadProfile();
+    this.loadPedidos();
   }
 
   loadProfile() {
     this.authService.getProfile().subscribe({
       next: (res: any) => {
-        console.log('Respuesta del perfil:', res); // ⬅️ DEBUG
         if (res && res.success) {
-          this.user = { ...this.user, ...res.data }; // Combinar con datos del servidor
+          this.user = { ...this.user, ...res.data };
         }
       },
       error: (err) => {
@@ -120,18 +147,59 @@ export class PerfilPage implements OnInit {
     });
   }
 
+  loadPedidos() {
+    this.loadingPedidos = true;
+    this.pedidosService.obtenerMisPedidos().subscribe({
+      next: (response) => {
+        if (response.success) {
+          this.pedidos = response.data;
+        }
+        this.loadingPedidos = false;
+      },
+      error: (error) => {
+        console.error('Error al cargar pedidos:', error);
+        this.loadingPedidos = false;
+      }
+    });
+  }
+
+  onSegmentChange(event: any) {
+    this.selectedSegment = event.detail.value;
+  }
+
+  getEstadoBadgeColor(estado: string): string {
+    const colores: any = {
+      'pendiente': 'warning',
+      'confirmado': 'primary',
+      'enviado': 'secondary',
+      'completado': 'success',
+      'cancelado': 'danger'
+    };
+    return colores[estado] || 'medium';
+  }
+
+  formatearFecha(fecha: string): string {
+    const date = new Date(fecha);
+    return date.toLocaleDateString('es-CL', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  }
+
   activarModoEdicion() {
     this.editMode = true;
-    this.userBackup = { ...this.user }; // Copiar datos para poder cancelar
+    this.userBackup = { ...this.user };
   }
 
   cancelarEdicion() {
-    this.user = { ...this.userBackup }; // Restaurar datos originales
+    this.user = { ...this.userBackup };
     this.editMode = false;
   }
 
   async guardarCambios() {
-    // Preparar datos para enviar
     const dataToUpdate = {
       nombre: this.user.nombre,
       rut: this.user.rut,
@@ -156,7 +224,6 @@ export class PerfilPage implements OnInit {
         });
         await toast.present();
 
-        // Recargar perfil
         this.loadProfile();
       },
       error: async (error) => {
