@@ -257,3 +257,41 @@ Solución: Hacer login nuevamente para obtener un token válido y actualizado.
 ***
 
 **Sistema completamente funcional y probado en entorno de desarrollo con Azure PostgreSQL.**
+
+
+### **Nuevas Funcionalidades Avanzadas**
+
+#### **WebSocket en Tiempo Real**
+El sistema notifica automáticamente a los usuarios cuando reciben un nuevo mensaje mediante Socket.IO.
+
+#### **Paginación de Mensajes**
+Endpoint: `GET /:conversacionId/mensajes/paginados?pagina=1&limite=20`
+
+Permite cargar mensajes por páginas para mejorar el rendimiento.
+
+#### **Búsqueda de Conversaciones**
+Endpoint: `GET /conversaciones/buscar?q=texto`
+
+Busca conversaciones por nombre de usuario o contenido de mensajes.
+
+#### **Eliminar Conversaciones**
+Endpoint: `DELETE /:conversacionId`
+
+Permite eliminar conversaciones completas (incluyendo todos sus mensajes por CASCADE).
+
+***
+
+## 📊 ESTADÍSTICAS DEL PROYECTO
+
+- **Archivos modificados:** 4
+  - `server.ts`
+  - `chat.controller.ts`
+  - `chat.routes.ts`
+  - `socket/socket.ts` (nuevo)
+- **Líneas de código:** ~500+
+- **Endpoints API:** 7
+- **Funcionalidades:** 8
+- **Base de datos:** Azure PostgreSQL
+- **Tiempo de desarrollo:** 1 sesión
+
+***

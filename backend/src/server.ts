@@ -1,18 +1,27 @@
 import express from 'express';
+import http from 'http';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import compression from 'compression';
+import { initializeSocket } from './socket/socket';
 import reportesRoutes from './routes/reportes.routes';
 import authRoutes from './routes/auth.routes';
 import productosRoutes from './routes/producto.routes';
-import chatRoutes from './routes/chat.routes';  // ← NUEVO
+import chatRoutes from './routes/chat.routes';
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// ===== CREAR SERVIDOR HTTP =====
+const httpServer = http.createServer(app);
+
+// ===== INICIALIZAR SOCKET.IO =====
+const io = initializeSocket(httpServer);
+(global as any).io = io;
 
 // ===== SEGURIDAD AVANZADA (EF 3) =====
 // 1. Helmet - Protege headers HTTP
@@ -104,7 +113,7 @@ app.get('/health', (req, res) => {
 app.use('/api/auth', authLimiter, authRoutes);
 app.use('/api/productos', productosRoutes);
 app.use('/api/reportes', reportesRoutes);
-app.use('/api/chat', chatRoutes);  // ← NUEVO
+app.use('/api/chat', chatRoutes);
 
 // 404 Handler
 app.use((req, res) => {
@@ -117,9 +126,11 @@ app.use((err: any, req: any, res: any, next: any) => {
   res.status(500).json({ error: 'Error interno del servidor' });
 });
 
-app.listen(PORT, () => {
+// ===== INICIAR SERVIDOR =====
+httpServer.listen(PORT, () => {
   console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
   console.log(`🔒 Seguridad: Helmet, CORS, Rate Limiting activados`);
   console.log(`⚡ Optimización: Compresión gzip activada`);
-  console.log(`💬 Chat: Rutas de mensajería disponibles`);  // ← NUEVO
+  console.log(`💬 Chat: Rutas de mensajería disponibles`);
+  console.log(`🔌 WebSocket: Socket.IO inicializado`);
 });
