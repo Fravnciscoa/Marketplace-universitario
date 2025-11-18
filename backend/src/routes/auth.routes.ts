@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { register, login, verifyUser, getProfile } from '../controllers/auth.controller';
+import { register, login, verifyUser, getProfile, updateProfile } from '../controllers/auth.controller';
 import { verifyToken } from '../middlewares/verifyToken';
 import { validateRegister, validateLogin } from '../middlewares/validators';
 import * as authController from '../controllers/auth.controller';
@@ -12,6 +12,7 @@ router.post('/login', validateLogin, login);
 // Ruta protegida (solo requiere JWT)
 router.get('/verify', verifyToken, verifyUser);
 router.get('/profile', verifyToken, authController.getProfile);
+router.put('/profile', verifyToken, updateProfile); // ⬅️ AGREGAR ESTA LÍNEA
 
 
 export default router;

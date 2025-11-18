@@ -1,13 +1,17 @@
 import pkg from 'pg';
+import dotenv from 'dotenv';
+
+dotenv.config();
+
 const { Pool } = pkg;
 
 export const pool = new Pool({
-  host: "marketplace-universitario.postgres.database.azure.com",
-  user: "postgres",
-  password: "Panxo85808134",
-  database: "marketplace",
-  port: 5432,
-  ssl: {
-    rejectUnauthorized: false
-  },
+  host: process.env.DB_HOST || "marketplace-universitario.postgres.database.azure.com",
+  user: process.env.DB_USER || "postgres",
+  password: process.env.DB_PASSWORD || "Panxo85808134",
+  database: process.env.DB_DATABASE || "marketplace",
+  port: Number(process.env.DB_PORT) || 5432,
+  ssl: process.env.DB_HOST?.includes('azure') 
+    ? { rejectUnauthorized: false } 
+    : false
 });

@@ -166,22 +166,186 @@ export const verifyUser = async (req: Request, res: Response) => {
 };
 
 // GET /auth/profile
-export const getProfile = async (req: Request & { userId?: number }, res: Response) => {
+// GET /api/auth/profile - Obtener perfil del usuario autenticado
+export const getProfile = async (req: Request, res: Response) => {
   try {
-    const user = await pool.query(
-      'SELECT id, nombre, correo, usuario, rut, region, comuna FROM usuarios WHERE id = $1',
-      [req.userId]
-    );
+    const userId = req.user?.id;
 
-    if (user.rows.length === 0) {
-      return res.status(404).json({ success: false, message: "Usuario no encontrado" });
+    if (!userId) {
+      return res.status(401).json({
+        success: false,
+        error: 'Usuario no autenticado'
+      });
     }
 
-    return res.json({ success: true, data: user.rows[0] });
+    const result = await pool.query(
+      `SELECT 
+        id, 
+        nombre, 
+        correo, 
+        usuario, 
+        rut, 
+        region, 
+        comuna,
+        genero,
+        fecha_nacimiento,
+        telefono1,
+        telefono2,
+        direccion,
+        fecha_creacion
+      FROM usuarios 
+      WHERE id = $1`,
+      [userId]
+    );
 
-  } catch (err) {
-    console.error(err);
-    return res.status(500).json({ success: false, message: "Error interno" });
+    if (result.rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        error: 'Usuario no encontrado'
+      });
+    }
+
+    res.json({
+      success: true,
+      data: result.rows[0]
+    });
+
+  } catch (error: any) {
+    console.error('Error al obtener perfil:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Error al obtener perfil del usuario',
+      details: error.message
+    });
   }
 };
+
+
+// PUT /api/auth/profile - Actualizar perfil del usuario
+export const updateProfile = async (req: Request, res: Response) => {
+  try {
+    const userId = req.user?.id;
+
+    if (!userId) {
+      return res.status(401).json({
+        success: false,
+        error: 'Usuario no autenticado'
+      });
+    }
+
+    const {
+      nombre,
+      rut,
+      region,
+      comuna,
+      genero,
+      fecha_nacimiento,
+      telefono1,
+      telefono2,
+      direccion
+    } = req.body;
+
+    // Validar que al menos un campo venga para actualizar
+    if (!nombre && !rut && !region && !comuna && !genero && !fecha_nacimiento && !telefono1 && !telefono2 && !direccion) {
+      return res.status(400).json({
+        success: false,
+        error: 'Debes proporcionar al menos un campo para actualizar'
+      });
+    }
+
+    // Construir query dinámicamente
+    const updates: string[] = [];
+    const values: any[] = [];
+    let paramIndex = 1;
+
+    if (nombre) {
+      updates.push(`nombre = $${paramIndex}`);
+      values.push(nombre);
+      paramIndex++;
+    }
+
+    if (rut) {
+      updates.push(`rut = $${paramIndex}`);
+      values.push(rut);
+      paramIndex++;
+    }
+
+    if (region) {
+      updates.push(`region = $${paramIndex}`);
+      values.push(region);
+      paramIndex++;
+    }
+
+    if (comuna) {
+      updates.push(`comuna = $${paramIndex}`);
+      values.push(comuna);
+      paramIndex++;
+    }
+
+    if (genero) {
+      updates.push(`genero = $${paramIndex}`);
+      values.push(genero);
+      paramIndex++;
+    }
+
+    if (fecha_nacimiento) {
+      updates.push(`fecha_nacimiento = $${paramIndex}`);
+      values.push(fecha_nacimiento);
+      paramIndex++;
+    }
+
+    if (telefono1) {
+      updates.push(`telefono1 = $${paramIndex}`);
+      values.push(telefono1);
+      paramIndex++;
+    }
+
+    if (telefono2) {
+      updates.push(`telefono2 = $${paramIndex}`);
+      values.push(telefono2);
+      paramIndex++;
+    }
+
+    if (direccion) {
+      updates.push(`direccion = $${paramIndex}`);
+      values.push(direccion);
+      paramIndex++;
+    }
+
+    // Agregar userId al final
+    values.push(userId);
+
+    const query = `
+      UPDATE usuarios 
+      SET ${updates.join(', ')}
+      WHERE id = $${paramIndex}
+      RETURNING id, nombre, correo, usuario, rut, region, comuna, genero, fecha_nacimiento, telefono1, telefono2, direccion, fecha_creacion
+    `;
+
+    const result = await pool.query(query, values);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        error: 'Usuario no encontrado'
+      });
+    }
+
+    res.json({
+      success: true,
+      message: 'Perfil actualizado correctamente',
+      data: result.rows[0]
+    });
+
+  } catch (error: any) {
+    console.error('Error al actualizar perfil:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Error al actualizar perfil',
+      details: error.message
+    });
+  }
+};
+
+
 

@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import compression from 'compression'; // ⬅️ NUEVO
-
+import reportesRoutes from './routes/reportes.routes';
 import authRoutes from './routes/auth.routes';
 import productosRoutes from './routes/producto.routes';
 
@@ -105,7 +105,7 @@ app.get('/health', (req, res) => {
 // Rutas
 app.use('/api/auth', authLimiter, authRoutes);
 app.use('/api/productos', productosRoutes);
-
+app.use('/api/reportes', reportesRoutes); 
 // 404 Handler
 app.use((req, res) => {
   res.status(404).json({ error: 'Ruta no encontrada' });
