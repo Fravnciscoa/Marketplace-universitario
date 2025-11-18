@@ -1,3 +1,4 @@
+//--app.routes.ts--//
 import { Routes } from '@angular/router';
 import { authGuard } from './guards/auth.guard';
 
@@ -50,7 +51,8 @@ export const routes: Routes = [
   {
     path: '**',
     redirectTo: 'home'
-  },  {
+  },
+  {
     path: 'mis-productos',
     loadComponent: () => import('./pages/mis-productos/mis-productos.page').then( m => m.MisProductosPage)
   }

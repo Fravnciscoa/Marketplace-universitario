@@ -1,3 +1,4 @@
+//auth.routes.ts
 import { Router } from 'express';
 import { register, login, verifyUser, getProfile, updateProfile } from '../controllers/auth.controller';
 import { verifyToken } from '../middlewares/verifyToken';

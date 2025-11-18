@@ -1,0 +1,92 @@
+<!-- chat-widget.component.html -->
+<!-- Botón flotante de chat (badge con total de no leídos) -->
+<div class="chat-btn" (click)="toggleChat()">
+  <ion-icon name="chatbubble-ellipses-outline"></ion-icon>
+  <span class="chat-badge" *ngIf="totalNoLeidos > 0">{{ totalNoLeidos }}</span>
+</div>
+
+<!-- Ventana principal del chat -->
+<div class="chat-window" *ngIf="abierto">
+  <!-- Header -->
+  <div class="chat-header">
+    <ng-container *ngIf="vistaActual === 'conversaciones'">
+      <span>Mensajes</span>
+    </ng-container>
+    <ng-container *ngIf="vistaActual === 'chat'">
+      <button ion-button icon-only (click)="volverAConversaciones()">
+        <ion-icon name="arrow-back-outline"></ion-icon>
+      </button>
+      <span>
+        {{ conversacionActiva?.otro_usuario_nombre || conversacionActiva?.otro_usuario_usuario }}
+      </span>
+    </ng-container>
+    <button ion-button icon-only (click)="cerrarChat()">
+      <ion-icon name="close"></ion-icon>
+    </button>
+  </div>
+
+  <!-- Lista de conversaciones -->
+  <div class="chat-body" *ngIf="vistaActual === 'conversaciones'">
+    <div *ngIf="cargandoConversaciones" class="chat-loader">
+      <ion-spinner name="dots"></ion-spinner> Cargando...
+    </div>
+    <div *ngIf="!cargandoConversaciones && conversaciones.length === 0" class="chat-vacio">
+      No tienes conversaciones.
+    </div>
+    <div 
+      *ngFor="let conv of conversaciones" 
+      class="chat-conv"
+      (click)="abrirConversacion(conv)">
+      <div class="chat-info">
+        <div class="chat-datos">
+          <span class="chat-usuario">{{ conv.otro_usuario_nombre || conv.otro_usuario_usuario }}</span>
+          <span class="chat-producto" *ngIf="conv.producto_nombre"> · {{ conv.producto_nombre }}</span>
+        </div>
+        <span class="chat-fecha">{{ formatearFecha(conv.ultimo_mensaje_fecha || '') }}</span>      </div>
+      <div class="chat-msg-preview">{{ conv.ultimo_mensaje }}</div>
+        <span class="chat-msg-badge" *ngIf="(conv.mensajes_no_leidos || 0) > 0">{{ conv.mensajes_no_leidos || 0 }}</span>
+    </div>
+  </div>
+
+  <!-- Conversación activa -->
+  <div class="chat-body chat-activa" #chatBody *ngIf="vistaActual === 'chat'">
+    <div *ngIf="cargandoMensajes" class="chat-loader">
+      <ion-spinner name="dots"></ion-spinner> Cargando mensajes...
+    </div>
+    <div *ngIf="!cargandoMensajes && mensajes.length === 0" class="chat-vacio">
+      No hay mensajes todavía.
+    </div>
+    <div *ngFor="let msg of mensajes">
+      <div [ngClass]="{'msg-yo': esMiMensaje(msg), 'msg': true}">
+        <span class="msg-nombre" *ngIf="!esMiMensaje(msg)">{{ msg.remitente_nombre }}</span>
+        <span>{{ msg.mensaje }}</span>
+        <span class="msg-fecha">{{ formatearFecha(msg.created_at) }}</span>
+      </div>
+    </div>
+
+    <!-- Indicador "otro está escribiendo"  -->
+    <div *ngIf="otroUsuarioEscribiendo" class="typing-indicator">
+      <ion-icon name="ellipse" class="dot"></ion-icon>
+      <ion-icon name="ellipse" class="dot"></ion-icon>
+      <ion-icon name="ellipse" class="dot"></ion-icon>
+      <span>Escribiendo...</span>
+    </div>
+  </div>
+
+  <!-- Input de mensaje -->
+  <form class="chat-input" *ngIf="vistaActual === 'chat'" (submit)="enviarMensaje()">
+    <input 
+      type="text" 
+      [(ngModel)]="mensajeNuevo"
+      name="mensajeNuevo"
+      placeholder="Escribe un mensaje..."
+      autocomplete="off"
+      (input)="onInputChange()" 
+      [disabled]="enviandoMensaje"
+      required
+    />
+    <button type="submit" [disabled]="!mensajeNuevo.trim() || enviandoMensaje">
+      <ion-icon name="send"></ion-icon>
+    </button>
+  </form>
+</div>
