@@ -199,9 +199,9 @@ export class ChatService implements OnDestroy {
   }
 // ...
 
-// 🔍 Buscar usuarios (ahora usa el endpoint de auth)
+// 🔍 Buscar usuarios (usa el endpoint de auth)
 buscarUsuarios(termino: string): Observable<{ success: boolean; usuarios: any[]; total: number }> {
-  // Cambiar la URL para usar el endpoint de auth en lugar de chat
+  // Usar la URL base de environment y agregar /api/auth
   const authUrl = `${environment.apiUrl}/api/auth`;
   
   return this.http.get<{ success: boolean; usuarios: any[]; total: number }>(

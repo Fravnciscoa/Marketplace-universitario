@@ -5,6 +5,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import helmet from 'helmet';
 import compression from 'compression';
+import chatRouter from './routes/chat.routes';
 
 import authRoutes from './routes/auth.routes';
 import productosRoutes from './routes/producto.routes';
@@ -39,6 +40,7 @@ app.use(compression());
 app.use('/api/auth', authRoutes);
 app.use('/api/productos', productosRoutes);
 app.use('/api/chat', chatRoutes);
+app.use('/chat', chatRouter);
 
 app.get("/health", (req, res) => {
   res.json({ ok: true, websocket: global.io ? true : false });

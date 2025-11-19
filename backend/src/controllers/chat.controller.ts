@@ -23,7 +23,7 @@ export const obtenerConversaciones = async (req: Request, res: Response) => {
         (SELECT mensaje FROM mensajes WHERE conversacion_id = c.id ORDER BY created_at DESC LIMIT 1) as ultimo_mensaje,
         (SELECT created_at FROM mensajes WHERE conversacion_id = c.id ORDER BY created_at DESC LIMIT 1) as ultimo_mensaje_fecha,
         (SELECT COUNT(*) FROM mensajes WHERE conversacion_id = c.id AND remitente_id != $1 AND leido = false) as mensajes_no_leidos,
-        p.nombre as producto_nombre,
+        p.titulo as producto_nombre,
         p.precio as producto_precio
       FROM conversaciones c
       LEFT JOIN usuarios u1 ON c.usuario1_id = u1.id
@@ -36,49 +36,137 @@ export const obtenerConversaciones = async (req: Request, res: Response) => {
 
     res.json({ success: true, conversaciones: result.rows });
   } catch (error) {
-    console.error('Error al obtener conversaciones:', error);
-    res.status(500).json({ success: false, error: 'Error al obtener conversaciones' });
+    // Log detallado del error
+    console.error('❌ Error al obtener conversaciones:', error);
+    res.status(500).json({ success: false, error: String(error) });
   }
 };
 
 // OBTENER O CREAR UNA CONVERSACIÓN
+// Reemplaza la función obtenerOCrearConversacion en chat.controller.ts
+
 export const obtenerOCrearConversacion = async (req: Request, res: Response) => {
   try {
     const usuarioId = req.user?.id;
     const { otroUsuarioId, productoId } = req.body;
-    if (!usuarioId) return res.status(401).json({ success: false, error: 'Usuario no autenticado' });
+    
+    if (!usuarioId) {
+      return res.status(401).json({ 
+        success: false, 
+        error: 'Usuario no autenticado' 
+      });
+    }
 
+    // Validar que otroUsuarioId existe
+    if (!otroUsuarioId) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'Debes proporcionar el ID del otro usuario' 
+      });
+    }
+
+    // No permitir conversación consigo mismo
     if (parseInt(otroUsuarioId) === usuarioId) {
-      return res.status(400).json({ success: false, error: 'No puedes crear una conversación contigo mismo' });
+      return res.status(400).json({ 
+        success: false, 
+        error: 'No puedes crear una conversación contigo mismo' 
+      });
     }
 
+    console.log('🔍 Buscando conversación entre:', usuarioId, 'y', otroUsuarioId);
+
+    // Buscar conversación existente
     const conversacionExistente = await pool.query(
-      `SELECT * FROM conversaciones 
-       WHERE ((usuario1_id = $1 AND usuario2_id = $2) OR (usuario1_id = $2 AND usuario2_id = $1))
-       AND ($3::INTEGER IS NULL OR producto_id = $3)
-       LIMIT 1`,
+      `SELECT 
+        c.id,
+        c.usuario1_id,
+        c.usuario2_id,
+        c.producto_id,
+        c.created_at,
+        c.updated_at,
+        CASE WHEN c.usuario1_id = $1 THEN u2.nombre ELSE u1.nombre END as otro_usuario_nombre,
+        CASE WHEN c.usuario1_id = $1 THEN u2.usuario ELSE u1.usuario END as otro_usuario_usuario,
+        CASE WHEN c.usuario1_id = $1 THEN u2.id ELSE u1.id END as otro_usuario_id,
+        (SELECT mensaje FROM mensajes WHERE conversacion_id = c.id ORDER BY created_at DESC LIMIT 1) as ultimo_mensaje,
+        (SELECT created_at FROM mensajes WHERE conversacion_id = c.id ORDER BY created_at DESC LIMIT 1) as ultimo_mensaje_fecha,
+        (SELECT COUNT(*) FROM mensajes WHERE conversacion_id = c.id AND remitente_id != $1 AND leido = false)::int as mensajes_no_leidos
+      FROM conversaciones c
+      LEFT JOIN usuarios u1 ON c.usuario1_id = u1.id
+      LEFT JOIN usuarios u2 ON c.usuario2_id = u2.id
+      WHERE ((c.usuario1_id = $1 AND c.usuario2_id = $2) 
+         OR (c.usuario1_id = $2 AND c.usuario2_id = $1))
+      AND ($3::INTEGER IS NULL OR c.producto_id = $3)
+      LIMIT 1`,
       [usuarioId, otroUsuarioId, productoId || null]
     );
 
+    // Si existe, retornarla
     if (conversacionExistente.rows.length > 0) {
-      return res.json({ success: true, conversacion: conversacionExistente.rows[0], nueva: false });
+      console.log('✅ Conversación existente encontrada:', conversacionExistente.rows[0].id);
+      return res.json({ 
+        success: true, 
+        conversacion: conversacionExistente.rows[0], 
+        nueva: false 
+      });
     }
 
-    const nuevaConversacion = await pool.query(
+    console.log('🆕 Creando nueva conversación');
+
+    // Crear nueva conversación
+    const nuevaConv = await pool.query(
       `INSERT INTO conversaciones (usuario1_id, usuario2_id, producto_id)
-       VALUES ($1, $2, $3) RETURNING *`,
+       VALUES ($1, $2, $3) RETURNING id, usuario1_id, usuario2_id, producto_id, created_at, updated_at`,
       [usuarioId, otroUsuarioId, productoId || null]
     );
 
+    // Obtener información del otro usuario
+    const otroUsuario = await pool.query(
+      `SELECT id, nombre, usuario FROM usuarios WHERE id = $1`,
+      [otroUsuarioId]
+    );
+
+    if (otroUsuario.rows.length === 0) {
+      return res.status(404).json({ 
+        success: false, 
+        error: 'Usuario no encontrado' 
+      });
+    }
+
+    // Construir conversación con toda la información
+    const conversacionCompleta = {
+      ...nuevaConv.rows[0],
+      otro_usuario_nombre: otroUsuario.rows[0].nombre,
+      otro_usuario_usuario: otroUsuario.rows[0].usuario,
+      otro_usuario_id: otroUsuario.rows[0].id,
+      ultimo_mensaje: null,
+      ultimo_mensaje_fecha: null,
+      mensajes_no_leidos: 0
+    };
+
+    console.log('✅ Conversación creada:', conversacionCompleta);
+
+    // Emitir evento de nueva conversación vía Socket.IO
     const io = (global as any).io;
     if (io) {
-      io.to(`user_${otroUsuarioId}`).emit('nueva_conversacion', { conversacionId: nuevaConversacion.rows[0].id, usuarioId });
+      io.to(`user_${otroUsuarioId}`).emit('nueva_conversacion', { 
+        conversacionId: conversacionCompleta.id, 
+        usuarioId 
+      });
     }
 
-    res.json({ success: true, conversacion: nuevaConversacion.rows[0], nueva: true });
+    res.json({ 
+      success: true, 
+      conversacion: conversacionCompleta, 
+      nueva: true 
+    });
+
   } catch (error) {
-    console.error('Error al crear conversación:', error);
-    res.status(500).json({ success: false, error: 'Error al crear conversación' });
+    console.error('❌ Error al crear conversación:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: 'Error al crear conversación',
+      details: error instanceof Error ? error.message : 'Error desconocido'
+    });
   }
 };
 

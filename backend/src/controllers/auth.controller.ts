@@ -168,6 +168,9 @@ export const verifyUser = async (req: Request, res: Response) => {
 // Agregar al final de auth.controller.ts, justo antes del export final
 
 // GET /api/auth/usuarios/buscar - Buscar usuarios por nombre, usuario o correo
+// Agregar esta función al final de auth.controller.ts (antes del último export o al final del archivo)
+
+// GET /api/auth/usuarios/buscar - Buscar usuarios por nombre, usuario o correo
 export const buscarUsuarios = async (req: Request, res: Response) => {
   try {
     const userId = req.user?.id; // Usuario autenticado
