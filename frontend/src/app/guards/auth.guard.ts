@@ -5,14 +5,14 @@ import { AuthService } from '../services/auth.service';
 export const authGuard = () => {
   const authService = inject(AuthService);
   const router = inject(Router);
-  
+
   const token = authService.getToken();
-  
-  // Verificar si hay token y si está logueado
+
+  // Verificar si hay token y si NO está expirado
   if (token && authService.isLoggedIn()) {
-    return true;
+    return true; // ✅ usuario autenticado, puede pasar
   } else {
-    // Redirigir a login si no está autenticado
+    // ❌ No autenticado → mandar a login
     router.navigate(['/auth']);
     return false;
   }

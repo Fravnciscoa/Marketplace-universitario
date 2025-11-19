@@ -3,8 +3,6 @@ import { Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
-import { createUser, findUserByEmailOrUsername, findUserByEmail } from '../models/user.model';
-import { User } from '../models/user.model';
 import { pool } from '../db/pool';
 
 dotenv.config();
@@ -45,23 +43,27 @@ export const register = async (req: Request, res: Response) => {
     
     // Hashear contraseña con bcrypt (10 salt rounds)
     const contrasenaHash = await bcrypt.hash(contrasena, 10);
+
+    // ⚠️ Importante: cualquier registro normal será siempre rol 'user'
+    const rol = 'user';
     
     // Insertar usuario en la base de datos
     const result = await pool.query(
-      `INSERT INTO usuarios (nombre, correo, usuario, contrasena, rut, region, comuna, terminos_aceptados) 
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8) 
-       RETURNING id, nombre, correo, usuario, rut, region, comuna, fecha_creacion`,
-      [nombre, correo, usuario, contrasenaHash, rut, region, comuna, terminos_aceptados]
+      `INSERT INTO usuarios (rol, nombre, correo, usuario, contrasena, rut, region, comuna, terminos_aceptados) 
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) 
+       RETURNING id, rol, nombre, correo, usuario, rut, region, comuna, fecha_creacion`,
+      [rol, nombre, correo, usuario, contrasenaHash, rut, region, comuna, terminos_aceptados]
     );
     
     const nuevoUsuario = result.rows[0];
     
-    // Generar token JWT
+    // Generar token JWT (incluyendo rol)
     const token = jwt.sign(
       { 
         id: nuevoUsuario.id, 
         correo: nuevoUsuario.correo,
-        usuario: nuevoUsuario.usuario
+        usuario: nuevoUsuario.usuario,
+        rol: nuevoUsuario.rol
       },
       JWT_SECRET,
       { expiresIn: JWT_EXPIRES_IN }
@@ -73,6 +75,7 @@ export const register = async (req: Request, res: Response) => {
       token,
       user: {
         id: nuevoUsuario.id,
+        rol: nuevoUsuario.rol,
         nombre: nuevoUsuario.nombre,
         correo: nuevoUsuario.correo,
         usuario: nuevoUsuario.usuario,
@@ -91,7 +94,7 @@ export const register = async (req: Request, res: Response) => {
 export const login = async (req: Request, res: Response) => {
   try {
     const { correo, contrasena } = req.body;
-    
+    console.log('LOGIN intento:', correo);
     // Validar campos requeridos
     if (!correo || !contrasena) {
       return res.status(400).json({ error: 'Correo y contraseña son requeridos' });
@@ -99,7 +102,7 @@ export const login = async (req: Request, res: Response) => {
     
     // Buscar usuario por correo
     const result = await pool.query('SELECT * FROM usuarios WHERE correo = $1', [correo]);
-    
+    console.log('Resultado query:', result.rows); // 👈
     if (result.rows.length === 0) {
       return res.status(401).json({ error: 'Credenciales inválidas' });
     }
@@ -108,17 +111,18 @@ export const login = async (req: Request, res: Response) => {
     
     // Comparar contraseña con bcrypt
     const contrasenaValida = await bcrypt.compare(contrasena, usuario.contrasena);
-    
+    console.log('¿Contraseña válida?:', contrasenaValida); // 👈
     if (!contrasenaValida) {
       return res.status(401).json({ error: 'Credenciales inválidas' });
     }
     
-    // Generar token JWT
+    // Generar token JWT (incluyendo rol)
     const token = jwt.sign(
       { 
         id: usuario.id, 
         correo: usuario.correo,
-        usuario: usuario.usuario
+        usuario: usuario.usuario,
+        rol: usuario.rol
       },
       JWT_SECRET,
       { expiresIn: JWT_EXPIRES_IN }
@@ -130,6 +134,7 @@ export const login = async (req: Request, res: Response) => {
       token,
       user: {
         id: usuario.id,
+        rol: usuario.rol,
         nombre: usuario.nombre,
         correo: usuario.correo,
         usuario: usuario.usuario,
@@ -147,11 +152,14 @@ export const login = async (req: Request, res: Response) => {
 
 export const verifyUser = async (req: Request, res: Response) => {
   try {
-    // El userId viene del middleware verifyToken
-    const userId = (req as any).userId;
+    const userId = (req as any).user?.id;
     
+    if (!userId) {
+      return res.status(401).json({ error: 'Usuario no autenticado' });
+    }
+
     const result = await pool.query(
-      'SELECT id, nombre, correo, usuario, rut, region, comuna, fecha_creacion FROM usuarios WHERE id = $1',
+      'SELECT id, rol, nombre, correo, usuario, rut, region, comuna, fecha_creacion FROM usuarios WHERE id = $1',
       [userId]
     );
     
@@ -244,11 +252,11 @@ export const buscarUsuarios = async (req: Request, res: Response) => {
   }
 };
 
-// GET /auth/profile
+
 // GET /api/auth/profile - Obtener perfil del usuario autenticado
 export const getProfile = async (req: Request, res: Response) => {
   try {
-    const userId = req.user?.id;
+    const userId = (req as any).user?.id;
 
     if (!userId) {
       return res.status(401).json({
@@ -260,6 +268,7 @@ export const getProfile = async (req: Request, res: Response) => {
     const result = await pool.query(
       `SELECT 
         id, 
+        rol,
         nombre, 
         correo, 
         usuario, 
@@ -303,7 +312,7 @@ export const getProfile = async (req: Request, res: Response) => {
 // PUT /api/auth/profile - Actualizar perfil del usuario
 export const updateProfile = async (req: Request, res: Response) => {
   try {
-    const userId = req.user?.id;
+    const userId = (req as any).user?.id;
 
     if (!userId) {
       return res.status(401).json({
@@ -398,7 +407,7 @@ export const updateProfile = async (req: Request, res: Response) => {
       UPDATE usuarios 
       SET ${updates.join(', ')}
       WHERE id = $${paramIndex}
-      RETURNING id, nombre, correo, usuario, rut, region, comuna, genero, fecha_nacimiento, telefono1, telefono2, direccion, fecha_creacion
+      RETURNING id, rol, nombre, correo, usuario, rut, region, comuna, genero, fecha_nacimiento, telefono1, telefono2, direccion, fecha_creacion
     `;
 
     const result = await pool.query(query, values);
@@ -425,6 +434,3 @@ export const updateProfile = async (req: Request, res: Response) => {
     });
   }
 };
-
-
-

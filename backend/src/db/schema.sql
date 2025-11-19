@@ -2,6 +2,7 @@
 -- Tabla usuarios
 CREATE TABLE IF NOT EXISTS usuarios (
   id SERIAL PRIMARY KEY,
+  rol VARCHAR(20) NOT NULL DEFAULT 'user';
   nombre VARCHAR(100) NOT NULL,
   correo VARCHAR(100) NOT NULL UNIQUE,
   usuario VARCHAR(50) NOT NULL UNIQUE,

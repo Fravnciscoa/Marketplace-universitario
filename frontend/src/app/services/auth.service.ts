@@ -4,16 +4,8 @@ import { HttpClient, HttpHeaders  } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { jwtDecode } from 'jwt-decode'; // Importar jwt-decode
+import {User} from '../models/user.model';
 
-interface User {
-  id: number;
-  nombre: string;
-  correo: string;
-  usuario: string;
-  rut?: string;
-  region?: string;
-  comuna?: string;
-}
 
 interface AuthResponse {
   message: string;

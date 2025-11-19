@@ -104,27 +104,35 @@ export class AuthPage {
     this.segment = event.detail.value;
   }
 
-  async onLogin() {
-    if (!this.loginData.correo || !this.loginData.contrasena) {
-      await this.showToast('Por favor completa todos los campos', 'warning');
-      return;
-    }
-
-    this.loading = true;
-
-    this.authService.login(this.loginData).subscribe({
-      next: async (response) => {
-        this.loading = false;
-        await this.showToast(`¡Bienvenido ${response.user.nombre}!`, 'success');
-        this.router.navigate(['/home']);
-      },
-      error: async (error) => {
-        this.loading = false;
-        const mensaje = error.error?.error || 'Error al iniciar sesión';
-        await this.showToast(mensaje, 'danger');
-      }
-    });
+async onLogin() {
+  if (!this.loginData.correo || !this.loginData.contrasena) {
+    await this.showToast('Por favor completa todos los campos', 'warning');
+    return;
   }
+
+  this.loading = true;
+
+  this.authService.login(this.loginData).subscribe({
+    next: async (response) => {
+      this.loading = false;
+      await this.showToast(`¡Bienvenido ${response.user.nombre}!`, 'success');
+
+      const rol = response.user.rol;
+
+      if (rol === 'admin') {
+        this.router.navigate(['/admin-portal']);
+      } else {
+        this.router.navigate(['/home']);
+      }
+    },
+    error: async (error) => {
+      this.loading = false;
+      const mensaje = error.error?.error || 'Error al iniciar sesión';
+      await this.showToast(mensaje, 'danger');
+    }
+  });
+}
+
 
   async onRegister() {
     if (!this.registerData.nombre || !this.registerData.correo || 

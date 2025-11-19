@@ -9,6 +9,11 @@ export const routes: Routes = [
     pathMatch: 'full',
   },
   {
+    path: 'admin-portal',
+    loadComponent: () => import('./pages/admin-portal/admin-portal.page').then( m => m.AdminPortalPage),
+    canActivate: [authGuard]
+  },
+  {
     path: 'home',
     loadComponent: () => import('./pages/home/home.page').then(m => m.HomePage)
   },
@@ -59,6 +64,7 @@ export const routes: Routes = [
   {
     path: 'mis-productos',
     loadComponent: () => import('./pages/mis-productos/mis-productos.page').then( m => m.MisProductosPage)
-  }
+  },
+
 
 ];
