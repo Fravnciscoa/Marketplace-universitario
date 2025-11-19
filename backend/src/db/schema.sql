@@ -73,6 +73,36 @@ CREATE INDEX idx_productos_campus ON productos(campus);
 -- 💬 TABLAS DE CHAT (NUEVAS)
 -- ============================================
 
+-- Crear tabla pedido_items
+CREATE TABLE IF NOT EXISTS pedido_items (
+  id SERIAL PRIMARY KEY,
+  pedido_id INTEGER NOT NULL REFERENCES pedidos(id) ON DELETE CASCADE,
+  producto_id INTEGER NOT NULL REFERENCES productos(id),
+  cantidad INTEGER NOT NULL DEFAULT 1,
+  precio_unitario DECIMAL(10,2) NOT NULL,
+  subtotal DECIMAL(10,2) NOT NULL,
+  created_at TIMESTAMP DEFAULT NOW()
+);
+
+-- Crear índices para mejor rendimiento
+CREATE INDEX IF NOT EXISTS idx_pedido_items_pedido ON pedido_items(pedido_id);
+CREATE INDEX IF NOT EXISTS idx_pedido_items_producto ON pedido_items(producto_id);
+
+-- Si no existe, crear tabla reservas
+CREATE TABLE IF NOT EXISTS reservas (
+  id SERIAL PRIMARY KEY,
+  producto_id INTEGER NOT NULL REFERENCES productos(id) ON DELETE CASCADE,
+  comprador_id INTEGER NOT NULL REFERENCES usuarios(id),
+  vendedor_id INTEGER NOT NULL REFERENCES usuarios(id),
+  estado VARCHAR(50) DEFAULT 'pendiente' CHECK (estado IN ('pendiente', 'confirmada', 'completada', 'cancelada', 'rechazada')),
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_reservas_producto ON reservas(producto_id);
+CREATE INDEX IF NOT EXISTS idx_reservas_comprador ON reservas(comprador_id);
+
+
 -- Tabla de conversaciones
 CREATE TABLE IF NOT EXISTS conversaciones (
   id SERIAL PRIMARY KEY,
