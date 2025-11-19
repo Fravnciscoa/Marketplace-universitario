@@ -15,7 +15,8 @@ import {
   IonLabel,
   IonList,
   AlertController,
-  ToastController
+  ToastController,
+  LoadingController
 } from '@ionic/angular/standalone';
 
 import { addIcons } from 'ionicons';
@@ -68,6 +69,7 @@ export class CarritoPage implements OnInit {
     private pedidosService: PedidosService,
     private alertController: AlertController,
     private toastController: ToastController,
+    private loadingController: LoadingController,
     private router: Router,
     private carritoService: CarritoService
   ) {
@@ -258,24 +260,26 @@ export class CarritoPage implements OnInit {
     };
 
     // Mostrar loading
-    const loading = await this.toastController.create({
+    const loading = await (this as any).loadingController.create({
       message: 'Procesando pedido...',
-      duration: 0
+      spinner: 'crescent'
     });
     await loading.present();
 
     // Crear pedido en el backend
     this.pedidosService.crearPedido(pedido).subscribe({
       next: async (response) => {
+        console.log('Respuesta del backend:', response);
         await loading.dismiss();
+
+        // Validar estructura de la respuesta
+        let pedidoId = response?.data?.pedido_id || response?.pedido_id || response?.id || 'N/A';
+        let estado = response?.data?.estado || response?.estado || 'pendiente';
 
         // Mostrar mensaje de éxito
         const alert = await this.alertController.create({
           header: '¡Pedido Confirmado! 🎉',
-          message: `Tu pedido #${response.data.pedido_id} ha sido creado exitosamente.<br><br>
-                    Total: $${this.total.toLocaleString('es-CL')}<br>
-                    Estado: ${response.data.estado}<br><br>
-                    El vendedor se contactará contigo pronto.`,
+          message: `Tu pedido #${pedidoId} ha sido creado exitosamente.\n\nTotal: $${this.total.toLocaleString('es-CL')}\nEstado: ${estado}\n\nEl vendedor se contactará contigo pronto.`,
           buttons: [
             {
               text: 'Ver Mis Pedidos',

@@ -9,6 +9,7 @@ import chatRouter from './routes/chat.routes';
 
 import authRoutes from './routes/auth.routes';
 import productosRoutes from './routes/producto.routes';
+import pedidosRoutes from './routes/pedidos.routes';
 import chatRoutes from './routes/chat.routes';
 
 import { initializeSocket } from './socket/socket';
@@ -41,6 +42,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/productos', productosRoutes);
 app.use('/api/chat', chatRoutes);
 app.use('/chat', chatRouter);
+app.use('/api/pedidos', pedidosRoutes);
 
 app.get("/health", (req, res) => {
   res.json({ ok: true, websocket: global.io ? true : false });
