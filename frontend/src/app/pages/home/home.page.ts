@@ -115,7 +115,7 @@ export class HomePage implements OnInit {
   categoriaSeleccionada: string | null = null;
 
   constructor(
-    private productosService: ProductosService,
+    private productosService: ProductosService, 
     private authService: AuthService,
     private router: Router,
     private route: ActivatedRoute // 👈 NUEVO
