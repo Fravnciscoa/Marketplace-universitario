@@ -37,7 +37,8 @@ import {
   personOutline,
   addOutline,
 } from 'ionicons/icons';
-import { ProductosService, Producto } from '../../services/productos.service';
+import { Producto } from 'src/app/models/producto.model';
+import { ProductosService } from '../../services/productos.service';
 import { AuthService } from '../../services/auth.service';
 
 interface FiltroRango {
@@ -78,7 +79,7 @@ export class HomePage implements OnInit {
   logout() {
     throw new Error('Method not implemented.');
   }
-
+  isAdmin = false;
   isLoggedIn = false;
   mostrarFiltros = true;
   terminoBusqueda = '';
@@ -135,11 +136,15 @@ export class HomePage implements OnInit {
     });
   }
 
-  ngOnInit() {
-    // Suscribirse al estado de autenticación
-    this.authService.currentUser$.subscribe((user) => {
-      this.isLoggedIn = !!user;
-    });
+ngOnInit() {
+  const user = this.authService.getCurrentUser();
+  this.isAdmin = user?.rol === 'admin';
+  this.isLoggedIn = !!user;
+
+  this.authService.currentUser$.subscribe((user) => {
+    this.isLoggedIn = !!user;
+    this.isAdmin = user?.rol === 'admin';
+  });
 
     // 👇 NUEVO: escuchar la categoría que viene desde /categorias
     this.route.queryParamMap.subscribe((params) => {

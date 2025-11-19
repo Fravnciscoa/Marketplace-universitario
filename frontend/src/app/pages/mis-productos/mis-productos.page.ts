@@ -24,7 +24,8 @@ import {
   createOutline,
   trashOutline
 } from 'ionicons/icons';
-import { ProductosService, Producto } from '../../services/productos.service';
+import { ProductosService} from '../../services/productos.service';
+import { Producto } from 'src/app/models/producto.model';
 import { AuthService } from '../../services/auth.service';
 
 @Component({

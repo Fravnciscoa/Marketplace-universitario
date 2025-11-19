@@ -3,25 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AuthService } from './auth.service';
-
-export interface Producto {
-  ano_compra: string;
-  condicion: string;
-  modelo: string;
-  marca: string;
-vendedor: any;
-  id?: number;
-  titulo: string;
-  precio: number;
-  imagen: string;
-  descripcion: string;
-  categoria: string;
-  campus: string;
-  user_id?: number;
-  created_at?: Date;
-  vendedor_nombre?: string;
-  updated_at?: Date;
-}
+import { Producto } from '../models/producto.model';
 
 @Injectable({
   providedIn: 'root'
@@ -41,7 +23,6 @@ export class ProductosService {
       'Authorization': `Bearer ${token}`
     });
   }
-// ✅ NUEVO: Obtener productos de un usuario
   getProductosByUser(userId: number): Observable<Producto[]> {
     return this.http.get<Producto[]>(`${this.apiUrl}/user/${userId}`);
   }
@@ -49,8 +30,7 @@ export class ProductosService {
   getProductos(): Observable<Producto[]> {
     return this.http.get<{ success: boolean; data: Producto[]; pagination?: any }>(this.apiUrl)
       .pipe(
-        // Extrae solo el array de productos de la respuesta
-        map((res: { success: boolean; data: Producto[]; pagination?: any }) => res.data)
+        map((res) => res.data)
       );
   }
 
@@ -72,6 +52,15 @@ export class ProductosService {
 
   deleteProducto(id: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/${id}`, {
+      headers: this.getHeaders()
+    });
+  }
+
+  // 🆕 NUEVO: obtener productos como admin
+  getProductosAdmin(): Observable<Producto[]> {
+    // Aquí asumo que el backend devolverá un array simple de productos:
+    // GET /api/productos/admin → Producto[]
+    return this.http.get<Producto[]>(`${this.apiUrl}/admin`, {
       headers: this.getHeaders()
     });
   }

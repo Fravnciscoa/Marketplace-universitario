@@ -1,8 +1,11 @@
 ion-content {
+  /* Antes: morado
   --background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  */
+  --background: linear-gradient(135deg, #001a33 0%, #003366 40%, #0074cc 100%);
 }
 
-// Logo y título superior
+/* Logo y título superior */
 .logo-container {
   text-align: center;
   padding: 40px 20px 20px;
@@ -25,7 +28,7 @@ ion-content {
   }
 }
 
-// Wrapper principal
+/* Wrapper principal */
 .auth-wrapper {
   display: flex;
   justify-content: center;
@@ -33,22 +36,22 @@ ion-content {
   animation: fadeInUp 0.8s ease-out;
 }
 
-// Card principal
+/* Card principal */
 .auth-card {
   width: 100%;
   max-width: 480px;
   border-radius: 24px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
   background: white;
   margin: 0;
   overflow: hidden;
 }
 
-// Tabs modernos
+/* Tabs modernos */
 .tabs-container {
   display: flex;
-  background: linear-gradient(to bottom, #f8f9fa, #ffffff);
-  border-bottom: 1px solid #e9ecef;
+  background: linear-gradient(to bottom, #f3f4f6, #ffffff);
+  border-bottom: 1px solid #e5e7eb;
   padding: 8px;
   gap: 8px;
   
@@ -61,7 +64,7 @@ ion-content {
     padding: 14px 20px;
     border: none;
     background: transparent;
-    color: #6c757d;
+    color: #6b7280;
     font-size: 15px;
     font-weight: 500;
     border-radius: 12px;
@@ -73,20 +76,22 @@ ion-content {
     }
     
     &:hover {
-      background: rgba(102, 126, 234, 0.1);
-      color: #667eea;
+      /* Antes moradito, ahora celeste/azul */
+      background: rgba(0, 116, 204, 0.08);
+      color: #0074cc;
     }
     
     &.active {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      /* Antes gradiente morado, ahora azul PUCV → celeste */
+      background: linear-gradient(135deg, #003366 0%, #0074cc 100%);
       color: white;
-      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+      box-shadow: 0 4px 12px rgba(0, 80, 158, 0.4);
       transform: translateY(-2px);
     }
   }
 }
 
-// Contenido del formulario
+/* Contenido del formulario */
 .form-content {
   padding: 32px 24px;
 }
@@ -97,7 +102,7 @@ ion-content {
   gap: 20px;
 }
 
-// Grupos de input modernos
+/* Grupos de input modernos */
 .input-group {
   position: relative;
   
@@ -107,20 +112,20 @@ ion-content {
     top: 50%;
     transform: translateY(-50%);
     font-size: 20px;
-    color: #667eea;
+    color: #0074cc; /* antes #667eea */
     z-index: 10;
     pointer-events: none;
   }
   
   .modern-input {
-    --background: #f8f9fa;
+    --background: #f3f4f6;
     --border-radius: 12px;
     --padding-start: 48px;
     --padding-end: 16px;
     --padding-top: 14px;
     --padding-bottom: 14px;
-    --color: #212529;
-    --placeholder-color: #6c757d;
+    --color: #111827;
+    --placeholder-color: #6b7280;
     --placeholder-opacity: 0.7;
     
     font-size: 15px;
@@ -128,14 +133,14 @@ ion-content {
     transition: all 0.3s ease;
     
     &:focus-within {
-      --background: white;
-      border-color: #667eea;
-      box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+      --background: #ffffff;
+      border-color: #0074cc;
+      box-shadow: 0 0 0 4px rgba(0, 116, 204, 0.15);
     }
   }
   
   .modern-select {
-    --background: #f8f9fa;
+    --background: #f3f4f6;
     --border-radius: 12px;
     --padding-start: 48px;
     --padding-end: 16px;
@@ -145,12 +150,12 @@ ion-content {
     transition: all 0.3s ease;
     
     &::part(icon) {
-      color: #667eea;
+      color: #0074cc;
     }
   }
 }
 
-// Checkbox moderno
+/* Checkbox moderno */
 .checkbox-group {
   display: flex;
   align-items: center;
@@ -160,26 +165,31 @@ ion-content {
   .modern-checkbox {
     --size: 22px;
     --border-radius: 6px;
-    --border-color: #dee2e6;
-    --border-color-checked: #667eea;
-    --background-checked: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --border-color: #d1d5db;
+    --border-color-checked: #0074cc;
+    /* Antes gradiente morado, ahora azul/celeste */
+    --background-checked: linear-gradient(135deg, #003366 0%, #0074cc 100%);
   }
   
   .checkbox-label {
     font-size: 14px;
-    color: #6c757d;
+    color: #6b7280;
     line-height: 1.5;
     margin: 0;
   }
 }
 
-// Botón principal
+/* Botón principal */
 .primary-button {
+  /* Antes: morado 
   --background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
+  */
+  --background: linear-gradient(135deg, #003366 0%, #0074cc 100%);
   --border-radius: 12px;
   --padding-top: 16px;
   --padding-bottom: 16px;
-  --box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
+  --box-shadow: 0 8px 24px rgba(0, 80, 158, 0.45);
   
   margin-top: 12px;
   font-size: 16px;
@@ -190,7 +200,7 @@ ion-content {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   
   &:hover:not([disabled]) {
-    --box-shadow: 0 12px 32px rgba(102, 126, 234, 0.5);
+    --box-shadow: 0 12px 32px rgba(0, 80, 158, 0.6);
     transform: translateY(-2px);
   }
   
@@ -207,35 +217,35 @@ ion-content {
   }
 }
 
-// Texto de ayuda
+/* Texto de ayuda */
 .help-text {
   text-align: center;
   font-size: 14px;
-  color: #6c757d;
+  color: #6b7280;
   margin: 16px 0 0;
   
   .link {
-    color: #667eea;
+    color: #0074cc;  /* antes #667eea */
     font-weight: 600;
     text-decoration: none;
     cursor: pointer;
     transition: color 0.3s ease;
     
     &:hover {
-      color: #764ba2;
+      color: #00509e; /* nada morado */
       text-decoration: underline;
     }
   }
 }
 
-// Decoración inferior
+/* Decoración inferior */
 .footer-decoration {
-  height: 60px;
-  background: linear-gradient(to top, rgba(255, 255, 255, 0.1), transparent);
-  margin-top: -30px;
+  display: none;
 }
 
-// Animaciones
+
+
+/* Animaciones */
 @keyframes fadeInDown {
   from {
     opacity: 0;
@@ -271,7 +281,7 @@ ion-content {
   }
 }
 
-// Responsive
+/* Responsive */
 @media (max-width: 576px) {
   .logo-container {
     padding: 30px 20px 15px;
@@ -299,46 +309,46 @@ ion-content {
   }
 }
 
-// Dark mode support
+/* Dark mode support */
 @media (prefers-color-scheme: dark) {
   .auth-card {
-    background: #1e1e1e;
+    background: #111827;
     
     .tabs-container {
-      background: linear-gradient(to bottom, #2a2a2a, #1e1e1e);
-      border-bottom-color: #3a3a3a;
+      background: linear-gradient(to bottom, #1f2933, #111827);
+      border-bottom-color: #374151;
       
       .tab-button {
-        color: #adb5bd;
+        color: #9ca3af;
         
         &:hover {
-          background: rgba(102, 126, 234, 0.15);
+          background: rgba(0, 116, 204, 0.2);
         }
       }
     }
     
     .input-group {
       .modern-input {
-        --background: #2a2a2a;
-        --color: #e9ecef;
-        --placeholder-color: #adb5bd;
+        --background: #1f2933;
+        --color: #e5e7eb;
+        --placeholder-color: #9ca3af;
         
         &:focus-within {
-          --background: #343a40;
+          --background: #111827;
         }
       }
       
       .modern-select {
-        --background: #2a2a2a;
+        --background: #1f2933;
       }
     }
     
     .checkbox-label {
-      color: #adb5bd;
+      color: #9ca3af;
     }
     
     .help-text {
-      color: #adb5bd;
+      color: #9ca3af;
     }
   }
 }

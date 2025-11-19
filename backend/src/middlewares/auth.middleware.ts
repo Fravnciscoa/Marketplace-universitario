@@ -28,14 +28,16 @@ export const verificarToken = (
     const decoded = jwt.verify(token, JWT_SECRET) as {
       id: number;
       correo: string;    // ← CAMBIADO
-      usuario: string;   // ← CAMBIADO
+      usuario: string;  
+      rol: string; // ← CAMBIADO
     };
 
     // Agregar usuario al request (con los campos correctos)
-    req.user = {
+    (req as any).user = {
       id: decoded.id,
       correo: decoded.correo,      // ← CAMBIADO
-      usuario: decoded.usuario     // ← CAMBIADO
+      usuario: decoded.usuario,
+      rol: decoded.rol   // ← CAMBIADO
     };
 
     next();
@@ -67,10 +69,17 @@ export const verificarAdmin = (
   res: Response,
   next: NextFunction
 ) => {
-  if (!req.user) {
+  const user = (req as any).user;
+  if (!user) {
     return res.status(401).json({
       success: false,
       error: 'No autenticado'
+    });
+  }
+  if (user.rol !== 'admin') {
+    return res.status(403).json({
+      success: false,
+      error: 'Acceso denegado: se requiere rol de administrador'
     });
   }
 
