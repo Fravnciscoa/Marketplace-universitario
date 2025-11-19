@@ -97,11 +97,11 @@ export class HomePage implements OnInit {
 
   rangoPrecio: FiltroRango = {
     lower: 0,
-    upper: 999999,
+    upper: 9999999,
   };
 
   precioMin = 0;
-  precioMax = 100000000000;   // o un valor más alto
+  precioMax = 10000000;  
 
   campusFiltros = {
     isabelBrown: false,
@@ -174,20 +174,43 @@ ngOnInit() {
     this.cargarProductos();
   }
 
-  cargarProductos() {
-    console.log('🔥 Cargando productos desde el backend...');
-    this.productosService.getProductos().subscribe({
-      next: (data) => {
-        console.log('✅ Productos recibidos:', data);
-        this.productos = data;
-        this.aplicarFiltros();
-        console.log('✅ Productos filtrados:', this.productosFiltrados.length);
-      },
-      error: (err) => {
-        console.error('❌ Error al cargar productos:', err);
-      },
-    });
-  }
+cargarProductos() {
+  console.log('🔥 Cargando productos desde el backend...');
+  this.productosService.getProductos().subscribe({
+    next: (data) => {
+      console.log('✅ Productos recibidos:', data);
+      this.productos = data;
+
+      if (this.productos.length > 0) {
+        const precios = this.productos.map(p => p.precio);
+
+        this.precioMin = Math.min(...precios);
+        this.precioMax = Math.max(...precios);
+
+        // Si quieres que el mínimo sea 0 igual:
+        this.precioMin = 0;
+
+        // Configuramos el rango inicial al total de precios
+        this.rangoPrecio = {
+          lower: this.precioMin,
+          upper: this.precioMax,
+        };
+      } else {
+        // Sin productos: deja un rango por defecto
+        this.precioMin = 0;
+        this.precioMax = 1000000;
+        this.rangoPrecio = { lower: 0, upper: 1000000 };
+      }
+
+      this.aplicarFiltros();
+      console.log('✅ Productos filtrados:', this.productosFiltrados.length);
+    },
+    error: (err) => {
+      console.error('❌ Error al cargar productos:', err);
+    },
+  });
+}
+
 
   cerrarSesion() {
     this.authService.logout();
@@ -272,6 +295,7 @@ ngOnInit() {
   }
 
   formatearRangoPrecio(valor: number): string {
-    return `$${(valor / 1000).toFixed(0)}.000`;
+    return `$${valor.toLocaleString('es-CL')}`;
   }
+
 }

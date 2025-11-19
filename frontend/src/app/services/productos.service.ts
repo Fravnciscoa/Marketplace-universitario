@@ -3,7 +3,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AuthService } from './auth.service';
-import { environment } from '../../environments/environment';import { Producto } from '../models/producto.model';
+import { environment } from '../../environments/environment';
+import { Producto } from '../models/producto.model';
 
 @Injectable({
   providedIn: 'root'
