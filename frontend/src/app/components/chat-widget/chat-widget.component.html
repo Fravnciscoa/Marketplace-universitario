@@ -2,7 +2,7 @@
 <!-- BOTÓN FLOTANTE CON BADGE -->
 <!-- ========================================== -->
 <div class="chat-btn" (click)="toggleChat()">
-  <ion-icon name="chatbubble-ellipses-outline"></ion-icon>
+  <ion-icon name="chatbubble-ellipses"></ion-icon>
 
   <span class="chat-badge" *ngIf="totalNoLeidos > 0">
     {{ totalNoLeidos }}
@@ -24,8 +24,9 @@
     <button 
       *ngIf="vistaActual === 'chat'"
       class="btn-back"
-      (click)="volverAConversaciones()">
-      <ion-icon name="arrow-back-outline"></ion-icon>
+      (click)="volverAConversaciones()"
+      title="Volver a conversaciones">
+      <ion-icon name="arrow-back"></ion-icon>
     </button>
 
     <!-- TÍTULO -->
@@ -35,24 +36,32 @@
       (click)="vistaActual === 'chat' && irAPerfilActual()">
 
       <!-- Vista: listas -->
-      <ng-container *ngIf="vistaActual === 'conversaciones'">Mensajes</ng-container>
-      <ng-container *ngIf="vistaActual === 'buscar'">Buscar usuario</ng-container>
+      <ng-container *ngIf="vistaActual === 'conversaciones'">
+        <ion-icon name="chatbubbles"></ion-icon>
+        Mensajes
+      </ng-container>
 
       <!-- Vista: conversación activa -->
       <ng-container *ngIf="vistaActual === 'chat'">
         <div class="chat-header-info">
-          <span class="nombre-usuario">
-            {{ conversacionActiva?.otro_usuario_nombre }}
-          </span>
-          <span class="username-pequeno">
-            @{{ conversacionActiva?.otro_usuario_usuario }}
-          </span>
+          <ion-icon name="person-circle"></ion-icon>
+          <div class="user-info">
+            <span class="nombre-usuario">
+              {{ conversacionActiva?.otro_usuario_nombre }}
+            </span>
+            <span class="username-pequeno">
+              @{{ conversacionActiva?.otro_usuario_usuario }}
+            </span>
+          </div>
         </div>
       </ng-container>
     </span>
 
     <!-- BOTÓN CERRAR -->
-    <button class="btn-close" (click)="cerrarChat()">
+    <button 
+      class="btn-close" 
+      (click)="cerrarChat()"
+      title="Cerrar chat">
       <ion-icon name="close"></ion-icon>
     </button>
   </div>
@@ -63,25 +72,36 @@
   <!-- ========================================== -->
   <div class="chat-busqueda" *ngIf="vistaActual === 'conversaciones'">
     
-    <input 
-      type="text"
-      [(ngModel)]="terminoBusqueda"
-      (input)="buscarUsuarios()"
-      placeholder="Busca un usuario..."
-    />
+    <div class="search-input-wrapper">
+      <ion-icon name="search"></ion-icon>
+      <input 
+        type="text"
+        [(ngModel)]="terminoBusqueda"
+        (input)="buscarUsuarios()"
+        placeholder="Busca un usuario..."
+      />
+      <ion-icon 
+        *ngIf="terminoBusqueda.length > 0"
+        name="close-circle" 
+        class="clear-icon"
+        (click)="limpiarBusqueda()">
+      </ion-icon>
+    </div>
 
     <!-- Estados del buscador -->
     <div class="busqueda-info" *ngIf="buscandoUsuarios">
       <ion-spinner name="dots"></ion-spinner> Buscando...
     </div>
 
-    <div class="busqueda-info"
+    <div class="busqueda-info busqueda-info-warning"
       *ngIf="!buscandoUsuarios && terminoBusqueda.length > 0 && terminoBusqueda.length < 3">
+      <ion-icon name="information-circle"></ion-icon>
       Escribe al menos 3 caracteres
     </div>
 
-    <div class="busqueda-info"
+    <div class="busqueda-info busqueda-info-empty"
       *ngIf="!buscandoUsuarios && terminoBusqueda.length >= 3 && usuariosEncontrados.length === 0">
+      <ion-icon name="search-circle"></ion-icon>
       No se encontraron usuarios
     </div>
 
@@ -91,7 +111,7 @@
           (click)="iniciarConversacion(u)">
 
         <div class="usuario-avatar">
-          <ion-icon name="person-circle-outline"></ion-icon>
+          <ion-icon name="person-circle"></ion-icon>
         </div>
 
         <div class="usuario-datos">
@@ -99,7 +119,7 @@
           <span class="usuario-username">@{{ u.usuario }}</span>
         </div>
 
-        <ion-icon name="chevron-forward-outline" class="icono-flecha"></ion-icon>
+        <ion-icon name="chevron-forward" class="icono-flecha"></ion-icon>
       </li>
     </ul>
   </div>
@@ -112,7 +132,7 @@
 
     <!-- Loading -->
     <div *ngIf="cargandoConversaciones" class="chat-loader">
-      <ion-spinner name="dots"></ion-spinner> Cargando...
+      <ion-spinner name="dots"></ion-spinner> Cargando conversaciones...
     </div>
 
     <!-- Sin conversaciones -->
@@ -128,7 +148,7 @@
          (click)="abrirConversacion(conv)">
 
       <div class="conv-avatar">
-        <ion-icon name="person-circle-outline"></ion-icon>
+        <ion-icon name="person-circle"></ion-icon>
       </div>
 
       <div class="conv-contenido">
@@ -150,6 +170,11 @@
         </div>
 
         <div class="conv-mensaje-preview">
+          <ion-icon 
+            *ngIf="conv.ultimo_mensaje" 
+            name="chatbox-ellipses-outline" 
+            class="preview-icon">
+          </ion-icon>
           {{ conv.ultimo_mensaje || 'Sin mensajes' }}
         </div>
       </div>
@@ -189,7 +214,7 @@
         <!-- Mensaje AJENO -->
         <div *ngIf="!esMiMensaje(msg)" class="mensaje mensaje-otro">
           <div class="mensaje-avatar">
-            <ion-icon name="person-circle-outline"></ion-icon>
+            <ion-icon name="person-circle"></ion-icon>
           </div>
 
           <div class="mensaje-contenido">
@@ -223,7 +248,7 @@
 
               <!-- Check de leído -->
               <ion-icon 
-                [name]="msg.leido ? 'checkmark-done-outline' : 'checkmark-outline'"
+                [name]="msg.leido ? 'checkmark-done' : 'checkmark'"
                 class="mensaje-estado"
                 [class.leido]="msg.leido">
               </ion-icon>
@@ -237,7 +262,7 @@
     <!-- INDICADOR DE ESCRIBIENDO -->
     <div class="typing-indicator" *ngIf="otroUsuarioEscribiendo">
       <div class="typing-avatar">
-        <ion-icon name="person-circle-outline"></ion-icon>
+        <ion-icon name="person-circle"></ion-icon>
       </div>
       <div class="typing-dots">
         <span class="dot"></span>
@@ -266,9 +291,11 @@
       required
     />
 
-    <button type="submit"
-            [disabled]="!mensajeNuevo.trim() || enviandoMensaje"
-            [class.enviando]="enviandoMensaje">
+    <button 
+      type="submit"
+      [disabled]="!mensajeNuevo.trim() || enviandoMensaje"
+      [class.enviando]="enviandoMensaje"
+      title="Enviar mensaje">
       
       <ion-icon *ngIf="!enviandoMensaje" name="send"></ion-icon>
       <ion-spinner *ngIf="enviandoMensaje" name="dots"></ion-spinner>

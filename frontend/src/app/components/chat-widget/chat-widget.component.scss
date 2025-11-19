@@ -1,16 +1,16 @@
 // ============================================
-// CHAT WIDGET - ESTILOS COMPLETOS Y MEJORADOS
+// CHAT WIDGET - ESTILOS MEJORADOS
 // ============================================
 
 // Variables de colores
 $primary-color: #003366;
-$primary-light: #004d99;
+$primary-light: #0056b3;
 $primary-dark: #002244;
 $accent-color: #3880ff;
 $success-color: #2dd36f;
 $background-light: #f8f9fa;
-$background-chat: #e5ddd5;
-$text-dark: #2c3e50;
+$background-chat: #ffffff;
+$text-dark: #1a1a1a;
 $text-light: #6c757d;
 $border-color: #e0e0e0;
 $shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -84,12 +84,12 @@ $shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.2);
   position: fixed;
   bottom: 100px;
   right: 20px;
-  width: 380px;
+  width: 400px;
   max-width: calc(100vw - 40px);
-  height: 600px;
+  height: 650px;
   max-height: calc(100vh - 140px);
   background: white;
-  border-radius: 16px;
+  border-radius: 20px;
   box-shadow: $shadow-lg;
   display: flex;
   flex-direction: column;
@@ -125,51 +125,26 @@ $shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.2);
   position: relative;
   z-index: 10;
   gap: 12px;
-  min-height: 60px;
+  min-height: 64px;
 
-  .chat-title {
-    flex: 1;
-    font-weight: 600;
-    font-size: 16px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    &.clickable {
-      cursor: pointer;
-      &:hover { opacity: 0.8; }
-    }
-  }
-
-  .chat-header-info {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 2px;
-
-    .nombre-usuario {
-      font-weight: 600;
-      font-size: 15px;
-    }
-
-    .username-pequeno {
-      font-size: 12px;
-      opacity: 0.8;
-    }
-  }
-
-  button {
+  .btn-back,
+  .btn-close {
     background: rgba(255, 255, 255, 0.15);
     border: none;
     color: white;
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     transition: all 0.2s ease;
+    flex-shrink: 0;
+
+    ion-icon {
+      font-size: 22px;
+    }
 
     &:hover {
       background: rgba(255, 255, 255, 0.25);
@@ -180,63 +155,176 @@ $shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.2);
       transform: scale(0.95);
     }
   }
-}
 
-// ============================================
-// LISTA DE CONVERSACIONES (CORREGIDA)
-// ============================================
-
-.chat-conv {
-  background: rgba(0, 51, 102, 0.03); // ✔ Corregido #0033 inválido
-  padding: 12px;
-  border-bottom: 1px solid $border-color;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  position: relative;
-
-  &:hover {
-    background: rgba(0, 51, 102, 0.08); // ✔ reemplazo de blue() inválido
-    padding-left: 16px;
-  }
-
-  .conv-avatar ion-icon {
-    font-size: 48px;
-    color: $text-light;
-  }
-
-  .conv-nombre {
+  .chat-title {
+    flex: 1;
     font-weight: 600;
-    font-size: 15px;
-    color: $text-dark;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 8px;
+
+    .title-icon {
+      font-size: 22px;
+    }
+
+    &.clickable {
+      cursor: pointer;
+      transition: opacity 0.2s ease;
+      
+      &:hover { 
+        opacity: 0.8; 
+      }
+    }
   }
 
-  .conv-producto {
-    font-size: 13px;
-    color: $text-light;
-  }
+  .chat-header-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
 
-  .conv-badge {
-    position: absolute;
-    right: 12px;
-    bottom: 12px;
-    background: $primary-color;
-    color: white;
-    font-size: 11px;
-    padding: 3px 8px;
-    border-radius: 12px;
+    .avatar-icon {
+      font-size: 36px;
+      flex-shrink: 0;
+    }
+
+    .user-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      
+      .nombre-usuario {
+        font-weight: 600;
+        font-size: 15px;
+        line-height: 1.2;
+      }
+
+      .username-pequeno {
+        font-size: 12px;
+        opacity: 0.85;
+      }
+    }
   }
 }
 
+// ============================================
+// BUSCADOR DE USUARIOS
+// ============================================
+
+.chat-busqueda {
+  padding: 16px;
+  background: white;
+  border-bottom: 1px solid $border-color;
+
+  input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid $border-color;
+    border-radius: 12px;
+    font-size: 14px;
+    transition: all 0.2s ease;
+    background: $background-light;
+    color: $text-dark;
+
+    &:focus {
+      outline: none;
+      border-color: $accent-color;
+      background: white;
+      box-shadow: 0 0 0 3px rgba(56, 128, 255, 0.1);
+    }
+
+    &::placeholder {
+      color: $text-light;
+    }
+  }
+
+  .busqueda-info {
+    margin-top: 12px;
+    padding: 12px;
+    text-align: center;
+    color: $text-light;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    ion-spinner {
+      --color: #{$primary-color};
+      width: 18px;
+      height: 18px;
+    }
+  }
+
+  .lista-usuarios {
+    list-style: none;
+    padding: 0;
+    margin: 12px 0 0 0;
+    max-height: 300px;
+    overflow-y: auto;
+
+    li {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      background: $background-light;
+      margin-bottom: 8px;
+
+      &:hover {
+        background: rgba(56, 128, 255, 0.08);
+        transform: translateX(4px);
+      }
+
+      .usuario-avatar {
+        flex-shrink: 0;
+
+        ion-icon {
+          font-size: 44px;
+          color: $text-light;
+        }
+      }
+
+      .usuario-datos {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        min-width: 0;
+
+        .usuario-nombre {
+          font-weight: 600;
+          font-size: 14px;
+          color: $text-dark;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .usuario-username {
+          font-size: 13px;
+          color: $text-light;
+        }
+      }
+
+      .icono-flecha {
+        flex-shrink: 0;
+        font-size: 20px;
+        color: $text-light;
+      }
+    }
+  }
+}
 
 // ============================================
 // LISTA DE CONVERSACIONES
 // ============================================
+
 .chat-body {
   flex: 1;
   overflow-y: auto;
@@ -281,6 +369,7 @@ $shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.2);
     font-size: 16px;
     font-weight: 600;
     margin: 8px 0;
+    color: $text-dark;
   }
 
   small {
@@ -290,7 +379,7 @@ $shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.2);
 }
 
 .chat-conv {
-  background: #0033;
+  background: white;
   padding: 12px;
   border-bottom: 1px solid $border-color;
   cursor: pointer;
@@ -301,7 +390,7 @@ $shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.2);
   position: relative;
 
   &:hover {
-    background: blue($color: #000000);
+    background: rgba(56, 128, 255, 0.05);
     padding-left: 16px;
   }
 
@@ -386,6 +475,7 @@ $shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.2);
 // ============================================
 // CONVERSACIÓN ACTIVA (MENSAJES)
 // ============================================
+
 .chat-activa {
   background: linear-gradient(180deg, #f0f2f5 0%, #e8eaed 100%);
   padding: 16px 12px;
@@ -406,6 +496,7 @@ $shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.2);
     font-size: 16px;
     font-weight: 600;
     margin: 8px 0;
+    color: $text-dark;
   }
 
   small {
@@ -460,7 +551,7 @@ $shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.2);
     background: white;
     border-radius: 12px;
     border-bottom-left-radius: 4px;
-    padding: 8px 12px;
+    padding: 10px 14px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
   }
 
@@ -491,7 +582,7 @@ $shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.2);
     color: $text-dark;
     font-size: 14px;
     word-wrap: break-word;
-    line-height: 1.4;
+    line-height: 1.5;
   }
 }
 
@@ -500,7 +591,7 @@ $shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.2);
     background: linear-gradient(135deg, $primary-color 0%, $primary-light 100%);
     border-radius: 12px;
     border-bottom-right-radius: 4px;
-    padding: 8px 12px;
+    padding: 10px 14px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
   }
 
@@ -508,7 +599,7 @@ $shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.2);
     color: white;
     font-size: 14px;
     word-wrap: break-word;
-    line-height: 1.4;
+    line-height: 1.5;
     margin-bottom: 4px;
   }
 
@@ -521,7 +612,7 @@ $shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.2);
 
   .mensaje-hora {
     font-size: 11px;
-    color: rgba(255, 255, 255, 0.8);
+    color: rgba(255, 255, 255, 0.85);
   }
 
   .mensaje-estado {
@@ -540,6 +631,7 @@ $shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.2);
   align-items: center;
   gap: 8px;
   padding: 8px;
+  animation: messageIn 0.2s ease;
 
   .typing-avatar {
     flex-shrink: 0;
@@ -588,24 +680,27 @@ $shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.2);
 }
 
 // ============================================
-// INPUT DE MENSAJE
+// INPUT DE MENSAJE (MEJORADO)
 // ============================================
+
 .chat-input {
   display: flex;
-  gap: 8px;
-  padding: 12px;
+  gap: 10px;
+  padding: 16px;
   border-top: 1px solid $border-color;
   background: white;
   box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.05);
 
   input {
     flex: 1;
-    padding: 10px 14px;
-    border-radius: 20px;
+    padding: 12px 16px;
+    border-radius: 24px;
     border: 2px solid $border-color;
     font-size: 14px;
     transition: all 0.2s ease;
-    background: $background-light;
+    background: white;
+    color: $text-dark;
+    font-weight: 400;
 
     &:focus {
       outline: none;
@@ -621,6 +716,7 @@ $shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.2);
     &:disabled {
       opacity: 0.5;
       cursor: not-allowed;
+      background: $background-light;
     }
   }
 
@@ -629,8 +725,8 @@ $shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.2);
     color: white;
     border: none;
     border-radius: 50%;
-    width: 44px;
-    height: 44px;
+    width: 46px;
+    height: 46px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -640,7 +736,7 @@ $shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.2);
     flex-shrink: 0;
 
     &:hover:not(:disabled) {
-      transform: scale(1.1);
+      transform: scale(1.08);
       box-shadow: 0 4px 12px rgba(0, 51, 102, 0.4);
     }
 
@@ -651,42 +747,32 @@ $shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.2);
     &:disabled {
       opacity: 0.5;
       cursor: not-allowed;
-    }
-
-    &.enviando {
-      animation: spin 1s linear infinite;
+      background: linear-gradient(135deg, #ccc 0%, #999 100%);
     }
 
     ion-icon {
-      font-size: 20px;
+      font-size: 22px;
     }
 
     ion-spinner {
       --color: white;
-      width: 20px;
-      height: 20px;
+      width: 22px;
+      height: 22px;
     }
-  }
-}
-
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
   }
 }
 
 // ============================================
 // RESPONSIVE
 // ============================================
+
 @media (max-width: 480px) {
   .chat-window {
     width: calc(100vw - 20px);
     right: 10px;
     bottom: 90px;
     height: calc(100vh - 120px);
+    border-radius: 16px;
   }
 
   .chat-btn {
@@ -700,4 +786,33 @@ $shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.2);
   .mensaje {
     max-width: 85%;
   }
+
+  .chat-input {
+    padding: 12px;
+    gap: 8px;
+
+    input {
+      padding: 10px 14px;
+      font-size: 13px;
+    }
+
+    button {
+      width: 42px;
+      height: 42px;
+
+      ion-icon {
+        font-size: 20px;
+      }
+    }
+  }
+}
+
+// ============================================
+// UTILIDADES
+// ============================================
+
+.text-truncate {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

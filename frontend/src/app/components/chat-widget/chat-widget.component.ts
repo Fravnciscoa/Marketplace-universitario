@@ -90,7 +90,7 @@ export class ChatWidgetComponent implements OnInit, OnDestroy, AfterViewChecked 
     });
     this.subscriptions.push(subMensajes);
 
-    // ✍ Indicador de "escribiendo"
+    // ✍️ Indicador de "escribiendo"
     const subTyping = this.chatService.onUserTyping().subscribe(data => {
       if (!this.conversacionActiva) return;
       if (data.usuarioId === this.getUserId()) return;
@@ -281,6 +281,11 @@ export class ChatWidgetComponent implements OnInit, OnDestroy, AfterViewChecked 
         this.buscandoUsuarios = false;
       }
     });
+  }
+
+  limpiarBusqueda() {
+    this.terminoBusqueda = '';
+    this.usuariosEncontrados = [];
   }
 
   iniciarConversacion(usuario: Usuario) {

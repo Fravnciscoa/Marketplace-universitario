@@ -109,14 +109,11 @@ export class ChatService implements OnDestroy {
 
     // ---------------------------------------------
     // EVENTO: NOTIFICACIÓN GLOBAL
-    // (llega cuando el backend usa emitirNotificacionMensaje)
     // ---------------------------------------------
-    // EVENTO: NOTIFICACIÓN GLOBAL (toast + badge)
     this.socket.on('notificacion_mensaje', (data: NotificacionMensaje) => {
       console.log('🔔 Notificación recibida:', data);
 
       if (data?.tipo === 'nuevo_mensaje') {
-        // O puedes llamar this.actualizarContadorNoLeidos() si quieres siempre traerlo desde backend
         const actual = this.contadorNoLeidosSubject.value;
         this.contadorNoLeidosSubject.next(actual + 1);
       }
@@ -124,7 +121,6 @@ export class ChatService implements OnDestroy {
       const lista = this.notificacionesSubject.value;
       this.notificacionesSubject.next([data, ...lista]);
     });
-
 
     // ---------------------------------------------
     // NUEVA CONVERSACIÓN
@@ -166,12 +162,12 @@ export class ChatService implements OnDestroy {
   // ============================================
   public joinConversacion(conversacionId: number) {
     this.socket?.emit('join_conversacion', conversacionId);
-    console.log(`📌 Te uniste a conversacion_${conversacionId}`);
+    console.log(`🔌 Te uniste a conversacion_${conversacionId}`);
   }
 
   public leaveConversacion(conversacionId: number) {
     this.socket?.emit('leave_conversacion', conversacionId);
-    console.log(`📤 Saliste de conversacion_${conversacionId}`);
+    console.log(`🔤 Saliste de conversacion_${conversacionId}`);
   }
 
   // ============================================
@@ -190,7 +186,7 @@ export class ChatService implements OnDestroy {
   }
 
   // ============================================
-  // ✍ TYPING INDICATOR
+  // ✍️ TYPING INDICATOR
   // ============================================
   public emitTyping(conversacionId: number, isTyping: boolean) {
     this.socket?.emit('typing', { conversacionId, isTyping });
@@ -217,11 +213,10 @@ export class ChatService implements OnDestroy {
     );
   }
 
+  // 🔧 CORREGIDO: Eliminar duplicación de /api
   buscarUsuarios(termino: string) {
-    const authUrl = `${environment.apiUrl}/api/auth`;
-
     return this.http.get<{ success: boolean; usuarios: any[]; total: number }>(
-      `${authUrl}/usuarios/buscar`,
+      `${environment.apiUrl}/auth/usuarios/buscar`,
       { params: { q: termino } }
     );
   }
