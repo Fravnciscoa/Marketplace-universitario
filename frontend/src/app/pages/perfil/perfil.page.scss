@@ -1,714 +1,575 @@
-.perfil-container {
-  max-width: 800px;
-  margin: 0 auto;
-}
+// ============================================
+// Variables
+// ============================================
 
-// Cabecera del perfil (avatar + nombre)
-.perfil-header {
-  background: linear-gradient(135deg, var(--ion-color-primary) 0%, var(--ion-color-primary-shade) 100%);
-  padding: 30px 20px;
-  text-align: center;
-  border-radius: 12px;
-  margin-bottom: 20px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+$azul-pucv: #003366;
+$amarillo-pucv: #ffb400;
+$rojo-pucv: #dc3545;
+$celeste-pucv: #4da0ff;
+$morado-pucv: #8b5cf6;
+$verde-success: #22c55e;
 
-  .avatar-container {
-    width: 120px;
-    height: 120px;
-    margin: 0 auto 15px;
-    background: white;
-    border-radius: 50%;
-    padding: 8px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+$breakpoints: (
+  mobile: 576px,
+  tablet: 768px,
+  desktop: 992px,
+);
 
-    .avatar-image {
-      width: 100%;
-      height: 100%;
-      border-radius: 50%;
-      object-fit: cover;
-    }
-  }
-
-  .nombre-usuario {
-    color: white;
-    font-size: 24px;
-    font-weight: 600;
-    margin: 10px 0 5px;
-  }
-
-  .tipo-usuario {
-    color: rgba(255, 255, 255, 0.9);
-    font-size: 14px;
-    margin: 0 0 8px;
-  }
-
-  .badge-activo {
-    font-size: 12px;
-    padding: 4px 12px;
-    margin-bottom: 8px;
-  }
-
-  .carrera {
-    color: rgba(255, 255, 255, 0.85);
-    font-size: 15px;
-    margin: 8px 0 0;
+@mixin mobile {
+  @media (max-width: map-get($breakpoints, mobile)) {
+    @content;
   }
 }
 
-// Sección de información
-.info-section {
-  background: white;
-  border-radius: 12px;
-  padding: 20px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-
-  .info-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 0;
-    border-bottom: 1px solid #f0f0f0;
-
-    &:last-child {
-      border-bottom: none;
-    }
-
-    .info-label {
-      font-weight: 600;
-      color: #666;
-      font-size: 14px;
-      min-width: 140px;
-    }
-
-    .info-value {
-      color: #333;
-      font-size: 14px;
-      text-align: right;
-      flex: 1;
-    }
+@mixin tablet {
+  @media (max-width: map-get($breakpoints, tablet)) {
+    @content;
   }
 }
 
-// Modo edición
-.edicion-container {
-  max-width: 600px;
-  margin: 0 auto;
+// ============================================
+// CONTENIDO - Fondo gris claro
+// ============================================
 
-  ion-card {
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  }
+ion-content {
+  --background: #f5f5f5;
+}
 
-  ion-item {
-    margin-bottom: 12px;
-    --border-radius: 8px;
-  }
+// ============================================
+// HEADER del home (manual)
+// ============================================
 
-  .botones-edicion {
-    margin-top: 24px;
-
-    .boton-guardar {
-      margin-bottom: 12px;
-    }
+ion-header {
+  background: $azul-pucv;
+  
+  &.ion-no-border {
+    --border-width: 0;
+    box-shadow: none;
   }
 }
 
-// Responsive
-@media (max-width: 768px) {
-  .info-section .info-item {
-    flex-direction: column;
-    align-items: flex-start;
-
-    .info-label {
-      margin-bottom: 4px;
-    }
-
-    .info-value {
-      text-align: left;
-    }
-  }
-}
-/* =======================================================
-   🔵 HEADER GLOBAL
-======================================================= */
-.global-header {
-  --background: #002C61;
+.header-toolbar {
+  --background: $azul-pucv;
+  --color: #ffffff;
+  --border-width: 0;
+  padding: 0;
 }
 
-.global-toolbar {
+.header-container {
   display: flex;
+  align-items: center;
   justify-content: space-between;
-  align-items: center;
-  padding: 0 14px;
+  padding: 16px 40px;
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+
+  @include tablet {
+    padding: 16px;
+    flex-wrap: wrap;
+  }
 }
 
-.nav-left {
+.header-logo {
   display: flex;
   align-items: center;
+  gap: 16px;
 
-  .logo {
-    width: 34px;
-    margin-right: 10px;
+  img {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+
+    @include mobile {
+      width: 40px;
+      height: 40px;
+    }
   }
+}
 
-  .title {
-    color: white;
-    font-weight: 600;
+.header-logo-text {
+  font-size: 20px;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: -0.5px;
+
+  @include mobile {
     font-size: 18px;
   }
 }
 
-.nav-center a {
-  color: #e3e3e3;
-  margin: 0 12px;
+.header-nav {
+  display: flex;
+  gap: 32px;
+  align-items: center;
+
+  @include tablet {
+    width: 100%;
+    order: 3;
+    margin-top: 16px;
+    gap: 16px;
+    overflow-x: auto;
+  }
+}
+
+.nav-link {
+  color: #ffffff;
+  font-size: 16px;
   font-weight: 500;
   text-decoration: none;
+  padding: 8px 0;
+  border-bottom: 2px solid transparent;
+  transition: border-color 0.3s ease;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  ion-icon {
+    font-size: 20px;
+  }
+
+  &:hover {
+    border-bottom-color: $amarillo-pucv;
+  }
+
+  &--active {
+    border-bottom-color: $amarillo-pucv;
+    font-weight: 600;
+  }
+
+  @include mobile {
+    font-size: 14px;
+  }
 }
 
-.nav-center a.active-link {
-  border-bottom: 2px solid #4C8DFF;
-  padding-bottom: 3px;
-  color: white;
+.header-actions {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+
+  @include tablet {
+    margin-left: auto;
+  }
 }
 
-.nav-right ion-button {
-  --border-radius: 6px;
-  margin-left: 8px;
+.btn-auth {
+  font-weight: 600;
+  text-transform: none;
+  font-size: 14px;
+  height: 40px;
+  
+  ion-icon {
+    font-size: 16px;
+    margin-right: 4px;
+  }
+  
+  @include mobile {
+    font-size: 12px;
+    height: 36px;
+    --padding-start: 12px;
+    --padding-end: 12px;
+  }
 }
 
-/* =======================================================
-   🟦 PERFIL
-======================================================= */
+.btn-login {
+  --color: #ffffff;
+  
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
+.btn-register {
+  --background: $amarillo-pucv;
+  --color: #000000;
+  --border-radius: 8px;
+  
+  &:hover {
+    --background: #e6a200;
+  }
+}
+
+.btn-publicar {
+  --background: #5b9bd5;
+  --color: #ffffff;
+  --border-radius: 8px;
+  
+  &:hover {
+    --background: #4a8ac4;
+  }
+}
+
+.btn-perfil {
+  --background: $azul-pucv;
+  --color: #ffffff; /* Color del texto del botón */
+
+  /* Asegura que el texto de los botones sea blanco */
+  color: #ffffff;
+
+  /* Para el icono dentro del botón, forzar color blanco */
+  ion-icon {
+    color: #ffffff !important;
+  }
+
+  &:hover {
+    --background: #004080;
+  }
+}
+
+
+.btn-logout {
+  --background: #e74c3c;
+  --color: #ffffff;
+  --border-radius: 8px;
+  
+  &:hover {
+    --background: #d43f2f;
+  }
+}
+
+// ============================================
+// SEGMENT TOOLBAR - Morado
+// ============================================
+
+.segment-toolbar {
+  --background: $morado-pucv;
+  --border-width: 0;
+  --min-height: 48px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  
+  ion-segment {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 6px 0;
+    
+    ion-segment-button {
+      --color: rgba(255, 255, 255, 0.7);
+      --color-checked: #ffffff;
+      --indicator-color: rgba(255, 255, 255, 0.3);
+      font-weight: 600;
+      text-transform: none;
+      font-size: 14px;
+      min-height: 36px;
+    }
+  }
+}
+
+// ============================================
+// PERFIL WRAPPER
+// ============================================
 
 .perfil-wrapper {
-  max-width: 700px;
-  margin: 20px auto;
+  max-width: 900px;
+  margin: 32px auto;
+  padding: 0 16px;
 }
 
+// ============================================
+// PERFIL HEADER CARD
+// ============================================
+
 .perfil-header-card {
-  background: linear-gradient(135deg, var(--ion-color-primary), #1E63D8);
-  padding: 35px 20px;
-  border-radius: 18px;
-  margin-bottom: 25px;
+  background: linear-gradient(135deg, $azul-pucv, lighten($azul-pucv, 10%));
+  padding: 40px 20px;
+  border-radius: 20px;
   text-align: center;
   color: white;
-  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  margin-bottom: 24px;
 
   .avatar-large {
     width: 120px;
     height: 120px;
     border-radius: 50%;
-    border: 4px solid rgba(255,255,255,0.9);
-    margin-bottom: 12px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    border: 4px solid rgba(255, 255, 255, 0.9);
+    margin: 0 auto 16px;
+    display: block;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   }
 
   .perfil-nombre {
     font-size: 26px;
-    margin-bottom: 4px;
-    font-weight: bold;
+    font-weight: 700;
+    margin-bottom: 8px;
   }
 
   .perfil-rol {
-    opacity: 0.9;
     font-size: 15px;
+    opacity: 0.9;
+    margin-bottom: 12px;
   }
 
   .perfil-status {
-    margin: 10px auto;
-    padding: 5px 12px;
+    display: inline-block;
+    background-color: $verde-success;
+    color: white;
+    padding: 6px 14px;
     border-radius: 12px;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 12px;
   }
 
   .perfil-carrera {
     font-size: 15px;
     opacity: 0.95;
-    margin-top: 8px;
   }
 }
+
+// ============================================
+// INFO CARD
+// ============================================
 
 .info-card {
-  border-radius: 16px;
-  box-shadow: 0 3px 12px rgba(0,0,0,0.1);
-}
-
-.info-row {
-  display: flex;
-  justify-content: space-between;
-  padding: 12px 4px;
-  border-bottom: 1px solid #eee;
-
-  .label {
-    font-weight: 600;
-    color: #555;
-  }
-
-  .value {
-    color: #222;
-    text-align: right;
-  }
-}
-
-.info-row:last-child {
-  border-bottom: none;
-}
-
-.edit-btn {
-  margin-top: 20px;
-  --border-radius: 10px;
-}
-/* ==========================================================
-   🔵 TOP NAVBAR FULL-WIDTH
-========================================================== */
-.topbar {
-  --background: transparent;
-}
-
-.navbar {
-  width: 100%;
-  height: 70px;
-  background-color: #002c61; /* Azul PUCV */
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 28px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
-  border-bottom: 3px solid rgba(255, 255, 255, 0.08);
-}
-
-/* Left side (logo + texto) */
-.nav-left {
-  display: flex;
-  align-items: center;
-
-  .logo {
-    width: 42px;
-    height: auto;
-    margin-right: 12px;
-  }
-
-  .brand {
-    font-size: 22px;
-    font-weight: 600;
-    color: white;
-  }
-}
-
-/* MENU DEL CENTRO */
-.nav-center {
-  display: flex;
-  align-items: center;
-  gap: 28px;
-
-  a {
-    color: #f2f2f2;
-    text-decoration: none;
-    font-size: 15.5px;
-    font-weight: 500;
-    padding-bottom: 3px;
-    transition: opacity 0.2s ease;
-
-    &:hover {
-      opacity: 0.8;
-    }
-  }
-
-  /* Subrayado estilo tu imagen */
-  .active {
-    border-bottom: 2px solid #ffc75a; /* Amarillo suave */
-    color: white !important;
-  }
-}
-
-/* Right buttons */
-.nav-right {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-
-  ion-button {
-    --border-radius: 8px;
-    font-weight: 500;
-    font-size: 14px;
-  }
-}
-
-/* RESPONSIVE (móvil) */
-@media (max-width: 768px) {
-  .navbar {
-    flex-direction: column;
-    height: auto;
-    padding: 12px;
-    gap: 12px;
-  }
-
-  .nav-center {
-    gap: 18px;
-  }
-}
-/* ==========================================================
-   🔵 PALETA PUCV – COLORES OFICIALES
-========================================================== */
-$azul-pucv: #002f6c;
-$rojo-pucv: #cc2031;
-$amarillo-pucv: #f7b500;
-$celeste-pucv: #4da0ff;
-
-/* ==========================================================
-   🔵 HEADER FULL WIDTH – PUCV
-========================================================== */
-.topbar {
-  --background: transparent;
-}
-
-.navbar {
-  width: 100%;
-  height: 75px;
-  background-color: $azul-pucv;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 28px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-}
-
-/* IZQUIERDA */
-.nav-left {
-  display: flex;
-  align-items: center;
-
-  .logo {
-    width: 44px;
-    margin-right: 12px;
-  }
-
-  .brand {
-    color: white;
-    font-size: 22px;
-    font-weight: 600;
-  }
-}
-
-/* CENTRO DEL NAV */
-.nav-center {
-  display: flex;
-  gap: 32px;
-
-  a {
-    color: #e9e9e9;
-    font-size: 16px;
-    text-decoration: none;
-    transition: opacity .2s ease;
-  }
-
-  a:hover {
-    opacity: .75;
-  }
-
-  /* Link activo */
-  .active {
-    border-bottom: 2px solid $amarillo-pucv;
-    padding-bottom: 4px;
-    color: white !important;
-  }
-}
-
-/* DERECHA */
-.nav-right {
-  display: flex;
-  gap: 14px;
-
-  ion-button {
-    --border-radius: 10px;
-    font-weight: 600;
-    letter-spacing: .5px;
-  }
-
-  /* PUBLICAR */
-  ion-button[color="primary"] {
-    --background: $celeste-pucv;
-    --background-hover: lighten($celeste-pucv, 10%);
-    --color: #002f6c;
-    font-weight: 600;
-  }
-
-  /* CERRAR SESIÓN */
-  ion-button[color="danger"] {
-    --background: $rojo-pucv;
-    --background-hover: lighten($rojo-pucv, 7%);
-    --color: white;
-  }
-}
-
-/* ==========================================================
-   🟦 PERFIL – CABECERA
-========================================================== */
-
-.perfil-header-card {
-  background: linear-gradient(135deg, $azul-pucv, darken($azul-pucv, 8%));
-  border-radius: 22px;
-  padding: 40px 20px;
-  color: white;
-  box-shadow: 0 6px 15px rgba(0,0,0,0.35);
-
-  .avatar-large {
-    border: 4px solid rgba(255,255,255,0.9);
-    width: 130px;
-    height: 130px;
-    border-radius: 50%;
-    margin-bottom: 16px;
-  }
-
-  .perfil-nombre {
-    font-size: 28px;
-    font-weight: 700;
-    margin-top: 8px;
-  }
-
-  .perfil-rol {
-    font-size: 15px;
-    opacity: .9;
-    margin-top: 5px;
-  }
-
-  .perfil-status {
-    background-color: #22c55e;
-    color: white;
-    padding: 6px 14px;
-    border-radius: 12px;
-    font-size: 13px;
-    margin-top: 10px;
-    font-weight: 600;
-  }
-
-  .perfil-carrera {
-    opacity: .92;
-    margin-top: 12px;
-  }
-}
-
-/* ==========================================================
-   🟩 INFORMACIÓN DEL PERFIL
-========================================================== */
-
-.info-card {
-  background: #ffffff0f;
-  border-radius: 16px;
-  backdrop-filter: blur(5px);
-  box-shadow: 0 6px 15px rgba(0,0,0,0.25);
-  margin-top: 25px;
-
-  .info-row {
-    color: white;
-    border-bottom: 1px solid rgba(255,255,255,0.15);
-    padding: 14px 4px;
-
-    .label {
-      color: $celeste-pucv;
-      font-weight: 700;
-    }
-
-    .value {
-      color: #d8d8d8;
-    }
-  }
-
-  .info-row:last-child {
-    border-bottom: none;
-  }
-}
-
-/* EDIT-BTN - botón editar */
-.edit-btn {
-  margin-top: 20px;
-  --background: $celeste-pucv;
-  --background-hover: lighten($celeste-pucv, 10%);
-  --color: #002f6c;
-  --border-radius: 12px;
-  font-weight: 700;
-}
-
-/* ==========================================================
-   🎨 PALETA PUCV
-========================================================== */
-$azul-pucv: #002f6c;
-$rojo-pucv: #cc2031;
-$amarillo-pucv: #f7b500;
-$celeste-pucv: #4da0ff;
-
-/* ==========================================================
-   🔵 HEADER PUCV
-========================================================== */
-.topbar {
-  --background: transparent;
-}
-
-.navbar {
-  width: 100%;
-  height: 75px;
-  background-color: $azul-pucv;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 28px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
-}
-
-/* IZQUIERDA */
-.nav-left {
-  display: flex;
-  align-items: center;
-
-  .logo {
-    width: 44px;
-    margin-right: 12px;
-  }
-
-  .brand {
-    color: white;
-    font-size: 22px;
-    font-weight: 600;
-  }
-}
-
-/* CENTRO */
-.nav-center {
-  display: flex;
-  gap: 32px;
-
-  a {
-    color: #f2f2f2;
-    font-size: 16px;
-    text-decoration: none;
-  }
-
-  .active {
-    border-bottom: 2px solid $amarillo-pucv;
-    padding-bottom: 3px;
-    color: white !important;
-  }
-}
-
-/* DERECHA */
-.nav-right ion-button[color="primary"] {
-  --background: $celeste-pucv;
-  --color: $azul-pucv;
-  --border-radius: 10px;
-}
-
-.nav-right ion-button[color="danger"] {
-  --background: $rojo-pucv;
-  --border-radius: 10px;
-  --color: white;
-}
-
-/* ==========================================================
-   🟦 CONTENIDO – FONDO BLANCO
-========================================================== */
-
-ion-content {
-  --background: #ffffff; /* Fondo blanco limpio */
-}
-
-/* ==========================================================
-   🟦 PERFIL – CABECERA AZUL PUCV
-========================================================== */
-
-.perfil-header-card {
-  max-width: 900px;
-  margin: 0 auto;
-  margin-top: 32px;
-  background: linear-gradient(135deg, $celeste-pucv, lighten($azul-pucv, 10%));
-  padding: 40px 20px;
-  border-radius: 20px;
-  text-align: center;
-  color: white;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
-
-  .avatar-large {
-    width: 130px;
-    height: 130px;
-    border-radius: 50%;
-    border: 5px solid rgba(255,255,255,0.9);
-    margin-bottom: 16px;
-  }
-
-  .perfil-nombre {
-    font-size: 26px;
-    font-weight: 700;
-  }
-
-  .perfil-status {
-    margin-top: 10px;
-    padding: 6px 14px;
-    background-color: #23c55e;
-    border-radius: 12px;
-    color: white;
-    font-size: 14px;
-    font-weight: 600;
-  }
-}
-
-/* ==========================================================
-   📄 INFO CARD – ESTILO LIMPIO, BLANCO, INSTITUCIONAL
-========================================================== */
-
-/* ==========================================================
-   📄 INFO CARD – VISIBILIDAD MEJORADA
-========================================================== */
-
-.info-card {
-  max-width: 900px;
-  margin: 25px auto;
   background: #ffffff;
   border-radius: 16px;
-  padding: 22px 10px;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.07);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.07);
   border: 1px solid #e0e0e0;
+  margin-bottom: 24px;
 }
 
 .info-row {
   display: flex;
   justify-content: space-between;
-  padding: 14px 6px;
-  border-bottom: 1px solid #dcdcdc;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid #e8e8e8;
+
+  &:last-child {
+    border-bottom: none;
+  }
 
   .label {
-    color: #002f6c;        /* Azul PUCV */
+    color: $azul-pucv;
     font-weight: 700;
     font-size: 15px;
+    min-width: 150px;
   }
 
   .value {
-    color: #333333;        /* Gris oscuro y legible */
+    color: #000000;
     font-weight: 500;
     font-size: 15px;
     text-align: right;
+    flex: 1;
+  }
+
+  @include mobile {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+
+    .value {
+      text-align: left;
+    }
   }
 }
 
-.info-row:last-child {
-  border-bottom: none;
-}
+// ============================================
+// BOTÓN EDITAR - Azul PUCV
+// ============================================
 
-/* Botón Editar mejorado */
 .edit-btn {
-  margin-top: 25px;
-  --background: #4da0ff;        /* Azul claro PUCV */
-  --color: white;
+  --background: #003366;  // Azul PUCV
+  --color: #ffffff;
   --border-radius: 12px;
   font-weight: 700;
   height: 46px;
   font-size: 15px;
+  
+  &:hover {
+    --background: #004080;
+  }
+}
+// ============================================
+// MODO EDICIÓN - MEJORADO Y ESTÉTICO
+// ============================================
+
+.edicion-container {
+  max-width: 900px;
+  margin: 32px auto;
+  padding: 0 16px;
 }
 
-// ==================================
+.edicion-card {
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  border: 1px solid #e0e0e0;
+  overflow: hidden;
+}
+
+.edicion-header {
+  background: linear-gradient(135deg, $azul-pucv, lighten($azul-pucv, 10%));
+  padding: 24px;
+  color: white;
+  
+  h2 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    
+    ion-icon {
+      font-size: 28px;
+    }
+  }
+  
+  p {
+    margin: 8px 0 0;
+    opacity: 0.9;
+    font-size: 14px;
+  }
+}
+
+.edicion-body {
+  padding: 32px 24px;
+  
+  @include mobile {
+    padding: 24px 16px;
+  }
+}
+
+.form-section {
+  margin-bottom: 32px;
+  
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.section-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: $azul-pucv;
+  margin: 0 0 16px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid $azul-pucv;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  
+  ion-icon {
+    font-size: 20px;
+  }
+}
+
+.form-item {
+  margin-bottom: 20px;
+  
+  ion-label {
+    font-weight: 600;
+    color: #333333;
+    font-size: 14px;
+    margin-bottom: 8px;
+    display: block;
+  }
+  
+  ion-input,
+  ion-textarea,
+  ion-select {
+    --background: #ffffff;
+    --color: #000000;
+    --placeholder-color: #999999;
+    --border-radius: 12px;
+    --padding-start: 16px;
+    --padding-end: 16px;
+    border: 2px solid #d0d0d0;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    
+    &:focus-within {
+      --background: #ffffff;
+      border-color: $azul-pucv;
+      box-shadow: 0 0 0 3px rgba(0, 51, 102, 0.1);
+    }
+  }
+  
+  ion-input {
+    --padding-top: 14px;
+    --padding-bottom: 14px;
+    min-height: 48px;
+  }
+  
+  ion-textarea {
+    --padding-top: 14px;
+    --padding-bottom: 14px;
+    min-height: 100px;
+  }
+  
+  ion-select {
+    --padding-top: 14px;
+    --padding-bottom: 14px;
+    min-height: 48px;
+  }
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  
+  @include mobile {
+    grid-template-columns: 1fr;
+  }
+}
+
+.botones-edicion {
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 2px solid #e0e0e0;
+  display: flex;
+  gap: 12px;
+  
+  @include mobile {
+    flex-direction: column;
+  }
+  
+  ion-button {
+    flex: 1;
+    height: 52px;
+    font-weight: 700;
+    font-size: 15px;
+    text-transform: none;
+    
+    ion-icon {
+      font-size: 20px;
+      margin-right: 8px;
+    }
+  }
+}
+
+.btn-guardar {
+  --background: #22c55e;
+  --color: #ffffff;
+  --border-radius: 12px;
+  
+  &:hover {
+    --background: #16a34a;
+  }
+}
+
+.btn-cancelar {
+  --background: #e74c3c;
+  --color: #ffffff;
+  --border-radius: 12px;
+  
+  &:hover {
+    --background: #c0392b;
+  }
+}
+
+// ============================================
 // SECCIÓN DE PEDIDOS
-// ==================================
+// ============================================
 
 .pedidos-container {
   max-width: 900px;
-  margin: 0 auto;
+  margin: 32px auto;
+  padding: 0 16px;
 }
 
 .sin-pedidos {
@@ -718,21 +579,23 @@ ion-content {
   ion-icon {
     font-size: 80px;
     margin-bottom: 20px;
+    opacity: 0.5;
   }
 
   h2 {
-    color: #666;
+    color: #333;
     margin-bottom: 8px;
+    font-size: 22px;
   }
 
   p {
-    color: #999;
+    color: #666;
     margin-bottom: 24px;
   }
 }
 
 .pedido-card {
-  margin-bottom: 16px;
+  margin-bottom: 20px;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 
@@ -740,11 +603,12 @@ ion-content {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
+    margin-bottom: 12px;
 
     ion-card-title {
       font-size: 18px;
       font-weight: 600;
-      color: var(--ion-color-primary);
+      color: $azul-pucv;
     }
 
     ion-card-subtitle {
@@ -752,6 +616,7 @@ ion-content {
       align-items: center;
       gap: 4px;
       margin-top: 4px;
+      color: #666;
       
       ion-icon {
         font-size: 14px;
@@ -760,22 +625,15 @@ ion-content {
 
     ion-badge {
       font-size: 12px;
-      padding: 4px 12px;
+      padding: 6px 12px;
       text-transform: capitalize;
+      border-radius: 12px;
     }
-  }
-
-  ion-list {
-    margin-top: 12px;
   }
 
   ion-item {
     --padding-start: 0;
     --inner-padding-end: 0;
-
-    ion-icon {
-      margin-right: 12px;
-    }
 
     h3 {
       font-size: 14px;
@@ -786,7 +644,15 @@ ion-content {
 
     p {
       font-size: 15px;
-      color: #333;
+      color: #000000;
+      font-weight: 500;
+    }
+  }
+
+  @include mobile {
+    .pedido-header {
+      flex-direction: column;
+      gap: 12px;
     }
   }
 }
@@ -804,17 +670,5 @@ ion-content {
 
   p {
     color: #666;
-  }
-}
-
-// Responsive
-@media (max-width: 768px) {
-  .pedido-header {
-    flex-direction: column;
-    gap: 12px;
-
-    ion-badge {
-      align-self: flex-start;
-    }
   }
 }

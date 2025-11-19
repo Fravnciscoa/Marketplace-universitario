@@ -10,10 +10,19 @@ export const getProductos = async (req: Request, res: Response) => {
     const offset = (page - 1) * limit;
 
     // Filtros opcionales
-    const categoria = req.query.categoria as string;
     const campus = req.query.campus as string;
     const precioMin = req.query.precioMin ? parseInt(req.query.precioMin as string) : null;
     const precioMax = req.query.precioMax ? parseInt(req.query.precioMax as string) : null;
+    
+    let categoria = req.query.categoria
+      ?.toString()
+      .toLowerCase()
+      .trim()
+      .replace(/,+$/, '');
+
+    if (categoria && categoria.includes(',')) {
+      categoria = categoria.split(',')[0]; // tomar la primera
+    }
 
     // Query optimizado (SELECT específico + JOIN con usuarios)
     let query = `

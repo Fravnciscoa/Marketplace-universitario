@@ -156,55 +156,72 @@ campusList = [
       reader.readAsDataURL(file);
     }
   }
-
   guardar() {
   // Validaciones básicas
   if (!this.form.titulo || !this.form.precio || !this.form.categoria || !this.form.campus) {
-    this.mostrarToast('Por favor completa todos los campos obligatorios (*)');
+    this.mostrarToast("Por favor completa todos los campos obligatorios (*)");
     return;
   }
 
   if (!this.form.imagen) {
-    this.mostrarToast('Por favor selecciona una imagen');
+    this.mostrarToast("Por favor selecciona una imagen");
     return;
   }
 
-  // Verificar que haya usuario logueado
+  // Normalizar categoría
+  this.form.categoria = String(this.form.categoria)
+    .toLowerCase()
+    .trim()
+    .replace(/,+$/, "");
+
+  // Normalizar campus
+  this.form.campus = String(this.form.campus)
+    .toLowerCase()
+    .trim();
+
+  // Asignar usuario
   if (!this.currentUser) {
-    this.mostrarToast('Debes iniciar sesión para publicar');
-    this.router.navigate(['/auth']);
+    this.mostrarToast("Debes iniciar sesión para publicar");
+    this.router.navigate(["/auth"]);
     return;
   }
 
-  // Asignar user_id del usuario autenticado
   this.form.user_id = this.currentUser.id;
 
+  // Modo edición
   if (this.modoEdicion && this.productoId) {
-    // Actualizar producto existente
-    this.productosService.updateProducto(this.productoId, this.form).subscribe({
-      next: () => {
-        this.mostrarToast('Producto actualizado exitosamente');
-        setTimeout(() => this.router.navigate(['/home']), 1500);
-      },
-      error: (err) => {
-        console.error('Error al actualizar:', err);
-        this.mostrarToast('Error al actualizar el producto');
-      }
-    });
-  } else {
-    // Crear nuevo producto
-    this.productosService.createProducto(this.form).subscribe({
-      next: () => {
-        this.mostrarToast('Producto publicado exitosamente');
-        setTimeout(() => this.router.navigate(['/home']), 1500);
-      },
-      error: (err) => {
-        console.error('Error al publicar:', err);
-        this.mostrarToast('Error al publicar el producto');
-      }
-    });
+    this.productosService
+      .updateProducto(this.productoId, this.form)
+      .subscribe({
+        next: () => {
+          this.mostrarToast("Producto actualizado con éxito");
+          this.router.navigate(["/mis-productos"]);
+        },
+        error: (err) => {
+          console.error(err);
+          this.mostrarToast("Error al actualizar el producto");
+        },
+      });
+  }
+  // Modo creación
+  else {
+    this.productosService
+      .createProducto(this.form)
+      .subscribe({
+        next: () => {
+          this.mostrarToast("Producto publicado con éxito");
+          this.router.navigate(["/mis-productos"]);
+        },
+        error: (err) => {
+          console.error(err);
+          this.mostrarToast("Error al publicar el producto");
+        },
+      });
   }
 }
+
+
+ 
 
 
   logout() {

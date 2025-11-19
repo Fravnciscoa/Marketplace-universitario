@@ -1,42 +1,55 @@
-<ion-header class="topbar">
-  <div class="navbar">
-    <!-- LEFT -->
-    <div class="nav-left">
-      <img src="assets/logo-pucv.png" class="logo" alt="Logo PUCV" />
-      <span class="brand">Marketplace PUCV</span>
-    </div>
+<!-- HEADER MANUAL -->
+<ion-header class="ion-no-border">
+  <ion-toolbar class="header-toolbar">
+    <div class="header-container">
+      <!-- Logo -->
+      <div class="header-logo">
+        <img src="assets/icon/Escudo_PUCV-2016__Perfil Redes TW_FB.png" alt="PUCV Logo" />
+        <span class="header-logo-text">MarketPlace</span>
+      </div>
 
-    <!-- CENTER -->
-    <div class="nav-center">
-      <a routerLink="/home">Inicio</a>
-      <a routerLink="/productos">Productos</a>
-      <a routerLink="/perfil" class="active">Perfil</a>
-    </div>
+      <!-- Navegación -->
+      <nav class="header-nav">
+        <a routerLink="/home" routerLinkActive="nav-link--active" class="nav-link">Inicio</a>
+        <a routerLink="/categorias" routerLinkActive="nav-link--active" class="nav-link">Categorías</a>
+        <a routerLink="/carrito" routerLinkActive="nav-link--active" class="nav-link">
+          <ion-icon name="cart-outline"></ion-icon>
+          Carrito
+        </a>
+      </nav>
 
-    <!-- RIGHT -->
-    <div class="nav-right">
-      <ion-button *ngIf="!authService.isLoggedIn()" routerLink="/auth" color="light">
-        Iniciar Sesión
-      </ion-button>
-      <ion-button *ngIf="authService.isLoggedIn()" routerLink="/publicar-producto" color="primary">
-        Publicar
-      </ion-button>
-      <ion-button *ngIf="authService.isLoggedIn()" (click)="authService.logout()" color="danger">
+      <!-- Botones de autenticación -->
+      <div class="header-actions">
+        <!-- Mostrar cuando NO está logueado -->
+        <ng-container *ngIf="!authService.isLoggedIn()">
+          <ion-button routerLink="/auth" fill="clear" class="btn-auth btn-login">
+            <ion-icon slot="start" name="log-in-outline"></ion-icon>
+            Iniciar Sesión
+          </ion-button>
+          <ion-button routerLink="/auth" fill="solid" class="btn-auth btn-register">
+            Registrarse
+          </ion-button>
+        </ng-container>
+
+        <!-- Mostrar cuando SÍ está logueado -->
+        <ng-container *ngIf="authService.isLoggedIn()">
+          <ion-button routerLink="/publicar" fill="solid" class="btn-auth btn-publicar">
+            <ion-icon slot="start" name="add-outline"></ion-icon>
+            Publicar
+          </ion-button>
+          
+          <ion-button routerLink="/perfil" fill="solid" class="btn-auth btn-perfil">
+            <ion-icon slot="start" name="person-outline"></ion-icon>
+            Perfil
+          </ion-button>
+          
+          <ion-button (click)="authService.logout()" fill="solid" class="btn-auth btn-logout">
+          <ion-icon slot="start" name="log-out-outline"></ion-icon>
         Cerrar Sesión
-      </ion-button>
+        </ion-button>
+        </ng-container>
+      </div>
     </div>
-  </div>
-
-  <!-- SEGMENTO -->
-  <ion-toolbar>
-    <ion-segment [(ngModel)]="selectedSegment" (ionChange)="onSegmentChange($event)">
-      <ion-segment-button value="info">
-        <ion-label>Información</ion-label>
-      </ion-segment-button>
-      <ion-segment-button value="pedidos">
-        <ion-label>Mis Pedidos</ion-label>
-      </ion-segment-button>
-    </ion-segment>
   </ion-toolbar>
 </ion-header>
 
@@ -123,100 +136,116 @@
     </div>
 
     <!-- MODO EDICIÓN -->
-    <div *ngIf="editMode" class="edicion-container">
-      <ion-card>
-        <ion-card-header>
-          <ion-card-title>Editar Perfil</ion-card-title>
-          <ion-card-subtitle>Actualiza tu información personal</ion-card-subtitle>
-        </ion-card-header>
+    <!-- MODO EDICIÓN -->
+<div *ngIf="editMode" class="edicion-container">
+  <div class="edicion-card">
+    <!-- Header del formulario -->
+    <div class="edicion-header">
+      <h2>
+        <ion-icon name="create-outline"></ion-icon>
+        Editar Perfil
+      </h2>
+      <p>Actualiza tu información personal</p>
+    </div>
 
-        <ion-card-content>
-          <form (ngSubmit)="guardarCambios()">
-            <ion-item>
-              <ion-label position="floating">Nombre Completo *</ion-label>
-              <ion-input type="text" [(ngModel)]="user.nombre" name="nombre" required></ion-input>
-            </ion-item>
+    <!-- Body del formulario -->
+    <div class="edicion-body">
+      
+      <!-- Sección: Información Personal -->
+      <div class="form-section">
+        <h3 class="section-title">
+          <ion-icon name="person-outline"></ion-icon>
+          Información Personal
+        </h3>
+        
+        <div class="form-item">
+          <ion-label>Nombre Completo *</ion-label>
+          <ion-input [(ngModel)]="user.nombre" placeholder="Ingresa tu nombre completo"></ion-input>
+        </div>
 
-            <ion-item>
-              <ion-label position="floating">RUT</ion-label>
-              <ion-input type="text" [(ngModel)]="user.rut" name="rut"></ion-input>
-            </ion-item>
+        <div class="form-item">
+          <ion-label>RUT</ion-label>
+          <ion-input [(ngModel)]="user.rut" placeholder="12345678-9"></ion-input>
+        </div>
 
-            <ion-item>
-              <ion-label position="floating">Región</ion-label>
-              <ion-select [(ngModel)]="user.region" name="region">
-                <ion-select-option value="Valparaíso">Valparaíso</ion-select-option>
-                <ion-select-option value="Metropolitana">Metropolitana</ion-select-option>
-                <ion-select-option value="Biobío">Biobío</ion-select-option>
-              </ion-select>
-            </ion-item>
+        <div class="form-row">
+          <div class="form-item">
+            <ion-label>Género</ion-label>
+            <ion-select [(ngModel)]="user.genero" placeholder="Selecciona">
+              <ion-select-option value="masculino">Masculino</ion-select-option>
+              <ion-select-option value="femenino">Femenino</ion-select-option>
+              <ion-select-option value="otro">Otro</ion-select-option>
+            </ion-select>
+          </div>
 
-            <ion-item>
-              <ion-label position="floating">Comuna</ion-label>
-              <ion-input type="text" [(ngModel)]="user.comuna" name="comuna"></ion-input>
-            </ion-item>
+          <div class="form-item">
+            <ion-label>Fecha de Nacimiento</ion-label>
+            <ion-input type="date" [(ngModel)]="user.fecha_nacimiento"></ion-input>
+          </div>
+        </div>
+      </div>
 
-            <ion-item>
-              <ion-label position="floating">Género</ion-label>
-              <ion-select [(ngModel)]="user.genero" name="genero">
-                <ion-select-option value="masculino">Masculino</ion-select-option>
-                <ion-select-option value="femenino">Femenino</ion-select-option>
-                <ion-select-option value="otro">Otro</ion-select-option>
-                <ion-select-option value="prefiero_no_decir">Prefiero no decir</ion-select-option>
-              </ion-select>
-            </ion-item>
+      <!-- Sección: Ubicación -->
+      <div class="form-section">
+        <h3 class="section-title">
+          <ion-icon name="location-outline"></ion-icon>
+          Ubicación
+        </h3>
 
-            <ion-item>
-              <ion-label position="floating">Fecha de Nacimiento</ion-label>
-              <ion-input type="date" [(ngModel)]="user.fecha_nacimiento" name="fecha_nacimiento"></ion-input>
-            </ion-item>
+        <div class="form-row">
+          <div class="form-item">
+            <ion-label>Región</ion-label>
+            <ion-input [(ngModel)]="user.region" placeholder="Ej: Valparaíso"></ion-input>
+          </div>
 
-            <ion-item>
-              <ion-label position="floating">Teléfono Principal</ion-label>
-              <ion-input type="tel" [(ngModel)]="user.telefono1" name="telefono1"></ion-input>
-            </ion-item>
+          <div class="form-item">
+            <ion-label>Comuna</ion-label>
+            <ion-input [(ngModel)]="user.comuna" placeholder="Ej: Viña del Mar"></ion-input>
+          </div>
+        </div>
 
-            <ion-item>
-              <ion-label position="floating">Teléfono Secundario</ion-label>
-              <ion-input type="tel" [(ngModel)]="user.telefono2" name="telefono2"></ion-input>
-            </ion-item>
+        <div class="form-item">
+          <ion-label>Dirección</ion-label>
+          <ion-textarea [(ngModel)]="user.direccion" placeholder="Calle, número, depto"></ion-textarea>
+        </div>
+      </div>
 
-            <ion-item>
-              <ion-label position="floating">Dirección</ion-label>
-              <ion-textarea [(ngModel)]="user.direccion" name="direccion" rows="2"></ion-textarea>
-            </ion-item>
+      <!-- Sección: Contacto -->
+      <div class="form-section">
+        <h3 class="section-title">
+          <ion-icon name="call-outline"></ion-icon>
+          Información de Contacto
+        </h3>
 
-            <div class="botones-edicion">
-              <ion-button expand="block" type="submit" color="success">
-                <ion-icon slot="start" name="checkmark-circle-outline"></ion-icon>
-                Guardar Cambios
-              </ion-button>
+        <div class="form-row">
+          <div class="form-item">
+            <ion-label>Teléfono Principal</ion-label>
+            <ion-input type="tel" [(ngModel)]="user.telefono1" placeholder="+56 9 1234 5678"></ion-input>
+          </div>
 
-              <ion-button expand="block" fill="outline" color="medium" (click)="cancelarEdicion()">
-                <ion-icon slot="start" name="close-circle-outline"></ion-icon>
-                Cancelar
-              </ion-button>
-            </div>
-          </form>
-        </ion-card-content>
-      </ion-card>
+          <div class="form-item">
+            <ion-label>Teléfono Secundario</ion-label>
+            <ion-input type="tel" [(ngModel)]="user.telefono2" placeholder="+56 9 8765 4321"></ion-input>
+          </div>
+        </div>
+      </div>
+
+      <!-- Botones -->
+      <div class="botones-edicion">
+        <ion-button expand="block" (click)="guardarCambios()" class="btn-guardar">
+          <ion-icon name="checkmark-circle-outline"></ion-icon>
+          Guardar Cambios
+        </ion-button>
+        
+        <ion-button expand="block" fill="outline" (click)="cancelarEdicion()" class="btn-cancelar">
+          <ion-icon name="close-circle-outline"></ion-icon>
+          Cancelar
+        </ion-button>
+      </div>
+
     </div>
   </div>
-
-  <!-- ==================================== -->
-  <!-- SEGMENTO: MIS PEDIDOS -->
-  <!-- ==================================== -->
-  <div *ngIf="selectedSegment === 'pedidos'">
-    <!-- Sin pedidos -->
-    <div *ngIf="pedidos.length === 0 && !loadingPedidos" class="sin-pedidos">
-      <ion-icon name="receipt-outline" size="large" color="medium"></ion-icon>
-      <h2>No tienes pedidos</h2>
-      <p>Tus compras aparecerán aquí</p>
-      <ion-button routerLink="/home" color="primary">
-        <ion-icon slot="start" name="cart-outline"></ion-icon>
-        Explorar Productos
-      </ion-button>
-    </div>
+</div>
 
     <!-- Lista de pedidos -->
     <div *ngIf="pedidos.length > 0" class="pedidos-container">
