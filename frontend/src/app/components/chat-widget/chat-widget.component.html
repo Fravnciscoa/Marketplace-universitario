@@ -1,192 +1,241 @@
-<!-- Botón flotante de chat con badge de mensajes no leídos -->
+<!-- ========================================== -->
+<!-- BOTÓN FLOTANTE CON BADGE -->
+<!-- ========================================== -->
 <div class="chat-btn" (click)="toggleChat()">
   <ion-icon name="chatbubble-ellipses-outline"></ion-icon>
-  <span class="chat-badge" *ngIf="totalNoLeidos > 0">{{ totalNoLeidos }}</span>
+
+  <span class="chat-badge" *ngIf="totalNoLeidos > 0">
+    {{ totalNoLeidos }}
+  </span>
 </div>
 
-<!-- Ventana principal del chat -->
+
+<!-- ========================================== -->
+<!-- VENTANA COMPLETA DEL CHAT -->
+<!-- ========================================== -->
 <div class="chat-window" *ngIf="abierto">
-  
+
   <!-- ========================================== -->
   <!-- HEADER -->
   <!-- ========================================== -->
   <div class="chat-header">
-    <!-- Botón de volver (solo visible en vista de chat) -->
+
+    <!-- BOTÓN VOLVER (SOLO EN VISTA CHAT) -->
     <button 
-      *ngIf="vistaActual==='chat'" 
-      ion-button 
-      icon-only 
-      (click)="volverAConversaciones()"
-      class="btn-back">
+      *ngIf="vistaActual === 'chat'"
+      class="btn-back"
+      (click)="volverAConversaciones()">
       <ion-icon name="arrow-back-outline"></ion-icon>
     </button>
 
-    <!-- Título según la vista actual -->
-    <span class="chat-title" [class.clickable]="vistaActual === 'chat'" (click)="vistaActual === 'chat' && irAPerfilActual()">
-      <ng-container *ngIf="vistaActual==='conversaciones'">Mensajes</ng-container>
-      <ng-container *ngIf="vistaActual==='buscar'">Buscar usuario</ng-container>
-      <ng-container *ngIf="vistaActual==='chat'">
+    <!-- TÍTULO -->
+    <span 
+      class="chat-title"
+      [class.clickable]="vistaActual === 'chat'"
+      (click)="vistaActual === 'chat' && irAPerfilActual()">
+
+      <!-- Vista: listas -->
+      <ng-container *ngIf="vistaActual === 'conversaciones'">Mensajes</ng-container>
+      <ng-container *ngIf="vistaActual === 'buscar'">Buscar usuario</ng-container>
+
+      <!-- Vista: conversación activa -->
+      <ng-container *ngIf="vistaActual === 'chat'">
         <div class="chat-header-info">
-          <span class="nombre-usuario">{{ conversacionActiva?.otro_usuario_nombre }}</span>
-          <span class="username-pequeno">@{{ conversacionActiva?.otro_usuario_usuario }}</span>
+          <span class="nombre-usuario">
+            {{ conversacionActiva?.otro_usuario_nombre }}
+          </span>
+          <span class="username-pequeno">
+            @{{ conversacionActiva?.otro_usuario_usuario }}
+          </span>
         </div>
       </ng-container>
     </span>
 
-    <!-- Botón de cerrar (siempre visible) -->
-    <button 
-      ion-button 
-      icon-only 
-      (click)="cerrarChat()"
-      class="btn-close">
+    <!-- BOTÓN CERRAR -->
+    <button class="btn-close" (click)="cerrarChat()">
       <ion-icon name="close"></ion-icon>
     </button>
   </div>
 
+
   <!-- ========================================== -->
-  <!-- BARRA DE BÚSQUEDA -->
+  <!-- BUSCADOR DE USUARIOS (EN VISTA CONVERSACIONES) -->
   <!-- ========================================== -->
-  <div class="chat-busqueda" *ngIf="vistaActual==='conversaciones'">
-    <input
+  <div class="chat-busqueda" *ngIf="vistaActual === 'conversaciones'">
+    
+    <input 
       type="text"
       [(ngModel)]="terminoBusqueda"
       (input)="buscarUsuarios()"
       placeholder="Busca un usuario..."
     />
-    
-    <!-- Estado: Buscando -->
-    <div *ngIf="buscandoUsuarios" class="busqueda-info">
+
+    <!-- Estados del buscador -->
+    <div class="busqueda-info" *ngIf="buscandoUsuarios">
       <ion-spinner name="dots"></ion-spinner> Buscando...
     </div>
-    
-    <!-- Estado: Mínimo 3 caracteres -->
-    <div *ngIf="!buscandoUsuarios && terminoBusqueda.length > 0 && terminoBusqueda.length < 3" class="busqueda-info">
-      Escribe al menos 3 caracteres para buscar
+
+    <div class="busqueda-info"
+      *ngIf="!buscandoUsuarios && terminoBusqueda.length > 0 && terminoBusqueda.length < 3">
+      Escribe al menos 3 caracteres
     </div>
-    
-    <!-- Estado: Sin resultados -->
-    <div *ngIf="!buscandoUsuarios && terminoBusqueda.length >= 3 && usuariosEncontrados.length === 0" class="busqueda-info">
+
+    <div class="busqueda-info"
+      *ngIf="!buscandoUsuarios && terminoBusqueda.length >= 3 && usuariosEncontrados.length === 0">
       No se encontraron usuarios
     </div>
-    
-    <!-- Lista de resultados -->
-    <ul *ngIf="usuariosEncontrados.length">
-      <li *ngFor="let u of usuariosEncontrados" (click)="iniciarConversacion(u)">
+
+    <!-- Resultados búsqueda -->
+    <ul *ngIf="usuariosEncontrados.length > 0" class="lista-usuarios">
+      <li *ngFor="let u of usuariosEncontrados"
+          (click)="iniciarConversacion(u)">
+
         <div class="usuario-avatar">
           <ion-icon name="person-circle-outline"></ion-icon>
         </div>
+
         <div class="usuario-datos">
           <span class="usuario-nombre">{{ u.nombre }}</span>
           <span class="usuario-username">@{{ u.usuario }}</span>
         </div>
+
         <ion-icon name="chevron-forward-outline" class="icono-flecha"></ion-icon>
       </li>
     </ul>
   </div>
 
+
   <!-- ========================================== -->
   <!-- LISTA DE CONVERSACIONES -->
   <!-- ========================================== -->
   <div class="chat-body" *ngIf="vistaActual === 'conversaciones'">
-    
-    <!-- Estado: Cargando -->
+
+    <!-- Loading -->
     <div *ngIf="cargandoConversaciones" class="chat-loader">
       <ion-spinner name="dots"></ion-spinner> Cargando...
     </div>
-    
-    <!-- Estado: Sin conversaciones -->
+
+    <!-- Sin conversaciones -->
     <div *ngIf="!cargandoConversaciones && conversaciones.length === 0" class="chat-vacio">
       <ion-icon name="chatbubbles-outline" class="icono-vacio"></ion-icon>
       <p>No tienes conversaciones</p>
-      <small>Busca usuarios arriba para comenzar a chatear</small>
+      <small>Busca un usuario arriba para comenzar</small>
     </div>
-    
-    <!-- Lista de conversaciones -->
-    <div
-      *ngFor="let conv of conversaciones"
-      class="chat-conv"
-      (click)="abrirConversacion(conv)">
-      
+
+    <!-- Conversaciones -->
+    <div class="chat-conv"
+         *ngFor="let conv of conversaciones"
+         (click)="abrirConversacion(conv)">
+
       <div class="conv-avatar">
         <ion-icon name="person-circle-outline"></ion-icon>
       </div>
-      
+
       <div class="conv-contenido">
         <div class="conv-header">
           <div class="conv-nombre-container">
-            <span class="conv-nombre">{{ conv.otro_usuario_nombre || conv.otro_usuario_usuario }}</span>
-            <span class="conv-producto" *ngIf="conv.producto_nombre"> · {{ conv.producto_nombre }}</span>
+            <span class="conv-nombre">
+              {{ conv.otro_usuario_nombre || conv.otro_usuario_usuario }}
+            </span>
+
+            <!-- Nombre del producto opcional -->
+            <span *ngIf="conv.producto_nombre" class="conv-producto">
+              · {{ conv.producto_nombre }}
+            </span>
           </div>
-          <span class="conv-fecha">{{ formatearFecha(conv.ultimo_mensaje_fecha || '') }}</span>
+
+          <span class="conv-fecha">
+            {{ formatearFecha(conv.ultimo_mensaje_fecha || '') }}
+          </span>
         </div>
-        
+
         <div class="conv-mensaje-preview">
           {{ conv.ultimo_mensaje || 'Sin mensajes' }}
         </div>
       </div>
-      
+
+      <!-- Badge mensajes no leídos -->
       <span class="conv-badge" *ngIf="(conv.mensajes_no_leidos || 0) > 0">
-        {{ conv.mensajes_no_leidos || 0 }}
+        {{ conv.mensajes_no_leidos }}
       </span>
     </div>
   </div>
 
+
   <!-- ========================================== -->
-  <!-- CONVERSACIÓN ACTIVA (CHAT) -->
+  <!-- VISTA CHAT ACTIVO -->
   <!-- ========================================== -->
   <div class="chat-body chat-activa" #chatBody *ngIf="vistaActual === 'chat'">
-    
-    <!-- Estado: Cargando mensajes -->
+
+    <!-- Loading -->
     <div *ngIf="cargandoMensajes" class="chat-loader">
       <ion-spinner name="dots"></ion-spinner> Cargando mensajes...
     </div>
-    
-    <!-- Estado: Sin mensajes -->
+
+    <!-- Sin mensajes -->
     <div *ngIf="!cargandoMensajes && mensajes.length === 0" class="chat-vacio-mensajes">
       <ion-icon name="mail-open-outline" class="icono-vacio"></ion-icon>
-      <p>No hay mensajes todavía</p>
-      <small>Envía el primer mensaje para comenzar la conversación</small>
+      <p>No hay mensajes aún</p>
+      <small>Envía el primer mensaje</small>
     </div>
-    
+
     <!-- Lista de mensajes -->
     <div class="mensajes-container">
-      <div *ngFor="let msg of mensajes" class="mensaje-wrapper" [class.mensaje-propio]="esMiMensaje(msg)">
-        
-        <!-- Mensaje de otro usuario -->
+
+      <div *ngFor="let msg of mensajes"
+           class="mensaje-wrapper"
+           [class.mensaje-propio]="esMiMensaje(msg)">
+
+        <!-- Mensaje AJENO -->
         <div *ngIf="!esMiMensaje(msg)" class="mensaje mensaje-otro">
           <div class="mensaje-avatar">
             <ion-icon name="person-circle-outline"></ion-icon>
           </div>
+
           <div class="mensaje-contenido">
             <div class="mensaje-header">
-              <span class="mensaje-nombre" (click)="irAPerfil(msg.remitente_id)">
+              <span class="mensaje-nombre"
+                    (click)="irAPerfil(msg.remitente_id)">
                 {{ msg.remitente_nombre }}
               </span>
-              <span class="mensaje-hora">{{ formatearHoraMensaje(msg.created_at) }}</span>
+
+              <span class="mensaje-hora">
+                {{ formatearHoraMensaje(msg.created_at) }}
+              </span>
             </div>
-            <div class="mensaje-texto">{{ msg.mensaje }}</div>
+
+            <div class="mensaje-texto">
+              {{ msg.mensaje }}
+            </div>
           </div>
         </div>
-        
-        <!-- Mensaje propio -->
+
+        <!-- Mensaje PROPIO -->
         <div *ngIf="esMiMensaje(msg)" class="mensaje mensaje-yo">
           <div class="mensaje-contenido">
-            <div class="mensaje-texto">{{ msg.mensaje }}</div>
+
+            <div class="mensaje-texto">
+              {{ msg.mensaje }}
+            </div>
+
             <div class="mensaje-footer">
               <span class="mensaje-hora">{{ formatearHoraMensaje(msg.created_at) }}</span>
+
+              <!-- Check de leído -->
               <ion-icon 
-                [name]="msg.leido ? 'checkmark-done-outline' : 'checkmark-outline'" 
+                [name]="msg.leido ? 'checkmark-done-outline' : 'checkmark-outline'"
                 class="mensaje-estado"
                 [class.leido]="msg.leido">
               </ion-icon>
             </div>
+
           </div>
         </div>
       </div>
     </div>
-    
-    <!-- Indicador "escribiendo..." -->
-    <div *ngIf="otroUsuarioEscribiendo" class="typing-indicator">
+
+    <!-- INDICADOR DE ESCRIBIENDO -->
+    <div class="typing-indicator" *ngIf="otroUsuarioEscribiendo">
       <div class="typing-avatar">
         <ion-icon name="person-circle-outline"></ion-icon>
       </div>
@@ -198,26 +247,33 @@
     </div>
   </div>
 
+
   <!-- ========================================== -->
-  <!-- INPUT DE MENSAJE -->
+  <!-- INPUT PARA ENVIAR MENSAJE -->
   <!-- ========================================== -->
-  <form class="chat-input" *ngIf="vistaActual === 'chat'" (submit)="enviarMensaje(); $event.preventDefault()">
-    <input
+  <form class="chat-input"
+        *ngIf="vistaActual === 'chat'"
+        (submit)="enviarMensaje(); $event.preventDefault()">
+
+    <input 
       type="text"
       [(ngModel)]="mensajeNuevo"
       name="mensajeNuevo"
       placeholder="Escribe un mensaje..."
       autocomplete="off"
-      (input)="onInputChange()" 
+      (input)="onInputChange()"
       [disabled]="enviandoMensaje"
       required
     />
-    <button 
-      type="submit" 
-      [disabled]="!mensajeNuevo.trim() || enviandoMensaje"
-      [class.enviando]="enviandoMensaje">
+
+    <button type="submit"
+            [disabled]="!mensajeNuevo.trim() || enviandoMensaje"
+            [class.enviando]="enviandoMensaje">
+      
       <ion-icon *ngIf="!enviandoMensaje" name="send"></ion-icon>
       <ion-spinner *ngIf="enviandoMensaje" name="dots"></ion-spinner>
+
     </button>
+
   </form>
 </div>

@@ -20,6 +20,7 @@ $shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.2);
 // ============================================
 // BOTÓN FLOTANTE
 // ============================================
+
 .chat-btn {
   position: fixed;
   bottom: 20px;
@@ -78,6 +79,7 @@ $shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.2);
 // ============================================
 // VENTANA PRINCIPAL
 // ============================================
+
 .chat-window {
   position: fixed;
   bottom: 100px;
@@ -111,6 +113,7 @@ $shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.2);
 // ============================================
 // HEADER
 // ============================================
+
 .chat-header {
   background: linear-gradient(135deg, $primary-color 0%, $primary-light 100%);
   color: white;
@@ -131,15 +134,10 @@ $shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.2);
     display: flex;
     align-items: center;
     justify-content: center;
-    text-align: center;
-    
+
     &.clickable {
       cursor: pointer;
-      transition: opacity 0.2s;
-      
-      &:hover {
-        opacity: 0.8;
-      }
+      &:hover { opacity: 0.8; }
     }
   }
 
@@ -172,9 +170,6 @@ $shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.2);
     justify-content: center;
     cursor: pointer;
     transition: all 0.2s ease;
-    padding: 0;
-    margin: 0;
-    flex-shrink: 0;
 
     &:hover {
       background: rgba(255, 255, 255, 0.25);
@@ -184,125 +179,60 @@ $shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.2);
     &:active {
       transform: scale(0.95);
     }
-
-    ion-icon {
-      font-size: 20px;
-    }
   }
 }
 
 // ============================================
-// BÚSQUEDA
+// LISTA DE CONVERSACIONES (CORREGIDA)
 // ============================================
-.chat-busqueda {
+
+.chat-conv {
+  background: rgba(0, 51, 102, 0.03); // ✔ Corregido #0033 inválido
   padding: 12px;
-  background: $background-light;
   border-bottom: 1px solid $border-color;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  position: relative;
 
-  input {
-    width: 100%;
-    padding: 10px 14px;
-    border: 2px solid $border-color;
-    border-radius: 10px;
-    font-size: 14px;
-    transition: all 0.2s ease;
-    background: white;
-    color: $text-dark;
-
-    &:focus {
-      outline: none;
-      border-color: $accent-color;
-      box-shadow: 0 0 0 3px rgba(56, 128, 255, 0.1);
-    }
-
-    &::placeholder {
-      color: $text-light;
-    }
+  &:hover {
+    background: rgba(0, 51, 102, 0.08); // ✔ reemplazo de blue() inválido
+    padding-left: 16px;
   }
 
-  .busqueda-info {
-    margin-top: 8px;
+  .conv-avatar ion-icon {
+    font-size: 48px;
+    color: $text-light;
+  }
+
+  .conv-nombre {
+    font-weight: 600;
+    font-size: 15px;
+    color: $text-dark;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .conv-producto {
     font-size: 13px;
     color: $text-light;
-    padding: 8px 4px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-
-    ion-spinner {
-      --color: #{$primary-color};
-      width: 16px;
-      height: 16px;
-    }
   }
 
-  ul {
-    list-style: none;
-    padding: 0;
-    margin: 8px 0 0 0;
-    background: white;
-    border-radius: 10px;
-    box-shadow: $shadow-sm;
-    max-height: 280px;
-    overflow-y: auto;
-
-    li {
-      padding: 12px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      border-bottom: 1px solid $border-color;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-
-      &:last-child {
-        border-bottom: none;
-      }
-
-      &:hover {
-        background: $background-light;
-        padding-left: 16px;
-      }
-
-      .usuario-avatar {
-        flex-shrink: 0;
-        
-        ion-icon {
-          font-size: 40px;
-          color: $text-light;
-        }
-      }
-
-      .usuario-datos {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        gap: 2px;
-        min-width: 0;
-
-        .usuario-nombre {
-          font-weight: 600;
-          font-size: 14px;
-          color: $text-dark;
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-        }
-
-        .usuario-username {
-          font-size: 12px;
-          color: $text-light;
-        }
-      }
-
-      .icono-flecha {
-        flex-shrink: 0;
-        color: $text-light;
-        font-size: 18px;
-      }
-    }
+  .conv-badge {
+    position: absolute;
+    right: 12px;
+    bottom: 12px;
+    background: $primary-color;
+    color: white;
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 12px;
   }
 }
+
 
 // ============================================
 // LISTA DE CONVERSACIONES

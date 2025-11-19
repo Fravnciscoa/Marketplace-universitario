@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, ViewChild, ElementRef, AfterViewChecked }
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ChatService, Conversacion, Mensaje } from '../../services/chat.service';
+import { ChatService, Conversacion, Mensaje, NotificacionMensaje } from '../../services/chat.service';
 import { Subscription } from 'rxjs';
 import { IonicModule } from '@ionic/angular';
 
@@ -21,27 +21,34 @@ interface Usuario {
   styleUrls: ['./chat-widget.component.scss'],
 })
 export class ChatWidgetComponent implements OnInit, OnDestroy, AfterViewChecked {
+
   @ViewChild('chatBody') private chatBody?: ElementRef;
 
+  // Estado de UI
   abierto = false;
   vistaActual: 'conversaciones' | 'chat' | 'buscar' = 'conversaciones';
 
+  // Datos principales
   conversaciones: Conversacion[] = [];
   mensajes: Mensaje[] = [];
   conversacionActiva: Conversacion | null = null;
   mensajeNuevo = '';
 
+  // Estados de carga
   cargandoConversaciones = false;
   cargandoMensajes = false;
   enviandoMensaje = false;
 
+  // Estado de notificaciones
   totalNoLeidos = 0;
   otroUsuarioEscribiendo = false;
 
+  // Búsqueda
   terminoBusqueda = '';
   usuariosEncontrados: Usuario[] = [];
   buscandoUsuarios = false;
 
+  // Manejo interno
   private subscriptions: Subscription[] = [];
   private shouldScrollToBottom = false;
   private typingTimeout: any;
@@ -51,50 +58,57 @@ export class ChatWidgetComponent implements OnInit, OnDestroy, AfterViewChecked 
     private router: Router
   ) {}
 
+  // ============================================
+  // CICLO DE VIDA
+  // ============================================
   ngOnInit() {
-    // Suscribirse al contador de mensajes no leídos
-    const contadorSub = this.chatService.contadorNoLeidos$.subscribe((total) => {
+
+    // 🔵 Contador global de no leídos
+    const subContador = this.chatService.contadorNoLeidos$.subscribe(total => {
       this.totalNoLeidos = total;
     });
-    this.subscriptions.push(contadorSub);
+    this.subscriptions.push(subContador);
 
-    // Escuchar nuevos mensajes en tiempo real
-    const mensajesSub = this.chatService.onNuevoMensaje().subscribe((msg) => {
-      console.log('💬 Nuevo mensaje recibido:', msg);
-      
-      if (this.conversacionActiva && msg.conversacion_id === this.conversacionActiva.id) {
-        // Si el mensaje es de la conversación activa, agregarlo
+    // 💬 Mensajes entrantes en tiempo real
+    const subMensajes = this.chatService.onNuevoMensaje().subscribe(msg => {
+      if (!this.conversacionActiva) return;
+
+      if (msg.conversacion_id === this.conversacionActiva.id) {
         this.mensajes.push(msg);
         this.shouldScrollToBottom = true;
-        
-        // Actualizar último mensaje en la conversación
+
+        // Actualizar preview en la lista
         this.conversacionActiva.ultimo_mensaje = msg.mensaje;
         this.conversacionActiva.ultimo_mensaje_fecha = msg.created_at;
+
       } else {
-        // Si es de otra conversación, actualizar la lista de conversaciones
+        // Actualizar lista si está visible
         if (this.abierto && this.vistaActual === 'conversaciones') {
           this.cargarConversaciones();
         }
       }
     });
-    this.subscriptions.push(mensajesSub);
+    this.subscriptions.push(subMensajes);
 
-    // Escuchar cuando alguien está escribiendo
-    const typingSub = this.chatService.onUserTyping().subscribe((data) => {
-      if (this.conversacionActiva && data.usuarioId !== this.getUserId()) {
-        this.otroUsuarioEscribiendo = data.isTyping;
-        
-        // Auto-ocultar después de 3 segundos
-        if (data.isTyping) {
-          setTimeout(() => {
-            this.otroUsuarioEscribiendo = false;
-          }, 3000);
-        }
+    // ✍ Indicador de "escribiendo"
+    const subTyping = this.chatService.onUserTyping().subscribe(data => {
+      if (!this.conversacionActiva) return;
+      if (data.usuarioId === this.getUserId()) return;
+
+      this.otroUsuarioEscribiendo = data.isTyping;
+      if (data.isTyping) {
+        setTimeout(() => (this.otroUsuarioEscribiendo = false), 3000);
       }
     });
-    this.subscriptions.push(typingSub);
+    this.subscriptions.push(subTyping);
 
-    // Actualizar contador inicial
+    // 🔔 Notificaciones globales
+    const subNoti = this.chatService.notificaciones$.subscribe(noti => {
+      // No se muestra en UI acá, pero queda disponible
+      // para badge global o toasts.
+    });
+    this.subscriptions.push(subNoti);
+
     this.chatService.actualizarContadorNoLeidos();
   }
 
@@ -106,16 +120,15 @@ export class ChatWidgetComponent implements OnInit, OnDestroy, AfterViewChecked 
   }
 
   ngOnDestroy() {
-    this.subscriptions.forEach(sub => sub.unsubscribe());
+    this.subscriptions.forEach(s => s.unsubscribe());
   }
 
   // ============================================
-  // CONTROL DE VENTANA
+  // UI PRINCIPAL
   // ============================================
-
   toggleChat() {
     this.abierto = !this.abierto;
-    
+
     if (this.abierto) {
       this.vistaActual = 'conversaciones';
       this.cargarConversaciones();
@@ -136,9 +149,9 @@ export class ChatWidgetComponent implements OnInit, OnDestroy, AfterViewChecked 
       this.conversacionActiva = null;
     }
     this.vistaActual = 'conversaciones';
+    this.mensajes = [];
     this.usuariosEncontrados = [];
     this.terminoBusqueda = '';
-    this.mensajes = [];
   }
 
   volverAConversaciones() {
@@ -146,24 +159,23 @@ export class ChatWidgetComponent implements OnInit, OnDestroy, AfterViewChecked 
       this.chatService.leaveConversacion(this.conversacionActiva.id);
     }
     this.conversacionActiva = null;
-    this.vistaActual = 'conversaciones';
     this.mensajes = [];
+    this.vistaActual = 'conversaciones';
     this.cargarConversaciones();
   }
 
   // ============================================
   // CONVERSACIONES
   // ============================================
-
   cargarConversaciones() {
     this.cargandoConversaciones = true;
-    
+
     this.chatService.getConversaciones().subscribe({
-      next: (res) => {
+      next: res => {
         this.conversaciones = res.conversaciones;
         this.cargandoConversaciones = false;
       },
-      error: (err) => {
+      error: err => {
         console.error('Error al cargar conversaciones:', err);
         this.cargandoConversaciones = false;
       }
@@ -174,34 +186,33 @@ export class ChatWidgetComponent implements OnInit, OnDestroy, AfterViewChecked 
     this.conversacionActiva = conv;
     this.vistaActual = 'chat';
     this.mensajes = [];
+
+    // Obtener historial
     this.cargarMensajes(conv.id);
-    
-    // Unirse a la sala de Socket.IO
+
+    // Unirse a la sala
     this.chatService.joinConversacion(conv.id);
 
-    // Marcar mensajes como leídos
-    this.chatService.marcarConversacionLeida(conv.id).subscribe({
-      next: () => {
-        conv.mensajes_no_leidos = 0;
-        this.chatService.actualizarContadorNoLeidos();
-      }
+    // Marcar como leído
+    this.chatService.marcarConversacionLeida(conv.id).subscribe(() => {
+      conv.mensajes_no_leidos = 0;
+      this.chatService.actualizarContadorNoLeidos();
     });
   }
 
   // ============================================
   // MENSAJES
   // ============================================
-
   cargarMensajes(id: number) {
     this.cargandoMensajes = true;
-    
+
     this.chatService.getMensajes(id).subscribe({
-      next: (res) => {
+      next: res => {
         this.mensajes = res.mensajes;
         this.cargandoMensajes = false;
         this.shouldScrollToBottom = true;
       },
-      error: (err) => {
+      error: err => {
         console.error('Error al cargar mensajes:', err);
         this.cargandoMensajes = false;
       }
@@ -209,26 +220,24 @@ export class ChatWidgetComponent implements OnInit, OnDestroy, AfterViewChecked 
   }
 
   enviarMensaje() {
-    if (!this.mensajeNuevo.trim() || !this.conversacionActiva || this.enviandoMensaje) {
-      return;
-    }
+    if (!this.conversacionActiva) return;
+    if (!this.mensajeNuevo.trim()) return;
+    if (this.enviandoMensaje) return;
 
     const texto = this.mensajeNuevo;
     this.mensajeNuevo = '';
     this.enviandoMensaje = true;
 
-    // Detener indicador de "escribiendo"
     this.chatService.emitTyping(this.conversacionActiva.id, false);
 
     this.chatService.enviarMensaje(this.conversacionActiva.id, texto).subscribe({
       next: () => {
         this.enviandoMensaje = false;
       },
-      error: (err) => {
+      error: err => {
         console.error('Error al enviar mensaje:', err);
         this.enviandoMensaje = false;
-        // Restaurar el mensaje en caso de error
-        this.mensajeNuevo = texto;
+        this.mensajeNuevo = texto; // restaurar
       }
     });
   }
@@ -236,21 +245,14 @@ export class ChatWidgetComponent implements OnInit, OnDestroy, AfterViewChecked 
   onInputChange() {
     if (!this.conversacionActiva) return;
 
-    // Limpiar timeout anterior
-    if (this.typingTimeout) {
-      clearTimeout(this.typingTimeout);
-    }
+    if (this.typingTimeout) clearTimeout(this.typingTimeout);
 
     if (this.mensajeNuevo.trim()) {
-      // Emitir que está escribiendo
       this.chatService.emitTyping(this.conversacionActiva.id, true);
-      
-      // Detener después de 2 segundos de inactividad
       this.typingTimeout = setTimeout(() => {
         this.chatService.emitTyping(this.conversacionActiva!.id, false);
-      }, 2000);
+      }, 1800);
     } else {
-      // Si borró todo, detener inmediatamente
       this.chatService.emitTyping(this.conversacionActiva.id, false);
     }
   }
@@ -258,24 +260,22 @@ export class ChatWidgetComponent implements OnInit, OnDestroy, AfterViewChecked 
   // ============================================
   // BÚSQUEDA DE USUARIOS
   // ============================================
-
   buscarUsuarios() {
     const term = this.terminoBusqueda.trim();
-    
+
     if (term.length < 3) {
       this.usuariosEncontrados = [];
       return;
     }
-    
+
     this.buscandoUsuarios = true;
-    
+
     this.chatService.buscarUsuarios(term).subscribe({
-      next: (res) => {
+      next: res => {
         this.usuariosEncontrados = res.usuarios || [];
         this.buscandoUsuarios = false;
-        console.log('Usuarios encontrados:', this.usuariosEncontrados);
       },
-      error: (err) => {
+      error: err => {
         console.error('Error al buscar usuarios:', err);
         this.usuariosEncontrados = [];
         this.buscandoUsuarios = false;
@@ -284,67 +284,39 @@ export class ChatWidgetComponent implements OnInit, OnDestroy, AfterViewChecked 
   }
 
   iniciarConversacion(usuario: Usuario) {
-  console.log('🔵 Iniciando conversación con:', usuario);
-  
-  this.buscandoUsuarios = true;
-  
-  this.chatService.obtenerOCrearConversacion(usuario.id).subscribe({
-    next: (res) => {
-      console.log('✅ Respuesta del servidor:', res);
-      
-      if (res.conversacion) {
-        // Enriquecer la conversación con datos del usuario si no vienen
-        const conversacion = res.conversacion;
-        
-        // Asegurarse de que tenga la información del otro usuario
-        if (!conversacion.otro_usuario_nombre) {
-          conversacion.otro_usuario_nombre = usuario.nombre;
+    this.buscandoUsuarios = true;
+
+    this.chatService.obtenerOCrearConversacion(usuario.id).subscribe({
+      next: res => {
+        if (res.conversacion) {
+          const c = res.conversacion;
+
+          // Si backend no devolvió bien los datos, completarlos
+          c.otro_usuario_id ||= usuario.id;
+          c.otro_usuario_usuario ||= usuario.usuario;
+          c.otro_usuario_nombre ||= usuario.nombre;
+
+          // Limpiar búsqueda
+          this.usuariosEncontrados = [];
+          this.terminoBusqueda = '';
+          this.buscandoUsuarios = false;
+
+          this.abrirConversacion(c);
         }
-        if (!conversacion.otro_usuario_usuario) {
-          conversacion.otro_usuario_usuario = usuario.usuario;
-        }
-        if (!conversacion.otro_usuario_id) {
-          conversacion.otro_usuario_id = usuario.id;
-        }
-        
-        console.log('📝 Conversación procesada:', conversacion);
-        
-        // Limpiar búsqueda
-        this.usuariosEncontrados = [];
-        this.terminoBusqueda = '';
+      },
+      error: err => {
+        console.error('Error al iniciar conversación:', err);
         this.buscandoUsuarios = false;
-        
-        // Abrir conversación
-        this.abrirConversacion(conversacion);
-        
-        console.log('✅ Conversación abierta correctamente');
-      } else {
-        console.error('❌ No se recibió conversación en la respuesta');
-        this.buscandoUsuarios = false;
+        alert('No se pudo iniciar la conversación');
       }
-    },
-    error: (err) => {
-      console.error('❌ Error al crear conversación:', err);
-      console.error('Detalles del error:', err.error);
-      this.buscandoUsuarios = false;
-      
-      // Mostrar alerta al usuario
-      alert('Error al iniciar conversación. Por favor intenta de nuevo.');
-    }
-  });
-}
+    });
+  }
 
   // ============================================
-  // NAVEGACIÓN A PERFIL
+  // PERFIL
   // ============================================
-
   irAPerfil(usuarioId: number) {
-    console.log('Navegando al perfil del usuario:', usuarioId);
-    
-    // Cerrar el chat
     this.cerrarChat();
-    
-    // Navegar al perfil
     this.router.navigate(['/perfil', usuarioId]);
   }
 
@@ -357,67 +329,51 @@ export class ChatWidgetComponent implements OnInit, OnDestroy, AfterViewChecked 
   // ============================================
   // UTILIDADES
   // ============================================
+  private scrollToBottom() {
+    try {
+      if (this.chatBody) {
+        const el = this.chatBody.nativeElement;
+        el.scrollTop = el.scrollHeight;
+      }
+    } catch (e) {
+      console.error('Error al hacer scroll:', e);
+    }
+  }
 
   getUserId(): number {
     const usuario = JSON.parse(localStorage.getItem('usuario') || '{}');
     return usuario.id || 0;
   }
 
-  esMiMensaje(mensaje: Mensaje): boolean {
-    return mensaje.remitente_id === this.getUserId();
+  esMiMensaje(msg: Mensaje): boolean {
+    return msg.remitente_id === this.getUserId();
   }
 
-  private scrollToBottom(): void {
-    try {
-      if (this.chatBody) {
-        this.chatBody.nativeElement.scrollTop = this.chatBody.nativeElement.scrollHeight;
-      }
-    } catch (err) {
-      console.error('Error al hacer scroll:', err);
-    }
-  }
-
-  formatearFecha(fecha?: string): string {
+  formatearFecha(fecha?: string) {
     if (!fecha) return '';
-    
-    const date = new Date(fecha);
+    const d = new Date(fecha);
     const hoy = new Date();
-    const ayer = new Date(hoy);
-    ayer.setDate(ayer.getDate() - 1);
 
-    // Si es hoy, mostrar solo la hora
-    if (date.toDateString() === hoy.toDateString()) {
-      return date.toLocaleTimeString('es-CL', { 
-        hour: '2-digit', 
-        minute: '2-digit' 
-      });
-    } 
-    // Si fue ayer
-    else if (date.toDateString() === ayer.toDateString()) {
+    if (d.toDateString() === hoy.toDateString()) {
+      return d.toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' });
+    }
+
+    const ayer = new Date();
+    ayer.setDate(ayer.getDate() - 1);
+    if (d.toDateString() === ayer.toDateString()) {
       return 'Ayer';
-    } 
-    // Si fue esta semana
-    else if ((hoy.getTime() - date.getTime()) < 7 * 24 * 60 * 60 * 1000) {
-      return date.toLocaleDateString('es-CL', { 
-        weekday: 'short' 
-      });
     }
-    // Fecha más antigua
-    else {
-      return date.toLocaleDateString('es-CL', { 
-        day: '2-digit', 
-        month: '2-digit' 
-      });
+
+    if (hoy.getTime() - d.getTime() < 7 * 86400000) {
+      return d.toLocaleDateString('es-CL', { weekday: 'short' });
     }
+
+    return d.toLocaleDateString('es-CL', { day: '2-digit', month: '2-digit' });
   }
 
-  formatearHoraMensaje(fecha?: string): string {
+  formatearHoraMensaje(fecha?: string) {
     if (!fecha) return '';
-    
-    const date = new Date(fecha);
-    return date.toLocaleTimeString('es-CL', { 
-      hour: '2-digit', 
-      minute: '2-digit' 
-    });
+    const d = new Date(fecha);
+    return d.toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' });
   }
 }

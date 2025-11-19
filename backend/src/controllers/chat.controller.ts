@@ -1,13 +1,16 @@
-
-// --chat.controller.ts--//
+// --chat.controller.ts--
 import { Request, Response } from 'express';
 import { pool } from '../db/pool';
+import { emitirNotificacionMensaje } from "../socket/socket";  // Helper para notis a usuario
 
+// -------------------------------------------------------------
 // OBTENER TODAS LAS CONVERSACIONES
+// -------------------------------------------------------------
 export const obtenerConversaciones = async (req: Request, res: Response) => {
   try {
     const usuarioId = req.user?.id;
-    if (!usuarioId) return res.status(401).json({ success: false, error: 'Usuario no autenticado' });
+    if (!usuarioId)
+      return res.status(401).json({ success: false, error: 'Usuario no autenticado' });
 
     const result = await pool.query(
       `SELECT 
@@ -36,46 +39,28 @@ export const obtenerConversaciones = async (req: Request, res: Response) => {
 
     res.json({ success: true, conversaciones: result.rows });
   } catch (error) {
-    // Log detallado del error
     console.error('❌ Error al obtener conversaciones:', error);
     res.status(500).json({ success: false, error: String(error) });
   }
 };
 
-// OBTENER O CREAR UNA CONVERSACIÓN
-// Reemplaza la función obtenerOCrearConversacion en chat.controller.ts
-
+// -------------------------------------------------------------
+// OBTENER O CREAR CONVERSACIÓN
+// -------------------------------------------------------------
 export const obtenerOCrearConversacion = async (req: Request, res: Response) => {
   try {
     const usuarioId = req.user?.id;
     const { otroUsuarioId, productoId } = req.body;
-    
-    if (!usuarioId) {
-      return res.status(401).json({ 
-        success: false, 
-        error: 'Usuario no autenticado' 
-      });
-    }
 
-    // Validar que otroUsuarioId existe
-    if (!otroUsuarioId) {
-      return res.status(400).json({ 
-        success: false, 
-        error: 'Debes proporcionar el ID del otro usuario' 
-      });
-    }
+    if (!usuarioId)
+      return res.status(401).json({ success: false, error: 'Usuario no autenticado' });
 
-    // No permitir conversación consigo mismo
-    if (parseInt(otroUsuarioId) === usuarioId) {
-      return res.status(400).json({ 
-        success: false, 
-        error: 'No puedes crear una conversación contigo mismo' 
-      });
-    }
+    if (!otroUsuarioId)
+      return res.status(400).json({ success: false, error: 'Debes proporcionar el ID del otro usuario' });
 
-    console.log('🔍 Buscando conversación entre:', usuarioId, 'y', otroUsuarioId);
+    if (parseInt(otroUsuarioId) === usuarioId)
+      return res.status(400).json({ success: false, error: 'No puedes crear una conversación contigo mismo' });
 
-    // Buscar conversación existente
     const conversacionExistente = await pool.query(
       `SELECT 
         c.id,
@@ -90,105 +75,85 @@ export const obtenerOCrearConversacion = async (req: Request, res: Response) => 
         (SELECT mensaje FROM mensajes WHERE conversacion_id = c.id ORDER BY created_at DESC LIMIT 1) as ultimo_mensaje,
         (SELECT created_at FROM mensajes WHERE conversacion_id = c.id ORDER BY created_at DESC LIMIT 1) as ultimo_mensaje_fecha,
         (SELECT COUNT(*) FROM mensajes WHERE conversacion_id = c.id AND remitente_id != $1 AND leido = false)::int as mensajes_no_leidos
-      FROM conversaciones c
-      LEFT JOIN usuarios u1 ON c.usuario1_id = u1.id
-      LEFT JOIN usuarios u2 ON c.usuario2_id = u2.id
-      WHERE ((c.usuario1_id = $1 AND c.usuario2_id = $2) 
-         OR (c.usuario1_id = $2 AND c.usuario2_id = $1))
-      AND ($3::INTEGER IS NULL OR c.producto_id = $3)
-      LIMIT 1`,
+       FROM conversaciones c
+       LEFT JOIN usuarios u1 ON c.usuario1_id = u1.id
+       LEFT JOIN usuarios u2 ON c.usuario2_id = u2.id
+       WHERE ((c.usuario1_id = $1 AND c.usuario2_id = $2) 
+           OR (c.usuario1_id = $2 AND c.usuario2_id = $1))
+       AND ($3::INTEGER IS NULL OR c.producto_id = $3)
+       LIMIT 1`,
       [usuarioId, otroUsuarioId, productoId || null]
     );
 
-    // Si existe, retornarla
     if (conversacionExistente.rows.length > 0) {
-      console.log('✅ Conversación existente encontrada:', conversacionExistente.rows[0].id);
-      return res.json({ 
-        success: true, 
-        conversacion: conversacionExistente.rows[0], 
-        nueva: false 
+      return res.json({
+        success: true,
+        conversacion: conversacionExistente.rows[0],
+        nueva: false
       });
     }
 
-    console.log('🆕 Creando nueva conversación');
-
-    // Crear nueva conversación
     const nuevaConv = await pool.query(
       `INSERT INTO conversaciones (usuario1_id, usuario2_id, producto_id)
        VALUES ($1, $2, $3) RETURNING id, usuario1_id, usuario2_id, producto_id, created_at, updated_at`,
       [usuarioId, otroUsuarioId, productoId || null]
     );
 
-    // Obtener información del otro usuario
-    const otroUsuario = await pool.query(
+    const obtenerOtro = await pool.query(
       `SELECT id, nombre, usuario FROM usuarios WHERE id = $1`,
       [otroUsuarioId]
     );
 
-    if (otroUsuario.rows.length === 0) {
-      return res.status(404).json({ 
-        success: false, 
-        error: 'Usuario no encontrado' 
-      });
-    }
-
-    // Construir conversación con toda la información
     const conversacionCompleta = {
       ...nuevaConv.rows[0],
-      otro_usuario_nombre: otroUsuario.rows[0].nombre,
-      otro_usuario_usuario: otroUsuario.rows[0].usuario,
-      otro_usuario_id: otroUsuario.rows[0].id,
+      otro_usuario_nombre: obtenerOtro.rows[0].nombre,
+      otro_usuario_usuario: obtenerOtro.rows[0].usuario,
+      otro_usuario_id: obtenerOtro.rows[0].id,
       ultimo_mensaje: null,
       ultimo_mensaje_fecha: null,
       mensajes_no_leidos: 0
     };
 
-    console.log('✅ Conversación creada:', conversacionCompleta);
-
-    // Emitir evento de nueva conversación vía Socket.IO
-    const io = (global as any).io;
-    if (io) {
-      io.to(`user_${otroUsuarioId}`).emit('nueva_conversacion', { 
-        conversacionId: conversacionCompleta.id, 
-        usuarioId 
-      });
-    }
-
-    res.json({ 
-      success: true, 
-      conversacion: conversacionCompleta, 
-      nueva: true 
+    // Notificación resumida tipo "nueva conversacion"
+    emitirNotificacionMensaje(otroUsuarioId, {
+      tipo: "nueva_conversacion",
+      conversacionId: conversacionCompleta.id,
+      remitenteId: usuarioId,
     });
+
+    // Además, evento explícito para el socket (por si el frontend lo escucha)
+    global.io?.to(`user_${otroUsuarioId}`).emit('nueva_conversacion', {
+      conversacionId: conversacionCompleta.id,
+      usuarioId
+    });
+
+    res.json({ success: true, conversacion: conversacionCompleta, nueva: true });
 
   } catch (error) {
     console.error('❌ Error al crear conversación:', error);
-    res.status(500).json({ 
-      success: false, 
-      error: 'Error al crear conversación',
-      details: error instanceof Error ? error.message : 'Error desconocido'
-    });
+    res.status(500).json({ success: false, error: 'Error al crear conversación' });
   }
 };
 
-// OBTENER MENSAJES DE UNA CONVERSACIÓN
+// -------------------------------------------------------------
+// OBTENER MENSAJES
+// -------------------------------------------------------------
 export const obtenerMensajes = async (req: Request, res: Response) => {
   try {
     const usuarioId = req.user?.id;
-    const conversacionIdStr = req.params.conversacionId || '0';
-    const conversacionId = parseInt(conversacionIdStr);
-
+    const conversacionId = parseInt(req.params.conversacionId || '0');
     const { limit = 50, offset = 0 } = req.query;
 
-    if (!usuarioId) return res.status(401).json({ success: false, error: 'Usuario no autenticado' });
+    if (!usuarioId)
+      return res.status(401).json({ success: false, error: 'Usuario no autenticado' });
 
     const conversacion = await pool.query(
       `SELECT * FROM conversaciones WHERE id = $1 AND (usuario1_id = $2 OR usuario2_id = $2)`,
       [conversacionId, usuarioId]
     );
 
-    if (conversacion.rows.length === 0) {
+    if (conversacion.rows.length === 0)
       return res.status(403).json({ success: false, error: 'No tienes acceso a esta conversación' });
-    }
 
     await pool.query(
       `UPDATE mensajes SET leido = TRUE
@@ -197,7 +162,8 @@ export const obtenerMensajes = async (req: Request, res: Response) => {
     );
 
     const mensajes = await pool.query(
-      `SELECT m.id, m.mensaje, m.leido, m.created_at, m.remitente_id, u.nombre as remitente_nombre, u.usuario as remitente_usuario
+      `SELECT m.id, m.mensaje, m.leido, m.created_at, m.remitente_id,
+              u.nombre as remitente_nombre, u.usuario as remitente_usuario
        FROM mensajes m JOIN usuarios u ON m.remitente_id = u.id
        WHERE m.conversacion_id = $1
        ORDER BY m.created_at DESC
@@ -205,10 +171,11 @@ export const obtenerMensajes = async (req: Request, res: Response) => {
       [conversacionId, limit, offset]
     );
 
-    const io = (global as any).io;
-    if (io) {
-      io.to(`conversacion_${conversacionId}`).emit('mensajes_leidos', { conversacionId, usuarioId });
-    }
+    // Avisar por socket que se leyeron mensajes (para refrescar badges)
+    global.io?.to(`conversacion_${conversacionId}`).emit('mensajes_leidos', {
+      conversacionId,
+      usuarioId
+    });
 
     res.json({ success: true, mensajes: mensajes.rows.reverse() });
   } catch (error) {
@@ -217,29 +184,28 @@ export const obtenerMensajes = async (req: Request, res: Response) => {
   }
 };
 
-// ENVIAR MENSAJE
+// -------------------------------------------------------------
+// ENVIAR MENSAJE + NOTIFICACIÓN
+// -------------------------------------------------------------
 export const enviarMensaje = async (req: Request, res: Response) => {
   try {
     const usuarioId = req.user?.id;
-    const conversacionIdStr = req.params.conversacionId || '0';
-    const conversacionId = parseInt(conversacionIdStr);
-
+    const conversacionId = parseInt(req.params.conversacionId || '0');
     const { mensaje } = req.body;
 
-    if (!usuarioId) return res.status(401).json({ success: false, error: 'Usuario no autenticado' });
+    if (!usuarioId)
+      return res.status(401).json({ success: false, error: 'Usuario no autenticado' });
 
-    if (!mensaje || mensaje.trim() === '') {
+    if (!mensaje || mensaje.trim() === '')
       return res.status(400).json({ success: false, error: 'El mensaje no puede estar vacío' });
-    }
 
     const conversacion = await pool.query(
       `SELECT * FROM conversaciones WHERE id = $1 AND (usuario1_id = $2 OR usuario2_id = $2)`,
       [conversacionId, usuarioId]
     );
 
-    if (conversacion.rows.length === 0) {
-      return res.status(403).json({ success: false, error: 'No tienes permiso para enviar mensajes en esta conversación' });
-    }
+    if (conversacion.rows.length === 0)
+      return res.status(403).json({ success: false, error: 'No tienes permiso para enviar mensajes aquí' });
 
     const result = await pool.query(
       `INSERT INTO mensajes (conversacion_id, remitente_id, mensaje, created_at)
@@ -247,9 +213,15 @@ export const enviarMensaje = async (req: Request, res: Response) => {
       [conversacionId, usuarioId, mensaje]
     );
 
-    await pool.query(`UPDATE conversaciones SET updated_at = NOW() WHERE id = $1`, [conversacionId]);
+    await pool.query(
+      `UPDATE conversaciones SET updated_at = NOW() WHERE id = $1`,
+      [conversacionId]
+    );
 
-    const usuario = await pool.query(`SELECT nombre, usuario FROM usuarios WHERE id = $1`, [usuarioId]);
+    const usuario = await pool.query(
+      `SELECT nombre, usuario FROM usuarios WHERE id = $1`,
+      [usuarioId]
+    );
 
     const mensajeCreado = {
       ...result.rows[0],
@@ -257,28 +229,35 @@ export const enviarMensaje = async (req: Request, res: Response) => {
       remitente_usuario: usuario.rows[0].usuario
     };
 
-    const io = (global as any).io;
-    if (io) {
-      io.to(`conversacion_${conversacionId}`).emit('nuevo_mensaje', mensajeCreado);
+    // 1) Emitir mensaje en la sala de la conversación (chat en vivo)
+    global.io?.to(`conversacion_${conversacionId}`).emit("nuevo_mensaje", mensajeCreado);
 
-      const otroUsuarioId = conversacion.rows[0].usuario1_id === usuarioId ? conversacion.rows[0].usuario2_id : conversacion.rows[0].usuario1_id;
+    const otroUsuarioId =
+      conversacion.rows[0].usuario1_id === usuarioId
+        ? conversacion.rows[0].usuario2_id
+        : conversacion.rows[0].usuario1_id;
 
-      io.to(`user_${otroUsuarioId}`).emit('notificacion_mensaje', {
-        conversacionId,
-        mensaje: mensajeCreado.mensaje.substring(0, 50),
-        remitenteNombre: usuario.rows[0].nombre,
-        remitenteId: usuarioId,
-        timestamp: mensajeCreado.created_at
-      });
-    }
+    // 2) Enviar notificación al usuario receptor (toast + badge)
+    emitirNotificacionMensaje(otroUsuarioId, {
+      tipo: "nuevo_mensaje",
+      conversacionId,
+      mensaje: mensajeCreado.mensaje.substring(0, 50),
+      remitenteNombre: usuario.rows[0].nombre,
+      remitenteId: usuarioId,
+      created_at: mensajeCreado.created_at
+    });
 
     res.status(201).json({ success: true, mensaje: mensajeCreado });
+
   } catch (error) {
     console.error('Error al enviar mensaje:', error);
     res.status(500).json({ success: false, error: 'Error al enviar mensaje' });
   }
 };
 
+// -------------------------------------------------------------
+// OBTENER MENSAJES PAGINADOS
+// -------------------------------------------------------------
 export const obtenerMensajesPaginados = async (req: Request, res: Response) => {
   try {
     const usuarioId = req.user?.id;
@@ -292,10 +271,11 @@ export const obtenerMensajesPaginados = async (req: Request, res: Response) => {
       });
     }
 
-    // Verificar que el usuario participa en la conversación
+    const convId = parseInt(conversacionId || '0', 10);
+
     const conversacion = await pool.query(
       'SELECT * FROM conversaciones WHERE id = $1 AND (usuario1_id = $2 OR usuario2_id = $2)',
-      [conversacionId, usuarioId]
+      [convId, usuarioId]
     );
 
     if (conversacion.rows.length === 0) {
@@ -305,19 +285,16 @@ export const obtenerMensajesPaginados = async (req: Request, res: Response) => {
       });
     }
 
-    // Calcular offset
-    const paginaNum = parseInt(pagina as string);
-    const limiteNum = parseInt(limite as string);
+    const paginaNum = parseInt(pagina as string, 10);
+    const limiteNum = parseInt(limite as string, 10);
     const offset = (paginaNum - 1) * limiteNum;
 
-    // Obtener total de mensajes
     const totalResult = await pool.query(
       'SELECT COUNT(*) FROM mensajes WHERE conversacion_id = $1',
-      [conversacionId]
+      [convId]
     );
-    const total = parseInt(totalResult.rows[0].count);
+    const total = parseInt(totalResult.rows[0].count, 10);
 
-    // Obtener mensajes con paginación
     const result = await pool.query(
       `SELECT 
         m.id,
@@ -332,7 +309,7 @@ export const obtenerMensajesPaginados = async (req: Request, res: Response) => {
        WHERE m.conversacion_id = $1
        ORDER BY m.created_at DESC
        LIMIT $2 OFFSET $3`,
-      [conversacionId, limiteNum, offset]
+      [convId, limiteNum, offset]
     );
 
     res.json({
@@ -356,11 +333,9 @@ export const obtenerMensajesPaginados = async (req: Request, res: Response) => {
   }
 };
 
-// Otros métodos (buscarConversaciones, eliminarConversacion, obtenerContadorNoLeidos, marcarConversacionLeida) también corregidos con parseo seguro similar
-
-// ============================================
+// -------------------------------------------------------------
 // BUSCAR CONVERSACIONES
-// ============================================
+// -------------------------------------------------------------
 export const buscarConversaciones = async (req: Request, res: Response) => {
   try {
     const usuarioId = req.user?.id;
@@ -429,9 +404,9 @@ export const buscarConversaciones = async (req: Request, res: Response) => {
   }
 };
 
-// ============================================
+// -------------------------------------------------------------
 // ELIMINAR CONVERSACIÓN
-// ============================================
+// -------------------------------------------------------------
 export const eliminarConversacion = async (req: Request, res: Response) => {
   try {
     const usuarioId = req.user?.id;
@@ -444,10 +419,11 @@ export const eliminarConversacion = async (req: Request, res: Response) => {
       });
     }
 
-    // Verificar que el usuario participa en la conversación
+    const convId = parseInt(conversacionId || '0', 10);
+
     const conversacion = await pool.query(
       'SELECT * FROM conversaciones WHERE id = $1 AND (usuario1_id = $2 OR usuario2_id = $2)',
-      [conversacionId, usuarioId]
+      [convId, usuarioId]
     );
 
     if (conversacion.rows.length === 0) {
@@ -457,10 +433,9 @@ export const eliminarConversacion = async (req: Request, res: Response) => {
       });
     }
 
-    // Eliminar conversación (CASCADE eliminará los mensajes)
     await pool.query(
       'DELETE FROM conversaciones WHERE id = $1',
-      [conversacionId]
+      [convId]
     );
 
     res.json({
@@ -476,9 +451,9 @@ export const eliminarConversacion = async (req: Request, res: Response) => {
   }
 };
 
-// ============================================
-// OBTENER CONTADOR TOTAL DE MENSAJES NO LEÍDOS (NUEVO)
-// ============================================
+// -------------------------------------------------------------
+// OBTENER CONTADOR TOTAL DE NO LEÍDOS
+// -------------------------------------------------------------
 export const obtenerContadorNoLeidos = async (req: Request, res: Response) => {
   try {
     const usuarioId = req.user?.id;
@@ -502,7 +477,7 @@ export const obtenerContadorNoLeidos = async (req: Request, res: Response) => {
 
     res.json({
       success: true,
-      totalNoLeidos: parseInt(result.rows[0].total_no_leidos)
+      totalNoLeidos: parseInt(result.rows[0].total_no_leidos, 10)
     });
   } catch (error) {
     console.error('Error al obtener contador de no leídos:', error);
@@ -513,9 +488,9 @@ export const obtenerContadorNoLeidos = async (req: Request, res: Response) => {
   }
 };
 
-// ============================================
-// MARCAR CONVERSACIÓN COMPLETA COMO LEÍDA (NUEVO)
-// ============================================
+// -------------------------------------------------------------
+// MARCAR CONVERSACIÓN COMO LEÍDA
+// -------------------------------------------------------------
 export const marcarConversacionLeida = async (req: Request, res: Response) => {
   try {
     const usuarioId = req.user?.id;
@@ -528,10 +503,11 @@ export const marcarConversacionLeida = async (req: Request, res: Response) => {
       });
     }
 
-    // Verificar permisos
+    const convId = parseInt(conversacionId || '0', 10);
+
     const conversacion = await pool.query(
       'SELECT * FROM conversaciones WHERE id = $1 AND (usuario1_id = $2 OR usuario2_id = $2)',
-      [conversacionId, usuarioId]
+      [convId, usuarioId]
     );
 
     if (conversacion.rows.length === 0) {
@@ -541,24 +517,20 @@ export const marcarConversacionLeida = async (req: Request, res: Response) => {
       });
     }
 
-    // Marcar como leído
     await pool.query(
       `UPDATE mensajes
        SET leido = TRUE
        WHERE conversacion_id = $1
        AND remitente_id != $2
        AND leido = FALSE`,
-      [conversacionId, usuarioId]
+      [convId, usuarioId]
     );
 
-    // Emitir evento WebSocket
-    const io = (global as any).io;
-    if (io) {
-      io.to(`conversacion_${conversacionId}`).emit('mensajes_leidos', {
-        conversacionId,
-        usuarioId
-      });
-    }
+    // Emitir evento a la sala
+    global.io?.to(`conversacion_${convId}`).emit('mensajes_leidos', {
+      conversacionId: convId,
+      usuarioId
+    });
 
     res.json({
       success: true,
