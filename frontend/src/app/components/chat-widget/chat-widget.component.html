@@ -1,5 +1,4 @@
-<!-- chat-widget.component.html -->
-<!-- Botón flotante de chat (badge con total de no leídos) -->
+<!-- Botón flotante de chat (badge de mensajes no leídos) -->
 <div class="chat-btn" (click)="toggleChat()">
   <ion-icon name="chatbubble-ellipses-outline"></ion-icon>
   <span class="chat-badge" *ngIf="totalNoLeidos > 0">{{ totalNoLeidos }}</span>
@@ -9,20 +8,58 @@
 <div class="chat-window" *ngIf="abierto">
   <!-- Header -->
   <div class="chat-header">
-    <ng-container *ngIf="vistaActual === 'conversaciones'">
-      <span>Mensajes</span>
-    </ng-container>
-    <ng-container *ngIf="vistaActual === 'chat'">
-      <button ion-button icon-only (click)="volverAConversaciones()">
-        <ion-icon name="arrow-back-outline"></ion-icon>
-      </button>
-      <span>
+    <!-- Botón de volver (solo visible en vista de chat) -->
+    <button 
+      *ngIf="vistaActual==='chat'" 
+      ion-button 
+      icon-only 
+      (click)="volverAConversaciones()"
+      class="btn-back">
+      <ion-icon name="arrow-back-outline"></ion-icon>
+    </button>
+
+    <!-- Título según la vista actual -->
+    <span class="chat-title">
+      <ng-container *ngIf="vistaActual==='conversaciones'">Mensajes</ng-container>
+      <ng-container *ngIf="vistaActual==='buscar'">Buscar usuario</ng-container>
+      <ng-container *ngIf="vistaActual==='chat'">
         {{ conversacionActiva?.otro_usuario_nombre || conversacionActiva?.otro_usuario_usuario }}
-      </span>
-    </ng-container>
-    <button ion-button icon-only (click)="cerrarChat()">
+      </ng-container>
+    </span>
+
+    <!-- Botón de cerrar (siempre visible en la esquina derecha) -->
+    <button 
+      ion-button 
+      icon-only 
+      (click)="cerrarChat()"
+      class="btn-close">
       <ion-icon name="close"></ion-icon>
     </button>
+  </div>
+
+  <!-- Barra de búsqueda -->
+  <div class="chat-busqueda" *ngIf="vistaActual==='conversaciones'">
+    <input
+      type="text"
+      [(ngModel)]="terminoBusqueda"
+      (input)="buscarUsuarios()"
+      placeholder="Busca un usuario..."
+    />
+    <div *ngIf="buscandoUsuarios" class="busqueda-info">
+      <ion-spinner name="dots"></ion-spinner> Buscando...
+    </div>
+    <div *ngIf="!buscandoUsuarios && terminoBusqueda.length > 0 && terminoBusqueda.length < 3" class="busqueda-info">
+      Escribe al menos 3 caracteres para buscar
+    </div>
+    <div *ngIf="!buscandoUsuarios && terminoBusqueda.length >= 3 && usuariosEncontrados.length === 0" class="busqueda-info">
+      No se encontraron usuarios
+    </div>
+    <ul *ngIf="usuariosEncontrados.length">
+      <li *ngFor="let u of usuariosEncontrados" (click)="iniciarConversacion(u)">
+        <span class="usuario-nombre">{{ u.nombre }}</span>
+        <span class="usuario-username">@{{u.usuario}}</span>
+      </li>
+    </ul>
   </div>
 
   <!-- Lista de conversaciones -->
@@ -33,8 +70,8 @@
     <div *ngIf="!cargandoConversaciones && conversaciones.length === 0" class="chat-vacio">
       No tienes conversaciones.
     </div>
-    <div 
-      *ngFor="let conv of conversaciones" 
+    <div
+      *ngFor="let conv of conversaciones"
       class="chat-conv"
       (click)="abrirConversacion(conv)">
       <div class="chat-info">
@@ -42,9 +79,10 @@
           <span class="chat-usuario">{{ conv.otro_usuario_nombre || conv.otro_usuario_usuario }}</span>
           <span class="chat-producto" *ngIf="conv.producto_nombre"> · {{ conv.producto_nombre }}</span>
         </div>
-        <span class="chat-fecha">{{ formatearFecha(conv.ultimo_mensaje_fecha || '') }}</span>      </div>
+        <span class="chat-fecha">{{ formatearFecha(conv.ultimo_mensaje_fecha || '') }}</span>
+      </div>
       <div class="chat-msg-preview">{{ conv.ultimo_mensaje }}</div>
-        <span class="chat-msg-badge" *ngIf="(conv.mensajes_no_leidos || 0) > 0">{{ conv.mensajes_no_leidos || 0 }}</span>
+      <span class="chat-msg-badge" *ngIf="(conv.mensajes_no_leidos || 0) > 0">{{ conv.mensajes_no_leidos || 0 }}</span>
     </div>
   </div>
 
@@ -63,8 +101,7 @@
         <span class="msg-fecha">{{ formatearFecha(msg.created_at) }}</span>
       </div>
     </div>
-
-    <!-- Indicador "otro está escribiendo"  -->
+    <!-- Indicador "otro escribiendo" -->
     <div *ngIf="otroUsuarioEscribiendo" class="typing-indicator">
       <ion-icon name="ellipse" class="dot"></ion-icon>
       <ion-icon name="ellipse" class="dot"></ion-icon>
@@ -75,8 +112,8 @@
 
   <!-- Input de mensaje -->
   <form class="chat-input" *ngIf="vistaActual === 'chat'" (submit)="enviarMensaje()">
-    <input 
-      type="text" 
+    <input
+      type="text"
       [(ngModel)]="mensajeNuevo"
       name="mensajeNuevo"
       placeholder="Escribe un mensaje..."

@@ -165,6 +165,81 @@ export const verifyUser = async (req: Request, res: Response) => {
     res.status(500).json({ error: 'Error al verificar usuario' });
   }
 };
+// Agregar al final de auth.controller.ts, justo antes del export final
+
+// GET /api/auth/usuarios/buscar - Buscar usuarios por nombre, usuario o correo
+export const buscarUsuarios = async (req: Request, res: Response) => {
+  try {
+    const userId = req.user?.id; // Usuario autenticado
+    const { q } = req.query; // Término de búsqueda
+
+    if (!userId) {
+      return res.status(401).json({
+        success: false,
+        error: 'Usuario no autenticado'
+      });
+    }
+
+    // Validar que el término de búsqueda tenga al menos 3 caracteres
+    if (!q || typeof q !== 'string' || q.trim().length < 3) {
+      return res.status(400).json({
+        success: false,
+        error: 'El término de búsqueda debe tener al menos 3 caracteres',
+        usuarios: []
+      });
+    }
+
+    const termino = q.trim().toLowerCase();
+
+    // Buscar usuarios que coincidan con el término (nombre, usuario o correo)
+    // Excluir al usuario actual de los resultados
+    const result = await pool.query(
+      `SELECT 
+        id, 
+        nombre, 
+        usuario, 
+        correo
+      FROM usuarios 
+      WHERE id != $1 
+        AND (
+          LOWER(nombre) LIKE $2 
+          OR LOWER(usuario) LIKE $2 
+          OR LOWER(correo) LIKE $2
+        )
+      ORDER BY 
+        CASE 
+          WHEN LOWER(usuario) = $3 THEN 1
+          WHEN LOWER(nombre) = $3 THEN 2
+          WHEN LOWER(usuario) LIKE $4 THEN 3
+          WHEN LOWER(nombre) LIKE $4 THEN 4
+          ELSE 5
+        END,
+        nombre ASC
+      LIMIT 10`,
+      [
+        userId, 
+        `%${termino}%`, // Para búsqueda con LIKE
+        termino,        // Para coincidencia exacta (mayor prioridad)
+        `${termino}%`   // Para coincidencia al inicio (segunda prioridad)
+      ]
+    );
+
+    res.json({
+      success: true,
+      usuarios: result.rows,
+      total: result.rows.length
+    });
+
+  } catch (error: any) {
+    console.error('Error al buscar usuarios:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Error al buscar usuarios',
+      details: error.message,
+      usuarios: []
+    });
+  }
+};
 
 // GET /auth/profile
 // GET /api/auth/profile - Obtener perfil del usuario autenticado

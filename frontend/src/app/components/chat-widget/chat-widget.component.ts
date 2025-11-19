@@ -1,10 +1,16 @@
-// chat-widget.component.ts
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef, AfterViewChecked } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ChatService, Conversacion, Mensaje } from '../../services/chat.service';
 import { Subscription } from 'rxjs';
 import { IonicModule } from '@ionic/angular';
+
+interface Usuario {
+  id: number;
+  nombre: string;
+  usuario: string;
+  correo: string;
+}
 
 @Component({
   selector: 'app-chat-widget',
@@ -15,49 +21,42 @@ import { IonicModule } from '@ionic/angular';
 })
 export class ChatWidgetComponent implements OnInit, OnDestroy, AfterViewChecked {
   @ViewChild('chatBody') private chatBody?: ElementRef;
-  
-  // Estado del widget
+
   abierto = false;
-  vistaActual: 'conversaciones' | 'chat' = 'conversaciones';
-  
-  // Datos
+  vistaActual: 'conversaciones' | 'chat' | 'buscar' = 'conversaciones';
+
   conversaciones: Conversacion[] = [];
   mensajes: Mensaje[] = [];
   conversacionActiva: Conversacion | null = null;
   mensajeNuevo = '';
-  
-  // Estados de carga
+
   cargandoConversaciones = false;
   cargandoMensajes = false;
   enviandoMensaje = false;
-  
-  // Contador de no leídos
+
   totalNoLeidos = 0;
-  
-  // Typing indicator
   otroUsuarioEscribiendo = false;
-  
-  // Subscriptions
+
+  terminoBusqueda = '';
+  usuariosEncontrados: Usuario[] = [];
+  buscandoUsuarios = false;
+
   private subscriptions: Subscription[] = [];
   private shouldScrollToBottom = false;
 
   constructor(public chatService: ChatService) {}
 
   ngOnInit() {
-    // Suscribirse al contador de no leídos
     const contadorSub = this.chatService.contadorNoLeidos$.subscribe((total) => {
       this.totalNoLeidos = total;
     });
     this.subscriptions.push(contadorSub);
 
-    // Suscribirse a nuevos mensajes
     const mensajesSub = this.chatService.onNuevoMensaje().subscribe((msg) => {
-      // Si es de la conversación activa, agregar al array
       if (this.conversacionActiva && msg.conversacion_id === this.conversacionActiva.id) {
         this.mensajes.push(msg);
         this.shouldScrollToBottom = true;
       } else {
-        // Si no, recargar lista de conversaciones para actualizar último mensaje
         if (this.abierto && this.vistaActual === 'conversaciones') {
           this.cargarConversaciones();
         }
@@ -65,12 +64,9 @@ export class ChatWidgetComponent implements OnInit, OnDestroy, AfterViewChecked 
     });
     this.subscriptions.push(mensajesSub);
 
-    // Suscribirse al indicador de "escribiendo"
     const typingSub = this.chatService.onUserTyping().subscribe((data) => {
       if (this.conversacionActiva && data.usuarioId !== this.getUserId()) {
         this.otroUsuarioEscribiendo = data.isTyping;
-        
-        // Auto-ocultar después de 3 segundos
         if (data.isTyping) {
           setTimeout(() => {
             this.otroUsuarioEscribiendo = false;
@@ -80,7 +76,6 @@ export class ChatWidgetComponent implements OnInit, OnDestroy, AfterViewChecked 
     });
     this.subscriptions.push(typingSub);
 
-    // Actualizar contador al iniciar
     this.chatService.actualizarContadorNoLeidos();
   }
 
@@ -95,23 +90,19 @@ export class ChatWidgetComponent implements OnInit, OnDestroy, AfterViewChecked 
     this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
-  // ============================================
-  // MÉTODOS DE NAVEGACIÓN
-  // ============================================
-
   toggleChat() {
     this.abierto = !this.abierto;
-    
     if (this.abierto) {
       this.vistaActual = 'conversaciones';
       this.cargarConversaciones();
       this.chatService.actualizarContadorNoLeidos();
     } else {
-      // Al cerrar, salir de la conversación activa
       if (this.conversacionActiva) {
         this.chatService.leaveConversacion(this.conversacionActiva.id);
         this.conversacionActiva = null;
       }
+      this.usuariosEncontrados = [];
+      this.terminoBusqueda = '';
     }
   }
 
@@ -121,6 +112,9 @@ export class ChatWidgetComponent implements OnInit, OnDestroy, AfterViewChecked 
       this.chatService.leaveConversacion(this.conversacionActiva.id);
       this.conversacionActiva = null;
     }
+    this.vistaActual = 'conversaciones';
+    this.usuariosEncontrados = [];
+    this.terminoBusqueda = '';
   }
 
   volverAConversaciones() {
@@ -133,10 +127,7 @@ export class ChatWidgetComponent implements OnInit, OnDestroy, AfterViewChecked 
     this.cargarConversaciones();
   }
 
-  // ============================================
-  // MÉTODOS DE CONVERSACIONES
-  // ============================================
-
+  // === Conversaciones ===
   cargarConversaciones() {
     this.cargandoConversaciones = true;
     this.chatService.getConversaciones().subscribe({
@@ -157,8 +148,7 @@ export class ChatWidgetComponent implements OnInit, OnDestroy, AfterViewChecked 
     this.mensajes = [];
     this.cargarMensajes(conv.id);
     this.chatService.joinConversacion(conv.id);
-    
-    // Marcar como leída
+
     this.chatService.marcarConversacionLeida(conv.id).subscribe({
       next: () => {
         conv.mensajes_no_leidos = 0;
@@ -167,10 +157,7 @@ export class ChatWidgetComponent implements OnInit, OnDestroy, AfterViewChecked 
     });
   }
 
-  // ============================================
-  // MÉTODOS DE MENSAJES
-  // ============================================
-
+  // === Mensajes ===
   cargarMensajes(id: number) {
     this.cargandoMensajes = true;
     this.chatService.getMensajes(id).subscribe({
@@ -195,18 +182,16 @@ export class ChatWidgetComponent implements OnInit, OnDestroy, AfterViewChecked 
     this.mensajeNuevo = '';
     this.enviandoMensaje = true;
 
-    // Detener indicador de "escribiendo"
     this.chatService.emitTyping(this.conversacionActiva.id, false);
 
     this.chatService.enviarMensaje(this.conversacionActiva.id, texto).subscribe({
-      next: (res) => {
-        // El mensaje se agregará automáticamente vía WebSocket
+      next: () => {
         this.enviandoMensaje = false;
       },
       error: (err) => {
         console.error('Error al enviar mensaje:', err);
         this.enviandoMensaje = false;
-        this.mensajeNuevo = texto; // Restaurar mensaje
+        this.mensajeNuevo = texto;
       }
     });
   }
@@ -219,13 +204,57 @@ export class ChatWidgetComponent implements OnInit, OnDestroy, AfterViewChecked 
     }
   }
 
-  // ============================================
-  // MÉTODOS AUXILIARES
-  // ============================================
+  // === Buscar usuarios para iniciar chat ===
+  // Reemplaza el método buscarUsuarios en chat-widget.component.ts
 
+// === Buscar usuarios para iniciar chat ===
+buscarUsuarios() {
+  const term = this.terminoBusqueda.trim();
+  
+  // Limpiar resultados si el término es muy corto
+  if (term.length < 3) {
+    this.usuariosEncontrados = [];
+    return;
+  }
+  
+  this.buscandoUsuarios = true;
+  
+  this.chatService.buscarUsuarios(term).subscribe({
+    next: (res) => {
+      this.usuariosEncontrados = res.usuarios || [];
+      this.buscandoUsuarios = false;
+      
+      // Log para debugging
+      console.log('Usuarios encontrados:', this.usuariosEncontrados);
+    },
+    error: (err) => {
+      console.error('Error al buscar usuarios:', err);
+      this.usuariosEncontrados = [];
+      this.buscandoUsuarios = false;
+      
+      // Opcional: Mostrar mensaje de error al usuario
+      if (err.status === 401) {
+        console.error('No autorizado. Por favor inicia sesión nuevamente.');
+      }
+    }
+  });
+}
+
+  iniciarConversacion(usuario: Usuario) {
+    this.chatService.obtenerOCrearConversacion(usuario.id).subscribe({
+      next: (res) => {
+        if (res.conversacion) {
+          this.abrirConversacion(res.conversacion);
+          this.usuariosEncontrados = [];
+          this.terminoBusqueda = '';
+        }
+      }
+    });
+  }
+
+  // Utilities
   getUserId(): number {
-    // Obtener ID del usuario actual desde localStorage o servicio de auth
-    const usuario = JSON.parse(localStorage.getItem('user') || '{}');
+    const usuario = JSON.parse(localStorage.getItem('usuario') || '{}');
     return usuario.id || 0;
   }
 
@@ -244,22 +273,18 @@ export class ChatWidgetComponent implements OnInit, OnDestroy, AfterViewChecked 
   }
 
   formatearFecha(fecha?: string): string {
-  if (!fecha) {
-    return '';
+    if (!fecha) return '';
+    const date = new Date(fecha);
+    const hoy = new Date();
+    const ayer = new Date(hoy);
+    ayer.setDate(ayer.getDate() - 1);
+
+    if (date.toDateString() === hoy.toDateString()) {
+      return date.toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' });
+    } else if (date.toDateString() === ayer.toDateString()) {
+      return 'Ayer';
+    } else {
+      return date.toLocaleDateString('es-CL', { day: '2-digit', month: '2-digit' });
+    }
   }
-
-  const date = new Date(fecha);
-  const hoy = new Date();
-  const ayer = new Date(hoy);
-  ayer.setDate(ayer.getDate() - 1);
-
-  if (date.toDateString() === hoy.toDateString()) {
-    return date.toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' });
-  } else if (date.toDateString() === ayer.toDateString()) {
-    return 'Ayer';
-  } else {
-    return date.toLocaleDateString('es-CL', { day: '2-digit', month: '2-digit' });
-  }
-}
-
 }

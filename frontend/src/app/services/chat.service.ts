@@ -3,6 +3,7 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { io, Socket } from 'socket.io-client';
 import { BehaviorSubject, Observable } from 'rxjs';
+
 import { environment } from '../../environments/environment';
 
 // ============================================
@@ -196,6 +197,20 @@ export class ChatService implements OnDestroy {
       `${this.apiUrl}/conversaciones`
     );
   }
+// ...
+
+// 🔍 Buscar usuarios (ahora usa el endpoint de auth)
+buscarUsuarios(termino: string): Observable<{ success: boolean; usuarios: any[]; total: number }> {
+  // Cambiar la URL para usar el endpoint de auth en lugar de chat
+  const authUrl = `${environment.apiUrl}/api/auth`;
+  
+  return this.http.get<{ success: boolean; usuarios: any[]; total: number }>(
+    `${authUrl}/usuarios/buscar`,
+    {
+      params: { q: termino }
+    }
+  );
+}
 
   // Buscar conversaciones
   public buscarConversaciones(q: string) {
