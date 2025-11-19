@@ -18,6 +18,7 @@
       </nav>
 
       <!-- Botones de autenticación dinámicos -->
+      <!-- Botones de autenticación dinámicos -->
       <div class="header-actions">
         <!-- Mostrar cuando NO está logueado -->
         <ng-container *ngIf="!isLoggedIn">
@@ -32,6 +33,17 @@
 
         <!-- Mostrar cuando SÍ está logueado -->
         <ng-container *ngIf="isLoggedIn">
+          <!-- 🔹 Botón SOLO para ADMIN -->
+          <ion-button
+            *ngIf="isAdmin"
+            routerLink="/admin-portal"
+            fill="clear"
+            class="btn-auth btn-login"
+          >
+            <ion-icon slot="start" name="settings-outline"></ion-icon>
+            Panel Admin
+          </ion-button>
+
           <ion-button routerLink="/publicar" fill="solid" class="btn-auth btn-publicar">
             <ion-icon slot="start" name="add-outline"></ion-icon>
             Publicar
@@ -41,13 +53,14 @@
             <ion-icon slot="start" name="person-outline"></ion-icon>
             Perfil
           </ion-button>
+
           <ion-button (click)="cerrarSesion()" fill="solid" class="btn-auth btn-logout">
             <ion-icon slot="start" name="log-out-outline"></ion-icon>
             Cerrar Sesión
           </ion-button>
-      </ng-container>
-
+        </ng-container>
       </div>
+
     </div>
   </ion-toolbar>
 </ion-header>

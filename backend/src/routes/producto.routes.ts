@@ -5,20 +5,31 @@ import {
   createProducto, 
   updateProducto, 
   deleteProducto,
+  getProductosAdmin
 } from '../controllers/producto.controller';
-import { verifyToken } from '../middlewares/verifyToken';
+import { verificarToken, verificarAdmin } from '../middlewares/auth.middleware';
 
 const router = Router();
 
-// Rutas públicas
+// 🔹 RUTAS ADMIN (siempre antes que '/:id')
+router.get('/admin', verificarToken, verificarAdmin, getProductosAdmin);
+
+// Ver detalle de un producto como admin
+router.get('/admin/:id', verificarToken, verificarAdmin, getProductoById);
+
+// Editar producto como admin
+router.put('/admin/:id', verificarToken, verificarAdmin, updateProducto);
+
+// Eliminar producto como admin
+router.delete('/admin/:id', verificarToken, verificarAdmin, deleteProducto);
+
+// 🔹 RUTAS PÚBLICAS / USUARIO NORMAL
 router.get('/', getProductos);
 router.get('/:id', getProductoById);
 
-// Rutas protegidas (requieren autenticación)
-router.post('/', verifyToken, createProducto);
-router.put('/:id', verifyToken, updateProducto);
-router.delete('/:id', verifyToken, deleteProducto);
-
-// NUEVA RUTA: Upload de imagen (EF5)
+// 🔹 RUTAS PROTEGIDAS (usuario autenticado)
+router.post('/', verificarToken, createProducto);
+router.put('/:id', verificarToken, updateProducto);
+router.delete('/:id', verificarToken, deleteProducto);
 
 export default router;

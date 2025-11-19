@@ -26,8 +26,8 @@ import {
   laptopOutline,
   basketballOutline,
 } from 'ionicons/icons';
-
-import { ProductosService, Producto } from '../../services/productos.service';
+import { Producto } from 'src/app/models/producto.model';
+import { ProductosService } from '../../services/productos.service';
 import { AuthService } from '../../services/auth.service';
 
 interface CategoriaUI {

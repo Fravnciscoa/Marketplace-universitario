@@ -30,7 +30,8 @@ import {
   flagOutline,
 } from 'ionicons/icons';
 
-import { ProductosService, Producto } from '../../services/productos.service';
+import { Producto } from 'src/app/models/producto.model';
+import { ProductosService} from '../../services/productos.service';
 import { CarritoService } from '../../services/carrito.service';
 import { ToastController } from '@ionic/angular';
 

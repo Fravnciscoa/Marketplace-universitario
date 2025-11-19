@@ -32,7 +32,7 @@ import {
 } from 'ionicons/icons';
 
 import { AuthService } from '../../services/auth.service';
-import { Producto } from '../../services/productos.service';
+import { Producto } from 'src/app/models/producto.model';
 import { CarritoService } from '../../services/carrito.service';
 import { CartItem } from '../../models/cart-item.model';
 import { PedidosService } from '../../services/pedidos.service';

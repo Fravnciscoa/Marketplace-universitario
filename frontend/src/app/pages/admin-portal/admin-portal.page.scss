@@ -1,0 +1,374 @@
+// ============================================
+// Variables (puedes reusar las tuyas globales)
+// ============================================
+
+$colors: (
+  primary: #003366,
+  primary-light: #0066cc,
+  primary-dark: #001a33,
+  secondary: #f0f4f8,
+  accent: #ffb400,
+  text: #ffffff,
+  text-dark: #111827,
+  text-muted: #6b7280,
+  bg: #f5f5f5,
+  bg-hero: #3d3d7a,
+  card: #ffffff,
+  border: #e0e0e0,
+  success: #28a745,
+  warning: #ffc107,
+  danger: #dc3545,
+);
+
+$font-sizes: (
+  xs: 12px,
+  sm: 14px,
+  base: 16px,
+  lg: 18px,
+  xl: 20px,
+  xxl: 24px,
+  xxxl: 28px,
+  hero: 32px,
+);
+
+$spacing: (
+  xs: 4px,
+  sm: 8px,
+  md: 16px,
+  lg: 24px,
+  xl: 32px,
+  xxl: 40px,
+  xxxl: 48px,
+);
+
+$breakpoints: (
+  mobile: 576px,
+  tablet: 768px,
+  desktop: 992px,
+  wide: 1200px,
+);
+
+// ============================================
+// Mixins
+// ============================================
+
+@mixin mobile {
+  @media (max-width: map-get($breakpoints, mobile)) {
+    @content;
+  }
+}
+
+@mixin tablet {
+  @media (max-width: map-get($breakpoints, tablet)) {
+    @content;
+  }
+}
+
+@mixin desktop {
+  @media (min-width: map-get($breakpoints, desktop)) {
+    @content;
+  }
+}
+
+@mixin card-shadow {
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+// ============================================
+// Base
+// ============================================
+
+ion-content {
+  --background: #{map-get($colors, bg)};
+}
+
+body {
+  background: map-get($colors, bg) !important;
+}
+
+// ============================================
+// HEADER ADMIN
+// ============================================
+
+ion-header {
+  &.ion-no-border {
+    --border-width: 0;
+    box-shadow: none;
+  }
+
+  ion-toolbar {
+    --background: linear-gradient(90deg, #001a33, #003366, #00509e);
+    --color: #ffffff;
+    --min-height: 70px;
+    --border-width: 0;
+    position: relative;
+  }
+}
+
+/* Contenedor del header */
+ion-toolbar {
+  .toolbar-title {
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    font-size: map-get($font-sizes, lg);
+  }
+
+  ion-buttons {
+    ion-button {
+      --color: #ffffff;
+      text-transform: none;
+      font-weight: 500;
+
+      ion-icon {
+        margin-right: 4px;
+      }
+
+      &:hover {
+        opacity: 0.9;
+      }
+    }
+
+    ion-button[color="medium"] {
+      --background: rgba(255, 255, 255, 0.1);
+      --border-radius: 8px;
+      --padding-start: 12px;
+      --padding-end: 12px;
+
+      &:hover {
+        --background: rgba(255, 255, 255, 0.18);
+      }
+    }
+  }
+}
+
+/* Logo PUCV en el header (sin tocar el HTML) */
+ion-header::after {
+  content: '';
+  position: absolute;
+  right: 16px;
+  bottom: 6px;
+  width: 44px;
+  height: 44px;
+  background-image: url('/assets/img/logo-pucv.png'); // <-- cambia la ruta si es necesario
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  opacity: 0.9;
+
+  @include mobile {
+    opacity: 0.7;
+    width: 36px;
+    height: 36px;
+  }
+}
+
+// ============================================
+// CONTENEDOR PRINCIPAL
+// ============================================
+
+ion-card {
+  border-radius: 14px;
+  background: map-get($colors, card);
+  border: 1px solid rgba(0, 0, 0, 0.03);
+  @include card-shadow;
+
+  ion-card-header {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+  }
+}
+
+ion-card-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: map-get($colors, primary-dark);
+}
+
+ion-card-subtitle {
+  color: map-get($colors, text-muted);
+}
+
+// ============================================
+// TARJETA BIENVENIDA
+// ============================================
+
+ion-card:first-of-type {
+  .welcome-text {
+    p {
+      margin: 0;
+      font-size: map-get($font-sizes, sm);
+      color: map-get($colors, text-muted);
+    }
+  }
+}
+
+// ============================================
+// GRID RESUMEN (Productos / Usuarios / Reportes)
+// ============================================
+
+ion-grid {
+  padding-inline: map-get($spacing, md);
+}
+
+ion-col ion-card {
+  position: relative;
+  overflow: hidden;
+
+  ion-card-header {
+    background: linear-gradient(
+      135deg,
+      rgba(0, 51, 102, 0.06),
+      rgba(0, 102, 204, 0.08)
+    );
+  }
+
+  ion-card-content h2 {
+    font-size: map-get($font-sizes, xxl);
+    font-weight: 800;
+    margin: 0;
+    color: map-get($colors, primary-dark);
+  }
+
+  /* Detalle azulito suave */
+  &::after {
+    content: '';
+    position: absolute;
+    right: -30px;
+    top: -30px;
+    width: 90px;
+    height: 90px;
+    background: radial-gradient(circle at center, rgba(0, 102, 204, 0.2), transparent 60%);
+    opacity: 0.6;
+  }
+}
+
+// ============================================
+// LOGO PUCV COMO "SELLO" EN EL DASHBOARD
+// ============================================
+
+.admin-logo-badge {
+  margin-top: map-get($spacing, md);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(0, 51, 102, 0.06);
+  border: 1px solid rgba(0, 51, 102, 0.15);
+
+  img {
+    width: 26px;
+    height: 26px;
+    object-fit: contain;
+  }
+
+  span {
+    font-size: map-get($font-sizes, xs);
+    color: map-get($colors, text-muted);
+    font-weight: 500;
+  }
+}
+
+/* Si quieres usarla, en el HTML:
+  <div class="admin-logo-badge">
+    <img src="assets/img/logo-pucv.png" alt="PUCV" />
+    <span>Marketplace Universitario PUCV</span>
+  </div>
+*/
+
+// ============================================
+// GESTIÓN DE PRODUCTOS
+// ============================================
+
+ion-card:last-of-type {
+  margin: map-get($spacing, md);
+
+  ion-card-header {
+    background: linear-gradient(
+      135deg,
+      rgba(0, 51, 102, 0.06),
+      rgba(0, 102, 204, 0.08)
+    );
+  }
+}
+
+/* Estado de carga */
+.cargando-text {
+  font-size: map-get($font-sizes, sm);
+  color: map-get($colors, text-muted);
+}
+
+/* Lista de productos */
+ion-list {
+  background: transparent;
+}
+
+ion-item {
+  --background: #f9fbff;
+  --border-color: rgba(0, 0, 0, 0.04);
+  margin-bottom: 6px;
+  border-radius: 10px;
+
+  &::part(native) {
+    border-radius: 10px;
+  }
+
+  ion-label {
+    h2 {
+      font-size: map-get($font-sizes, base);
+      font-weight: 600;
+      color: map-get($colors, primary-dark);
+      margin-bottom: 4px;
+    }
+
+    p {
+      font-size: map-get($font-sizes, xs);
+      color: map-get($colors, text-muted);
+      margin: 1px 0;
+    }
+  }
+
+  ion-buttons {
+    ion-button {
+      --border-radius: 8px;
+      --padding-start: 10px;
+      --padding-end: 10px;
+      font-size: map-get($font-sizes, xs);
+      text-transform: none;
+    }
+
+    ion-button[color="primary"] {
+      --background: map-get($colors, primary-light);
+
+      &:hover {
+        --background: #0077e6;
+      }
+    }
+
+    ion-button[color="danger"] {
+      --background: map-get($colors, danger);
+
+      &:hover {
+        --background: #c82333;
+      }
+    }
+  }
+}
+
+// ============================================
+// RESPONSIVE
+// ============================================
+
+@include mobile {
+  ion-card {
+    margin-inline: map-get($spacing, sm);
+  }
+
+  ion-item {
+    flex-direction: column;
+
+    ion-buttons[slot="end"] {
+      margin-top: 8px;
+    }
+  }
+}
