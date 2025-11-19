@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AuthService } from './auth.service';
-
+import { environment } from '../../environments/environment';
 export interface Producto {
   ano_compra: string;
   condicion: string;
@@ -27,7 +27,8 @@ vendedor: any;
   providedIn: 'root'
 })
 export class ProductosService {
-  private apiUrl = 'http://localhost:3000/api/productos';
+  private apiUrl = `${environment.apiUrl}/productos`;
+
 
   constructor(
     private http: HttpClient,

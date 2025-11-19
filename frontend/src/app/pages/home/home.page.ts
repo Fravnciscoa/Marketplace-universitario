@@ -95,12 +95,12 @@ export class HomePage implements OnInit {
   };
 
   rangoPrecio: FiltroRango = {
-    lower: 5000,
-    upper: 500000,
+    lower: 0,
+    upper: 999999,
   };
 
-  precioMin = 5000;
-  precioMax = 500000;
+  precioMin = 0;
+  precioMax = 100000000000;   // o un valor más alto
 
   campusFiltros = {
     isabelBrown: false,
@@ -206,7 +206,11 @@ export class HomePage implements OnInit {
         this.categoriaFiltros[producto.categoria as keyof typeof this.categoriaFiltros];
 
       const coincidePrecio =
-        producto.precio >= this.rangoPrecio.lower && producto.precio <= this.rangoPrecio.upper;
+  !this.rangoPrecio || (
+    producto.precio >= this.rangoPrecio.lower &&
+    producto.precio <= this.rangoPrecio.upper
+  );
+
 
       const campusSeleccionado = Object.values(this.campusFiltros).some((v) => v);
       const coincideCampus =
