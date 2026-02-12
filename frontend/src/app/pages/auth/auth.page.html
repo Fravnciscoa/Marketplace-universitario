@@ -1,0 +1,187 @@
+<ion-content [fullscreen]="true">
+  <!-- Logo PUCV fijo arriba -->
+  <div class="logo-container">
+    <h1 class="app-title">Marketplace PUCV</h1>
+    <p class="app-subtitle">Compra y vende entre estudiantes</p>
+  </div>
+
+  <!-- Contenedor principal con sombra y gradiente -->
+  <div class="auth-wrapper">
+    <ion-card class="auth-card">
+      <!-- Tabs modernos -->
+      <div class="tabs-container">
+        <button 
+          class="tab-button" 
+          [class.active]="segment === 'login'"
+          (click)="segment = 'login'">
+          <ion-icon name="log-in-outline"></ion-icon>
+          Iniciar Sesión
+        </button>
+        <button 
+          class="tab-button" 
+          [class.active]="segment === 'register'"
+          (click)="segment = 'register'">
+          <ion-icon name="person-add-outline"></ion-icon>
+          Registrarse
+        </button>
+      </div>
+
+      <!-- Contenido del formulario -->
+      <ion-card-content class="form-content">
+        <!-- FORMULARIO LOGIN -->
+        <div *ngIf="segment === 'login'" class="form-section fade-in">
+          <div class="input-group">
+            <ion-icon name="mail-outline" class="input-icon"></ion-icon>
+            <ion-input 
+              type="email" 
+              [(ngModel)]="loginData.correo"
+              placeholder="tu.correo@pucv.cl"
+              class="modern-input">
+            </ion-input>
+          </div>
+
+          <div class="input-group">
+            <ion-icon name="lock-closed-outline" class="input-icon"></ion-icon>
+            <ion-input 
+              type="password" 
+              [(ngModel)]="loginData.contrasena"
+              placeholder="Contraseña"
+              class="modern-input">
+            </ion-input>
+          </div>
+
+          <ion-button 
+            expand="block" 
+            (click)="onLogin()" 
+            [disabled]="loading"
+            class="primary-button">
+            <ion-spinner *ngIf="loading" name="crescent"></ion-spinner>
+            <span *ngIf="!loading">
+              <ion-icon name="log-in-outline" slot="start"></ion-icon>
+              Entrar
+            </span>
+          </ion-button>
+
+          <p class="help-text">
+            ¿No tienes cuenta? <a (click)="segment = 'register'" class="link">Regístrate aquí</a>
+          </p>
+        </div>
+
+        <!-- FORMULARIO REGISTER -->
+        <div *ngIf="segment === 'register'" class="form-section fade-in">
+          <div class="input-group">
+            <ion-icon name="person-outline" class="input-icon"></ion-icon>
+            <ion-input 
+              type="text" 
+              [(ngModel)]="registerData.nombre"
+              placeholder="Nombre Completo"
+              class="modern-input">
+            </ion-input>
+          </div>
+
+          <div class="input-group">
+            <ion-icon name="at-outline" class="input-icon"></ion-icon>
+            <ion-input 
+              type="text" 
+              [(ngModel)]="registerData.usuario"
+              placeholder="Usuario"
+              class="modern-input">
+            </ion-input>
+          </div>
+
+          <div class="input-group">
+            <ion-icon name="mail-outline" class="input-icon"></ion-icon>
+            <ion-input 
+              type="email" 
+              [(ngModel)]="registerData.correo"
+              placeholder="correo@pucv.cl"
+              class="modern-input">
+            </ion-input>
+          </div>
+
+          <div class="input-group">
+            <ion-icon name="card-outline" class="input-icon"></ion-icon>
+            <ion-input 
+              type="text" 
+              [(ngModel)]="registerData.rut"
+              placeholder="RUT (12345678-9)"
+              class="modern-input">
+            </ion-input>
+          </div>
+
+          <div class="input-group">
+            <ion-icon name="location-outline" class="input-icon"></ion-icon>
+            <ion-select 
+              [(ngModel)]="registerData.region" 
+              placeholder="Selecciona tu región"
+              class="modern-select"
+              interface="action-sheet">
+              <ion-select-option *ngFor="let region of regiones" [value]="region">
+                {{ region }}
+              </ion-select-option>
+            </ion-select>
+          </div>
+
+          <div class="input-group">
+            <ion-icon name="map-outline" class="input-icon"></ion-icon>
+            <ion-input 
+              type="text" 
+              [(ngModel)]="registerData.comuna"
+              placeholder="Comuna"
+              class="modern-input">
+            </ion-input>
+          </div>
+
+          <div class="input-group">
+            <ion-icon name="lock-closed-outline" class="input-icon"></ion-icon>
+            <ion-input 
+              type="password" 
+              [(ngModel)]="registerData.contrasena"
+              placeholder="Contraseña (mínimo 6 caracteres)"
+              class="modern-input">
+            </ion-input>
+          </div>
+
+          <div class="input-group">
+            <ion-icon name="lock-open-outline" class="input-icon"></ion-icon>
+            <ion-input 
+              type="password" 
+              [(ngModel)]="registerData.confirmarContrasena"
+              placeholder="Confirmar Contraseña"
+              class="modern-input">
+            </ion-input>
+          </div>
+
+          <div class="checkbox-group">
+            <ion-checkbox 
+              [(ngModel)]="registerData.terminos_aceptados"
+              class="modern-checkbox">
+            </ion-checkbox>
+            <label class="checkbox-label">
+              Acepto los <a (click)="showTerminos()" class="link">términos y condiciones</a>
+            </label>
+          </div>
+
+          <ion-button 
+            expand="block" 
+            (click)="onRegister()" 
+            [disabled]="loading"
+            class="primary-button">
+            <ion-spinner *ngIf="loading" name="crescent"></ion-spinner>
+            <span *ngIf="!loading">
+              <ion-icon name="checkmark-circle-outline" slot="start"></ion-icon>
+              Crear Cuenta
+            </span>
+          </ion-button>
+
+          <p class="help-text">
+            ¿Ya tienes cuenta? <a (click)="segment = 'login'" class="link">Inicia sesión</a>
+          </p>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <!-- Footer decorativo -->
+  <div class="footer-decoration"></div>
+</ion-content>

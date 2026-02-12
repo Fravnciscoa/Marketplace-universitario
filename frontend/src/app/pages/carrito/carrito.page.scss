@@ -1,0 +1,445 @@
+// ============================================
+// Variables Globales (mismas que en home)
+// ============================================
+
+$font-stack: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+  Ubuntu, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+
+$colors: (
+  primary: #003366,
+  primary-light: #0066cc,
+  primary-dark: #001a33,
+  secondary: #f0f4f8,
+  accent: #ffb400,
+  text: #ffffff,
+  text-dark: #000000,
+  text-muted: #555555,
+  text-light: #666666,
+  bg: #f5f5f5,
+  bg-hero: #3d3d7a,
+  card: #ffffff,
+  border: #e0e0e0,
+  success: #28a745,
+  warning: #ffc107,
+  danger: #dc3545,
+);
+
+$spacing: (
+  xs: 4px,
+  sm: 8px,
+  md: 16px,
+  lg: 24px,
+  xl: 32px,
+  xxl: 40px,
+  xxxl: 48px,
+);
+
+$font-sizes: (
+  xs: 12px,
+  sm: 14px,
+  base: 16px,
+  lg: 18px,
+  xl: 20px,
+  xxl: 24px,
+  xxxl: 28px,
+  hero: 36px,
+);
+
+$breakpoints: (
+  mobile: 576px,
+  tablet: 768px,
+  desktop: 992px,
+  wide: 1200px,
+);
+
+// ============================================
+// Mixins
+// ============================================
+
+@mixin mobile {
+  @media (max-width: map-get($breakpoints, mobile)) {
+    @content;
+  }
+}
+
+@mixin tablet {
+  @media (max-width: map-get($breakpoints, tablet)) {
+    @content;
+  }
+}
+
+@mixin desktop {
+  @media (min-width: map-get($breakpoints, desktop)) {
+    @content;
+  }
+}
+
+@mixin card-shadow {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+@mixin transition($property: all) {
+  transition: $property 0.3s ease;
+}
+
+// ============================================
+// Base
+// ============================================
+
+* {
+  box-sizing: border-box;
+}
+
+ion-content {
+  --background: #{map-get($colors, bg)};
+  font-family: $font-stack;
+}
+
+// ============================================
+// Header (igual que home/categorías)
+// ============================================
+
+.header-toolbar {
+  --background: #{map-get($colors, primary)};
+  --color: #{map-get($colors, text)};
+  --border-width: 0;
+  padding: 0;
+}
+
+.header-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: map-get($spacing, md) map-get($spacing, xxl);
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+
+  @include tablet {
+    padding: map-get($spacing, md);
+    flex-wrap: wrap;
+  }
+}
+
+.header-logo {
+  display: flex;
+  align-items: center;
+  gap: map-get($spacing, md);
+
+  img {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+
+    @include mobile {
+      width: 40px;
+      height: 40px;
+    }
+  }
+}
+
+.header-logo-text {
+  font-size: map-get($font-sizes, xl);
+  font-weight: 700;
+  color: map-get($colors, text);
+  letter-spacing: -0.5px;
+
+  @include mobile {
+    font-size: map-get($font-sizes, lg);
+  }
+}
+
+.header-nav {
+  display: flex;
+  gap: map-get($spacing, xl);
+  align-items: center;
+
+  @include tablet {
+    width: 100%;
+    order: 3;
+    margin-top: map-get($spacing, md);
+    gap: map-get($spacing, md);
+    overflow-x: auto;
+  }
+}
+
+.nav-link {
+  color: map-get($colors, text);
+  font-size: map-get($font-sizes, base);
+  font-weight: 500;
+  text-decoration: none;
+  padding: map-get($spacing, sm) 0;
+  border-bottom: 2px solid transparent;
+  @include transition(border-color);
+  white-space: nowrap;
+
+  &:hover {
+    border-bottom-color: map-get($colors, accent);
+  }
+
+  &--active {
+    border-bottom-color: map-get($colors, accent);
+    font-weight: 600;
+  }
+
+  @include mobile {
+    font-size: map-get($font-sizes, sm);
+  }
+}
+
+.header-actions {
+  display: flex;
+  gap: map-get($spacing, md);
+  align-items: center;
+
+  @include tablet {
+    margin-left: auto;
+  }
+}
+
+.btn-auth {
+  font-weight: 600;
+  text-transform: none;
+  font-size: map-get($font-sizes, sm);
+  height: 40px;
+
+  @include mobile {
+    font-size: 12px;
+    height: 36px;
+    --padding-start: 12px;
+    --padding-end: 12px;
+  }
+}
+
+.btn-login {
+  --color: #{map-get($colors, text)};
+
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
+.btn-register {
+  --background: #{map-get($colors, accent)};
+  --color: #{map-get($colors, text-dark)};
+  --border-radius: 8px;
+
+  &:hover {
+    --background: #{darken(#ffb400, 10%)};
+  }
+}
+
+.btn-logout {
+  --background: #{map-get($colors, danger)};
+  --color: #{map-get($colors, text)};
+  --border-radius: 8px;
+
+  &:hover {
+    --background: #{darken(#dc3545, 10%)};
+  }
+}
+
+// ============================================
+// Contenido Carrito
+// ============================================
+
+.carrito-container {
+  max-width: 900px;
+  margin: map-get($spacing, lg) auto map-get($spacing, xxxl);
+  padding: 0 map-get($spacing, xxl);
+
+  @include tablet {
+    padding: 0 map-get($spacing, lg);
+  }
+
+  @include mobile {
+    padding: 0 map-get($spacing, md);
+  }
+}
+
+.carrito-titulo {
+  font-size: map-get($font-sizes, xxxl);
+  font-weight: 700;
+  color: map-get($colors, primary-dark);
+  margin-bottom: map-get($spacing, lg);
+}
+
+// ------------------------
+// Carrito vacío
+// ------------------------
+
+.carrito-vacio {
+  text-align: center;
+  margin-top: 80px;
+  color: map-get($colors, text-muted);
+
+  ion-icon {
+    font-size: 64px;
+    opacity: 0.6;
+  }
+
+  p {
+    font-size: map-get($font-sizes, lg);
+    margin: map-get($spacing, md) 0;
+  }
+
+  .btn-ir-categorias {
+    background: map-get($colors, primary-light);
+    color: map-get($colors, text);
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-weight: 600;
+    display: inline-block;
+    text-decoration: none;
+
+    &:hover {
+      background: darken(map-get($colors, primary-light), 8%);
+    }
+  }
+}
+
+// ------------------------
+// Items del carrito
+// ------------------------
+
+.carrito-lista {
+  margin-bottom: map-get($spacing, xxxl);
+}
+
+.carrito-item {
+  border-radius: 12px;
+  border: 1px solid map-get($colors, border);
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  background: #111827; // gris muy oscuro
+  color: #f9fafb;
+  display: flex;
+  justify-content: space-between;
+  align-items: stretch;
+
+  @include mobile {
+    flex-direction: column;
+  }
+}
+
+.carrito-item-content {
+  display: flex;
+  gap: 16px;
+  flex: 1;
+
+  @include mobile {
+    margin-bottom: 8px;
+  }
+}
+
+.carrito-item-imagen {
+  width: 98px;
+  height: 98px;
+  object-fit: cover;
+  border-radius: 8px;
+  background: #e5e7eb;
+}
+
+.carrito-item-info {
+  flex: 1;
+
+  h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #f9fafb;
+  }
+
+  .carrito-descripcion {
+    margin: 4px 0 6px;
+    font-size: 14px;
+    color: #d1d5db;
+  }
+
+  .carrito-precio {
+    font-size: 16px;
+    font-weight: 700;
+    color: #facc15; // amarillo fuerte
+  }
+}
+
+.carrito-item-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+
+  .btn-eliminar {
+    --color: #f87171; // rojo claro
+  }
+}
+
+// ------------------------
+// Resumen Total
+// ------------------------
+
+.carrito-resumen {
+  margin: 24px 0 14px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  background: #ffffff;
+  border: 1px solid map-get($colors, border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  p {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #4b5563;
+  }
+
+  span {
+    font-size: 18px;
+    font-weight: 700;
+    color: #111827;
+  }
+}
+
+// ------------------------
+// Botones de acciones
+// ------------------------
+
+.carrito-acciones {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.btn-vaciar {
+  background: #ffffff;
+  color: #374151;
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 14px;
+
+  &:hover {
+    background: #e5e7eb;
+  }
+}
+
+.btn-comprar {
+  background: map-get($colors, accent);
+  color: #111827;
+  padding: 10px 24px;
+  border-radius: 8px;
+  border: none;
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 14px;
+  min-width: 220px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+
+  &:hover {
+    background: darken(map-get($colors, accent), 6%);
+  }
+}

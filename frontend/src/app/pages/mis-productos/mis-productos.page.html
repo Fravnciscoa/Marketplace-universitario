@@ -1,0 +1,76 @@
+<ion-header>
+  <ion-toolbar class="navbar">
+    <ion-buttons slot="start">
+      <ion-button routerLink="/perfil">
+        <ion-icon name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Mis Productos</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="container">
+    
+    <!-- Estado vacío -->
+    <div *ngIf="misProductos.length === 0" class="empty-state">
+      <ion-icon name="cube-outline"></ion-icon>
+      <h2>No tienes productos publicados</h2>
+      <p>Empieza a vender tus artículos en el marketplace universitario</p>
+      <ion-button routerLink="/publicar-producto" class="btn-publicar">
+        <ion-icon name="add-outline" slot="start"></ion-icon>
+        Publicar Producto
+      </ion-button>
+    </div>
+
+    <!-- Grid de productos -->
+    <div *ngIf="misProductos.length > 0" class="productos-container">
+      <h2 class="section-title">Mis Publicaciones ({{ misProductos.length }})</h2>
+      
+      <div class="productos-grid">
+        <ion-card *ngFor="let producto of misProductos" class="producto-card">
+          <div class="producto-imagen-container" [routerLink]="['/detalle-producto', producto.id]">
+            <img [src]="producto.imagen" [alt]="producto.titulo" class="producto-imagen" />
+          </div>
+          
+          <ion-card-header>
+            <ion-card-title class="producto-titulo">{{ producto.titulo }}</ion-card-title>
+            <ion-card-subtitle class="producto-precio">${{ producto.precio | number }}</ion-card-subtitle>
+          </ion-card-header>
+          
+          <ion-card-content>
+            <p class="producto-categoria">{{ producto.categoria }} • {{ producto.campus }}</p>
+            <p class="producto-fecha">Publicado el {{ producto.created_at | date:'dd/MM/yyyy' }}</p>
+            
+            <div class="acciones">
+              <ion-button 
+                fill="outline" 
+                size="small" 
+                [routerLink]="['/editar-producto', producto.id]">
+                <ion-icon name="create-outline" slot="start"></ion-icon>
+                Editar
+              </ion-button>
+              
+              <ion-button 
+                fill="outline" 
+                color="danger" 
+                size="small"
+                (click)="eliminarProducto(producto.id)">
+                <ion-icon name="trash-outline" slot="start"></ion-icon>
+                Eliminar
+              </ion-button>
+            </div>
+          </ion-card-content>
+        </ion-card>
+      </div>
+    </div>
+
+  </div>
+</ion-content>
+
+<ion-toast
+  [isOpen]="showToast"
+  [message]="toastMessage"
+  [duration]="2500"
+  (didDismiss)="showToast = false"
+></ion-toast>

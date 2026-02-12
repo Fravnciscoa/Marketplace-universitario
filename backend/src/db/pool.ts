@@ -1,14 +1,17 @@
-import { Pool } from 'pg';
+import pkg from 'pg';
+import dotenv from 'dotenv';
 
-console.log('🔥 USANDO POOL HARDCODEADO 🔥');
+dotenv.config();
+
+const { Pool } = pkg;
 
 export const pool = new Pool({
-  host: 'localhost',
-  port: 5432,
-  database: 'IngWeb',     // 🔥 Hardcodeado
-  user: 'postgres',        // 🔥 Hardcodeado
-  password: '1234',        // 🔥 Hardcodeado
-  ssl: false
+  host: process.env.DB_HOST || "marketplace-universitario.postgres.database.azure.com",
+  user: process.env.DB_USER || "postgres",
+  password: process.env.DB_PASSWORD || "Panxo85808134",
+  database: process.env.DB_DATABASE || "marketplace",
+  port: Number(process.env.DB_PORT) || 5432,
+  ssl: process.env.DB_HOST?.includes('azure') 
+    ? { rejectUnauthorized: false } 
+    : false
 });
-
-console.log('Pool configurado para base de datos: IngWeb');

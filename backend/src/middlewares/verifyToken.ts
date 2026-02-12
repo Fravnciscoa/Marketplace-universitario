@@ -1,18 +1,63 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 
-export const verifyToken = (req: Request, res: Response, next: NextFunction) => {
-  const token = req.headers['authorization']?.split(' ')[1]; // formato: "Bearer <token>"
+const JWT_SECRET = process.env.JWT_SECRET || 'tu_clave_secreta_muy_segura_cambiala_en_produccion';
 
-  if (!token) {
-    return res.status(403).json({ message: 'Token requerido' });
+interface JwtPayload {
+  id: number;
+  correo: string;
+  usuario: string;
+}
+
+// ✅ Extender la interfaz Request para TypeScript
+declare global {
+  namespace Express {
+    interface Request {
+      user?: {
+        id: number;
+        correo: string;
+        usuario: string;
+      };
+    }
   }
+}
 
+export const verifyToken = (req: Request, res: Response, next: NextFunction) => {
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET as string);
-    (req as any).user = decoded; // guardar info del usuario en req.user
+    // Obtener token del header Authorization
+    const authHeader = req.headers['authorization'];
+    if (!authHeader) {
+      return res.status(401).json({ error: 'Token no proporcionado' });
+    }
+
+    // El formato esperado es: "Bearer TOKEN_AQUI"
+    const token = authHeader.split(' ')[1];
+    if (!token) {
+      return res.status(401).json({ error: 'Formato de token inválido' });
+    }
+
+    // Verificar y decodificar token
+    const decoded = jwt.verify(token, JWT_SECRET) as JwtPayload;
+
+    // ✅ CAMBIO CRÍTICO: Usar req.user en lugar de req.userId
+    req.user = {
+      id: decoded.id,
+      correo: decoded.correo,
+      usuario: decoded.usuario
+    };
+
     next();
-  } catch (err) {
-    return res.status(401).json({ message: 'Token inválido o expirado' });
+
+  } catch (error) {
+    if (error instanceof jwt.TokenExpiredError) {
+      return res.status(401).json({ error: 'Token expirado' });
+    }
+
+    if (error instanceof jwt.JsonWebTokenError) {
+      return res.status(401).json({ error: 'Token inválido' });
+    }
+
+    console.error('Error en verifyToken:', error);
+    return res.status(500).json({ error: 'Error al verificar token' });
   }
 };
