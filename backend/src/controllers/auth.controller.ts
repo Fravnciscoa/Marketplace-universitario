@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import { createUser, findUserByEmailOrUsername, findUserByEmail } from '../models/user.model';
 import { User } from '../models/user.model';
 import { pool } from '../db/pool';
+import { otorgarCreditoDisponible, BONO_BIENVENIDA, MOTIVO_BONO_BIENVENIDA } from '../models/credito.model';
 
 dotenv.config();
 
@@ -25,6 +26,12 @@ export const register = async (req: Request, res: Response) => {
 
     const hashedPassword = await bcrypt.hash(contrasena, 10);
     const newUser = await createUser(nombre, correo, usuario, hashedPassword);
+
+    try {
+      await otorgarCreditoDisponible(newUser.id, BONO_BIENVENIDA, MOTIVO_BONO_BIENVENIDA);
+    } catch (creditError) {
+      console.error('No se pudo otorgar el bono de bienvenida:', creditError);
+    }
 
     const token = jwt.sign({ id: newUser.id, usuario: newUser.usuario }, process.env.JWT_SECRET!, {
       expiresIn: '3h',

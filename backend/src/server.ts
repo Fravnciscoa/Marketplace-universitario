@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import authRoutes from './routes/auth.routes';
+import creditoRoutes from './routes/credito.routes';
 
 let productosRoutes: any;
 
@@ -27,6 +28,7 @@ app.use(express.json());
 // Rutas
 app.use(authRoutes);
 app.use(productosRoutes);
+app.use(creditoRoutes);
 
 app.listen(PORT, () => {
   console.log(`✅ Servidor corriendo en http://localhost:${PORT}`);
