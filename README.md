@@ -177,6 +177,12 @@ La aplicación estará disponible en: `http://localhost:8100`
 - `PUT /api/productos/:id` - Actualizar producto (requiere autenticación)
 - `DELETE /api/productos/:id` - Eliminar producto (requiere autenticación)
 
+### Créditos
+- `GET /api/creditos` - Obtener saldo de créditos y créditos pendientes por reclamar (requiere autenticación)
+- `POST /api/creditos/claim` - Reclamar los créditos disponibles y sumarlos al saldo (requiere autenticación)
+
+Al registrarse, cada usuario recibe automáticamente un bono de bienvenida pendiente por reclamar. Ver detalle en `backend/docs/credits_endpoints.md`.
+
 ---
 
 ## Estructura del Proyecto

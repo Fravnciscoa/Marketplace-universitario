@@ -88,6 +88,49 @@
           }
         }
       ]
+    },
+    {
+      "name": "Creditos",
+      "item": [
+        {
+          "name": "Get Mis Creditos",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:3000/api/creditos",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "creditos"]
+            }
+          }
+        },
+        {
+          "name": "Claim Creditos",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:3000/api/creditos/claim",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "creditos", "claim"]
+            }
+          }
+        }
+      ]
     }
   ]
 }
